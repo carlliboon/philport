@@ -89,14 +89,6 @@ export default function HomePage() {
 
   return (
     <>
-      <title>
-        Shopify Support Pro - Your Trusted Partner for Shopify Store Success
-      </title>
-      <meta
-        name="description"
-        content="Shopify Support Pro offers expert assistance for your Shopify store, ensuring smooth operations and enhanced performance."
-      />
-
       <div className="flex min-h-screen flex-col">
         <NavHeaderMenus />
         <main className="flex-1">
