@@ -1,5 +1,10 @@
+"use client";
+
 import type React from "react";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { auth, db } from "../firebase/firebase";
+import { collection, getDocs } from "firebase/firestore";
+import { signInAnonymously } from "firebase/auth";
 import { NavHeaderMenus } from "../components/NavHeaderMenus";
 import { FooterMenus } from "../components/FooterMenus";
 import { HeroSection } from "./components/HeroSection";
@@ -20,19 +25,16 @@ interface Review {
   review: string;
 }
 
-interface HomeProps {
-  clientReviews: Review[];
-  loading: boolean;
-}
-
 export const metadata = {
   title: "Shopify Support Pro - Your Trusted Partner for Shopify Store Success",
   description:
     "Shopify Support Pro offers expert assistance for your Shopify store, ensuring smooth operations and enhanced performance.",
 };
 
-export default function HomePage({ clientReviews, loading }: HomeProps) {
+export default function HomePage() {
   const [visibleCount, setVisibleCount] = useState(3);
+  const [clientReviews, setReviews] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const handleLoadMore = () => {
     setVisibleCount((prevCount) => prevCount + 3);
@@ -54,6 +56,36 @@ export default function HomePage({ clientReviews, loading }: HomeProps) {
       ),
     }
   );
+
+  useEffect(() => {
+    const authenticateAndFetch = async () => {
+      setLoading(true);
+      try {
+        await signInAnonymously(auth);
+        const reviewsCollection = collection(db, "reviews");
+        const querySnapshot = await getDocs(reviewsCollection);
+
+        // Map the data to the `Review` type
+        const reviewsData: Review[] = querySnapshot.docs.map((doc) => {
+          const data = doc.data();
+          return {
+            id: Number(data.id),
+            name: data.name ?? "Unknown", // Default value if missing
+            rating: data.rating ?? 0, // Default value if missing
+            review: data.review ?? "No review provided", // Default value if missing
+          };
+        });
+
+        setReviews(reviewsData);
+      } catch (error) {
+        console.error("Error fetching reviews: ", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    authenticateAndFetch();
+  }, []);
 
   return (
     <>
