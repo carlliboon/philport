@@ -42,7 +42,7 @@ export default function RootLayout({
         />
         <meta
           property="og:image"
-          content="https://shopifysupportpro.com/path-to-your-logo.png"
+          content="https://shopifysupportpro.com/logo.png"
         />
         <meta property="og:url" content="https://shopifysupportpro.com" />
         <meta name="twitter:card" content="summary_large_image" />

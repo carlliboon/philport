@@ -1,7 +1,7 @@
 import type React from "react";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
-
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ServiceCard } from "../components/ServiceCard";
@@ -10,6 +10,8 @@ import { NavHeaderMenus } from "../components/NavHeaderMenus";
 import { FooterMenus } from "../components/FooterMenus";
 import { Title } from "../components/Title";
 import { services } from "../../util/services";
+
+import businessOwner from "@/images/business-owner-working.jpg";
 
 export default function Services() {
   return (
@@ -184,13 +186,15 @@ export default function Services() {
                   </div>
                 </div>
                 <div className="flex justify-center">
-                  <div className="relative h-[400px] w-full max-w-[500px] overflow-hidden rounded-xl">
-                    <picture>
-                      <img
-                        src="https://i.postimg.cc/sx6psv2R/business-owner-working-on-online-store.jpg"
-                        alt="Business Owner Working On Online Store"
-                      />
-                    </picture>
+                  <div className="relative h-[450px] w-full max-w-[600px] sm:h-[500px] overflow-hidden rounded-xl">
+                    <Image
+                      src={businessOwner}
+                      alt="Business Owner Working on his Shopify Store"
+                      fill
+                      className="object-cover rounded-xl"
+                      priority
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                    />
                   </div>
                 </div>
               </div>

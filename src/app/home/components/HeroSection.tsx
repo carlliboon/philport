@@ -1,10 +1,15 @@
 import { ArrowRight, Star } from "lucide-react";
 import Image from "next/image";
-import teamMeeting from "../../../../images/team-meeting.jpg";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { motion } from "framer-motion";
+
+import teamMeeting from "@/images/team-meeting.jpg";
+import clients from "@/images/clients.png";
+import ben from "@/images/ben.jpg";
+import nolan from "@/images/nolan.jpeg";
+import michael from "@/images/michael.png";
 
 export const HeroSection = () => {
   return (
@@ -16,12 +21,12 @@ export const HeroSection = () => {
         viewport={{ once: true }}
         className="container px-4 md:px-6 max-w-screen-xl mx-auto"
       >
-        <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
+        <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center lg:flex-row flex-col-reverse">
           <div className="space-y-4">
             <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">
               Shopify Support Specialists
             </Badge>
-            <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tighter">
               Your Dedicated <span className="text-emerald-600">Shopify</span>{" "}
               Support Team
             </h1>
@@ -48,41 +53,41 @@ export const HeroSection = () => {
             <div className="flex items-center pt-4 space-x-4">
               <div className="flex -space-x-2">
                 <div className="w-8 h-8 rounded-full bg-emerald-200 flex items-center justify-center text-emerald-700 text-xs font-medium">
-                  <picture>
-                    <img
-                      className="rounded-full"
-                      src="https://i.postimg.cc/13QFDT3L/1331733.png"
-                      alt="MH"
-                      width={100}
-                    />
-                  </picture>
+                  <Image
+                    src={michael}
+                    alt="Michael Haessig"
+                    className="object-cover rounded-xl"
+                  />
                 </div>
                 <div className="w-8 h-8 rounded-full bg-emerald-200 flex items-center justify-center text-emerald-700 text-xs font-medium">
-                  <picture>
-                    <img
-                      className="rounded-full"
-                      src="https://i.postimg.cc/cCTJYDkN/1652245894404.jpg"
-                      alt="NK"
-                      width={100}
-                    />
-                  </picture>
+                  <Image
+                    src={nolan}
+                    alt="Nolan Kahal"
+                    className="object-cover rounded-xl"
+                  />
                 </div>
                 <div className="w-8 h-8 rounded-full bg-emerald-200 flex items-center justify-center text-emerald-700 text-xs font-medium">
-                  <picture>
-                    <img
-                      className="rounded-full"
-                      src="https://i.postimg.cc/sxfjVYjH/r-OTEJk-MF-400x400.jpg"
-                      alt="BL"
-                      width={100}
-                    />
-                  </picture>
+                  <Image
+                    src={ben}
+                    alt="Ben Lebowitz"
+                    className="object-cover rounded-xl"
+                  />
                 </div>
-                <div className="w-8 h-8 rounded-full bg-emerald-200 flex items-center justify-center text-emerald-700 text-xs font-medium">
-                  +
+                <div className="relative w-8 h-8 rounded-full overflow-hidden">
+                  <div
+                    className="absolute inset-0 bg-center bg-cover scale-130 blur-md"
+                    style={{
+                      backgroundImage: `url(${clients.src})`,
+                      filter: "blur(2px)",
+                    }}
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center text-emerald-700 text-md font-medium">
+                    +
+                  </div>
                 </div>
               </div>
               <p className="text-sm text-muted-foreground">
-                Trusted by <span className="font-medium">100+</span> Shopify
+                Trusted by <span className="font-medium">50+</span> Shopify
                 store owners
               </p>
             </div>
@@ -93,6 +98,9 @@ export const HeroSection = () => {
                 src={teamMeeting}
                 alt="Team Meeting"
                 fill
+                priority
+                quality={75}
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover rounded-xl"
               />
             </div>

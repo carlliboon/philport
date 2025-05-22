@@ -2,11 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ShoppingBag } from "lucide-react";
+import { useState } from "react";
+import { Menu, X, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const NavHeaderMenus = () => {
   const pathname = usePathname();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
     { label: "Home", href: "/" },
@@ -25,6 +27,8 @@ export const NavHeaderMenus = () => {
             <span>Shopify Support Pro</span>
           </Link>
         </div>
+
+        {/* Desktop Navigation */}
         <nav className="hidden md:flex gap-6">
           {navItems.map(({ label, href }) => (
             <Link
@@ -33,20 +37,29 @@ export const NavHeaderMenus = () => {
               className={`text-sm font-medium transition-colors ${
                 pathname === href
                   ? "text-emerald-600"
-                  : " hover:text-emerald-600"
+                  : "hover:text-emerald-600"
               }`}
             >
               {label}
             </Link>
           ))}
         </nav>
-        <div className="flex items-center gap-4">
-          <Button
-            asChild
-            variant="outline"
-            size="sm"
-            className="hidden md:flex"
-          >
+
+        {/* Mobile Menu Toggle */}
+        <button
+          className="md:hidden"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        >
+          {mobileMenuOpen ? (
+            <X className="h-6 w-6" />
+          ) : (
+            <Menu className="h-6 w-6" />
+          )}
+        </button>
+
+        {/* Call-to-action buttons */}
+        <div className="hidden md:flex items-center gap-4">
+          <Button asChild variant="outline" size="sm">
             <Link href="https://cal.com/carl-michael/shopify-support-pro">
               Book a Call
             </Link>
@@ -60,6 +73,44 @@ export const NavHeaderMenus = () => {
           </Button>
         </div>
       </div>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-white border-t shadow-sm">
+          <div className="flex flex-col p-4 space-y-2">
+            {navItems.map(({ label, href }) => (
+              <Link
+                key={label}
+                href={href}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`text-sm font-medium py-2 px-2 rounded ${
+                  pathname === href
+                    ? "text-emerald-600 bg-emerald-50"
+                    : "hover:text-emerald-600"
+                }`}
+              >
+                {label}
+              </Link>
+            ))}
+
+            {/* Two-button row */}
+            <div className="flex gap-2">
+              <Button asChild variant="outline" size="sm" className="w-1/2">
+                <Link href="https://cal.com/carl-michael/shopify-support-pro">
+                  Book a Call
+                </Link>
+              </Button>
+              <Button
+                asChild
+                size="sm"
+                className="w-1/2 bg-emerald-600 hover:bg-emerald-700"
+              >
+                <Link href="#">Get Started</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 };
