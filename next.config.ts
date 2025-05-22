@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  output: "export", // Enables static HTML export
+  assetPrefix: "/website_9855d8ad",
 };
 
 export default nextConfig;
