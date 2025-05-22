@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Head from "next/head";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,13 +30,42 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <link rel="icon" href="/favicon.ico" />
-      </head>
+      <Head>
+        <meta
+          name="description"
+          content="We provide professional Shopify support services including setup, customization, and ongoing assistance to help your store succeed."
+        />
+        <meta property="og:title" content="Shopify Support Pro" />
+        <meta
+          property="og:description"
+          content="Expert Shopify support services to grow your online store."
+        />
+        <meta
+          property="og:image"
+          content="https://shopifysupportpro.com/path-to-your-logo.png"
+        />
+        <meta property="og:url" content="https://shopifysupportpro.com" />
+        <meta name="twitter:card" content="summary_large_image" />
+
+        {/* Organization Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "Shopify Support Pro",
+              url: "https://shopifysupportpro.com",
+              logo: "https://shopifysupportpro.com/logo.png",
+            }),
+          }}
+        />
+      </Head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+        <SpeedInsights />
       </body>
     </html>
   );
