@@ -10,7 +10,6 @@ import { Testimonials } from "./components/Testimonials";
 import { stats } from "@/util/stats";
 import { HowItWorks } from "./components/HowItWorks";
 import { CallToAction } from "./components/CallToAction";
-import { Title } from "../components/Title";
 import dynamic from "next/dynamic";
 import { ScrollToTop } from "../components/ScrollToTop";
 
@@ -25,6 +24,12 @@ interface HomeProps {
   clientReviews: Review[];
   loading: boolean;
 }
+
+export const metadata = {
+  title: "Shopify Support Pro - Your Trusted Partner for Shopify Store Success",
+  description:
+    "Shopify Support Pro offers expert assistance for your Shopify store, ensuring smooth operations and enhanced performance.",
+};
 
 export default function HomePage({ clientReviews, loading }: HomeProps) {
   const [visibleCount, setVisibleCount] = useState(3);
@@ -52,7 +57,14 @@ export default function HomePage({ clientReviews, loading }: HomeProps) {
 
   return (
     <>
-      <Title />
+      <title>
+        Shopify Support Pro - Your Trusted Partner for Shopify Store Success
+      </title>
+      <meta
+        name="description"
+        content="Shopify Support Pro offers expert assistance for your Shopify store, ensuring smooth operations and enhanced performance."
+      />
+
       <div className="flex min-h-screen flex-col">
         <NavHeaderMenus />
         <main className="flex-1">
