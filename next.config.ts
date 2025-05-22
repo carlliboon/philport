@@ -1,8 +1,5 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  output: "export", // Enables static HTML export
-  assetPrefix: "/website_9855d8ad",
-};
+const nextConfig: NextConfig = {};
 
 export default nextConfig;
