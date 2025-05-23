@@ -16,7 +16,7 @@ export const NavHeaderMenus = () => {
     { label: "Home", href: "/" },
     { label: "Services", href: "/services" },
     { label: "About", href: "/about" },
-    { label: "Portfolio", href: "/portfolio" },
+    // { label: "Portfolio", href: "/portfolio" },
     { label: "Contact", href: "/contact" },
   ];
 
