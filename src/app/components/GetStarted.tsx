@@ -35,11 +35,10 @@ export const GetStarted: React.FC<GetStartedProps> = ({
         {description}
       </p>
 
-      <div className="flex flex-col gap-2 min-[400px]:flex-row pt-4">
+      <div className="flex flex-row flex-wrap justify-center gap-2 pt-4">
         <Button
           asChild
-          className="w-full min-[400px]:w-auto bg-emerald-600 hover:bg-emerald-700"
-          size="lg"
+          className="bg-emerald-600 hover:bg-emerald-700 text-sm font-medium px-4 py-2 flex-1 max-w-[200px]"
         >
           <Link href="https://cal.com/carl-michael/shopify-support-pro">
             {scheduleBtnText}
@@ -50,8 +49,7 @@ export const GetStarted: React.FC<GetStartedProps> = ({
           <Button
             asChild
             variant="outline"
-            size="lg"
-            className="w-full min-[400px]:w-auto"
+            className="text-sm font-medium px-4 py-2 flex-1 max-w-[200px]"
           >
             <Link href="/services">View Our Services</Link>
           </Button>

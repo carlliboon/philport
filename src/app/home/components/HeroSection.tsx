@@ -1,4 +1,4 @@
-import { ArrowRight, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -34,22 +34,24 @@ export const HeroSection = () => {
               We help Shopify store owners save time, reduce stress, and grow
               their business with our specialized support services.
             </p>
-            <div className="flex flex-col sm:flex-row gap-2 pt-4">
+            <div className="flex flex-wrap justify-center sm:justify-start gap-2 pt-4">
               <Button
                 asChild
-                size="lg"
-                className="bg-emerald-600 hover:bg-emerald-700"
+                className="bg-emerald-600 hover:bg-emerald-700 text-sm font-medium w-[160px] sm:w-auto px-3 py-2"
               >
-                <Link href="/services">
-                  Explore Our Services <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
+                <Link href="/services">Explore Our Services</Link>
               </Button>
-              <Button asChild variant="outline" size="lg">
+              <Button
+                asChild
+                variant="outline"
+                className="text-sm font-medium w-[190px] sm:w-auto px-3 py-2"
+              >
                 <Link href="https://cal.com/carl-michael/shopify-support-pro">
                   Book a Free Consultation
                 </Link>
               </Button>
             </div>
+
             <div className="flex items-center pt-4 space-x-4">
               <div className="flex -space-x-2">
                 <div className="w-8 h-8 rounded-full bg-emerald-200 flex items-center justify-center text-emerald-700 text-xs font-medium">

@@ -70,11 +70,11 @@ export const StatsCounter: React.FC<StatsCounterProps> = ({ stats }) => {
       ref={sectionRef}
       className="w-full py-12 md:py-24 bg-emerald-900 text-white"
     >
-      <div className="container px-2 md:px-2 max-w-screen-xl mx-auto">
-        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-6">
+      <div className="container px-4 md:px-6 max-w-screen-xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
           {stats.map(({ id, label, value, prefix = "", suffix = "" }) => (
-            <div key={id} className="text-center space-y-2">
-              <p className="text-4xl font-bold">
+            <div key={id} className="text-center space-y-1">
+              <p className="text-lg md:text-xl lg:text-4xl font-bold text-white">
                 <span
                   className="count-up"
                   data-target={value}
@@ -84,7 +84,7 @@ export const StatsCounter: React.FC<StatsCounterProps> = ({ stats }) => {
                   {prefix}0{suffix}
                 </span>
               </p>
-              <p className="text-emerald-200">{label}</p>
+              <p className="text-emerald-200 text-xs md:text-sm">{label}</p>
             </div>
           ))}
         </div>

@@ -336,7 +336,7 @@ export default function ContactPage() {
                     height="100%"
                     frameBorder="0"
                     style={{ border: 0 }}
-                    src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBVKOu8Hnnkp4q4WZacp0BjKGSt0fkS3DE&q=18th+Tupas+St,+Poblacion+1,+Sagay+City,+Philippines"
+                    src={process.env.GOOGLE_MAP_URL_WITH_API_KEY}
                     allowFullScreen
                   ></iframe>
                 </div>

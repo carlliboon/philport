@@ -24,7 +24,9 @@ export const NavHeaderMenus = () => {
         <div className="flex items-center gap-2 text-lg font-semibold">
           <Link href="/" className="flex items-center gap-2">
             <ShoppingBag className="h-5 w-5 text-emerald-600" />
-            <span>Shopify Support Pro</span>
+            <span className="font-geist text-lg font-medium tracking-tight">
+              Shopify Support Pro
+            </span>
           </Link>
         </div>
 

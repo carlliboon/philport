@@ -61,11 +61,13 @@ export default function RootLayout({
           }}
         />
       </Head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-        <SpeedInsights />
+      <body>
+        <div
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          {children}
+          <SpeedInsights />
+        </div>
       </body>
     </html>
   );

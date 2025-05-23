@@ -1,25 +1,21 @@
-"use client";
-
-// Import the functions you need
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { getDatabase } from "firebase/database";
 
-// Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCbN5GiIrxJhCV8vaM7cgLaPkkgtLibApM",
-  authDomain: "shopify-support-pro-db.firebaseapp.com",
-  databaseURL: "https://shopify-support-pro-db-default-rtdb.firebaseio.com",
-  projectId: "shopify-support-pro-db",
-  storageBucket: "shopify-support-pro-db.firebasestorage.app",
-  messagingSenderId: "929259790458",
-  appId: "1:929259790458:web:b11808219a3214ce0f5bc3",
-  measurementId: "G-65FFMDEMJW",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+  databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+
 const db = getFirestore(app);
 const auth = getAuth(app);
 const rtdb = getDatabase(app);
