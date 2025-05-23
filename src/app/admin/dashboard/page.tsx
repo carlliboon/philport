@@ -2,9 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { db } from "../../firebase/firebase";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
-
 import {
   collection,
   addDoc,
@@ -30,7 +29,7 @@ import {
   ShoppingBag,
   Users,
   Settings,
-  LogOut,
+  LogOutIcon,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -259,6 +258,17 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleLogout = async () => {
+    const auth = getAuth();
+    try {
+      await signOut(auth);
+      router.push("/admin/login");
+    } catch (error) {
+      console.error("Error signing out:", error);
+      toast("Failed to sign out");
+    }
+  };
+
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -270,7 +280,7 @@ export default function AdminDashboard() {
       const roleDoc = await getDoc(doc(db, "roles", user.uid));
       const role = roleDoc.exists() ? roleDoc.data().role : "user";
 
-      if (role !== "admin") {
+      if (role !== "admin" && role !== "user") {
         router.push("/unauthorized");
       }
     });
@@ -329,16 +339,21 @@ export default function AdminDashboard() {
               Settings
             </a>
           </Button>
-        </div>
-        <div className="p-4 border-t">
-          <Button variant="ghost" className="justify-start w-full" asChild>
-            <a
-              href="#"
-              className="flex items-center text-red-500 hover:text-red-600 hover:bg-red-50"
-            >
-              <LogOut className="mr-2 h-4 w-4" />
-              Logout
-            </a>
+          <Button
+            variant="ghost"
+            className="justify-start w-full"
+            onClick={handleLogout}
+            asChild
+          >
+            <span className="flex items-center">
+              <LogOutIcon className="mr-2 h-4 w-4" />
+              <a
+                href="#"
+                className="flex items-center text-red-500 hover:text-red-600 hover:bg-red-50"
+              >
+                Logout
+              </a>
+            </span>
           </Button>
         </div>
       </div>

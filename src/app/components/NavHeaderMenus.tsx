@@ -5,10 +5,12 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X, ShoppingBag, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { LoginModal } from "./LoginModal";
 
 export const NavHeaderMenus = () => {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
 
   const navItems = [
     { label: "Home", href: "/" },
@@ -67,17 +69,13 @@ export const NavHeaderMenus = () => {
             </Link>
           </Button>
           <Button
-            asChild
+            onClick={() => setLoginOpen(true)}
             size="sm"
             className="bg-emerald-600 hover:bg-emerald-700"
           >
-            <Link href="/admin/login">
-              <span>
-                <User />
-              </span>
-              Login
-            </Link>
+            <User className="mr-1 h-4 w-4" /> Login
           </Button>
+          <LoginModal open={loginOpen} onOpenChange={setLoginOpen} />
         </div>
       </div>
 
