@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Menu, X, ShoppingBag } from "lucide-react";
+import { Menu, X, ShoppingBag, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const NavHeaderMenus = () => {
@@ -23,9 +23,9 @@ export const NavHeaderMenus = () => {
       <div className="container flex h-16 items-center justify-between max-w-screen-xl mx-auto px-4">
         <div className="flex items-center gap-2 text-lg font-semibold">
           <Link href="/" className="flex items-center gap-2">
-            <ShoppingBag className="h-5 w-5 text-emerald-600" />
-            <span className="font-geist text-lg font-medium tracking-tight">
-              Shopify Support Pro
+            <ShoppingBag className="h-5 w-5 text-emerald-700" />
+            <span className="text-emerald-700 font-bold">
+              ShopifySupportPro
             </span>
           </Link>
         </div>
@@ -60,7 +60,7 @@ export const NavHeaderMenus = () => {
         </button>
 
         {/* Call-to-action buttons */}
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-2">
           <Button asChild variant="outline" size="sm">
             <Link href="https://cal.com/carl-michael/shopify-support-pro">
               Book a Call
@@ -71,7 +71,12 @@ export const NavHeaderMenus = () => {
             size="sm"
             className="bg-emerald-600 hover:bg-emerald-700"
           >
-            <Link href="#">Get Started</Link>
+            <Link href="/admin/login">
+              <span>
+                <User />
+              </span>
+              Login
+            </Link>
           </Button>
         </div>
       </div>

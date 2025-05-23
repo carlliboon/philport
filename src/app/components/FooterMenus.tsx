@@ -7,9 +7,10 @@ export const FooterMenus = () => {
       <div className="container flex flex-col-reverse md:flex-row items-center justify-between gap-4 md:h-24 max-w-screen-xl mx-auto px-4">
         {/* Copyright Text */}
         <div className="flex items-center gap-2">
-          <ShoppingBag className="h-5 w-5 text-emerald-600" />
+          <ShoppingBag className="h-5 w-5 text-emerald-700" />
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} ShopifySupportPro. All rights reserved.
+            © {new Date().getFullYear()} ShopifySupportPro. All rights
+            reserved.
           </p>
         </div>
 

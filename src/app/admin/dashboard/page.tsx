@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { db } from "../firebase/firebase";
-import { Timestamp } from "firebase/firestore";
+import { db } from "../../firebase/firebase";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useRouter } from "next/navigation";
+
 import {
   collection,
   addDoc,
@@ -12,6 +14,8 @@ import {
   deleteDoc,
   query,
   orderBy,
+  Timestamp,
+  getDoc,
 } from "firebase/firestore";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -115,6 +119,7 @@ export default function AdminDashboard() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const router = useRouter();
   const reviewsPerPage = 5;
 
   const reviewsRef = collection(db, "reviews");
@@ -253,6 +258,25 @@ export default function AdminDashboard() {
       );
     }
   };
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        router.push("/admin/LoginPage");
+        return;
+      }
+
+      const roleDoc = await getDoc(doc(db, "roles", user.uid));
+      const role = roleDoc.exists() ? roleDoc.data().role : "user";
+
+      if (role !== "admin") {
+        router.push("/unauthorized");
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     fetchReviews();
