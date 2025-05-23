@@ -84,12 +84,13 @@ export function LoginModal({
       );
       const uid = userCredential.user.uid;
 
-      const docRef = doc(db, "roles", uid);
+      const docRef = doc(db, "users", uid);
       const roleDoc = await getDoc(docRef);
       const role = roleDoc.exists() ? roleDoc.data().role : "user";
 
-      if (role === "admin" && role === "user") {
+      if (role === "admin" || role === "user") {
         setLoginStatus("success");
+        localStorage.setItem("authToken", uid);
         router.push("/admin/dashboard");
       } else {
         setLoginStatus("error");
@@ -97,7 +98,6 @@ export function LoginModal({
       }
     } catch (error) {
       setLoginStatus("error");
-      //   setShowDialog(true);
       console.log("Login status:", loginStatus);
       console.error(error);
     } finally {
@@ -135,9 +135,11 @@ export function LoginModal({
                 <Input
                   id="email"
                   type="email"
-                  placeholder="you@example.com"
+                  placeholder="you@examples.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className={`border-emerald-300 focus:ring-emerald-500 mt-1 ${loginStatus === "error" ? "border-red-500 focus:border-emerald-500" : ""}`}
+                  aria-invalid={loginStatus === "error"}
                 />
               </div>
               <div className="space-y-2">
@@ -159,11 +161,13 @@ export function LoginModal({
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    className={`border-emerald-300 focus:ring-emerald-500 mt-1 ${loginStatus === "error" ? "border-red-500 focus:border-emerald-500" : ""}`}
+                    aria-invalid={loginStatus === "error"}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-emerald-600 hover:text-emerald-700"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-500"
                     tabIndex={-1}
                   >
                     {showPassword ? (
@@ -174,18 +178,28 @@ export function LoginModal({
                   </button>
                 </div>
               </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="remember"
-                  checked={rememberMe}
-                  onCheckedChange={(checked) => setRememberMe(Boolean(checked))}
-                />
-                <label
-                  htmlFor="remember"
-                  className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  Remember me
-                </label>
+
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="remember"
+                    checked={rememberMe}
+                    onCheckedChange={(checked) =>
+                      setRememberMe(Boolean(checked))
+                    }
+                  />
+                  <label
+                    htmlFor="remember"
+                    className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Remember me
+                  </label>
+                </div>
+                {loginStatus === "error" && (
+                  <p className="text-xs text-red-600 ml-2 whitespace-nowrap">
+                    Invalid email or password.
+                  </p>
+                )}
               </div>
             </CardContent>
 

@@ -262,7 +262,8 @@ export default function AdminDashboard() {
     const auth = getAuth();
     try {
       await signOut(auth);
-      router.push("/admin/login");
+      localStorage.removeItem("authToken");
+      router.push("/");
     } catch (error) {
       console.error("Error signing out:", error);
       toast("Failed to sign out");
@@ -273,19 +274,26 @@ export default function AdminDashboard() {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        router.push("/admin/LoginPage");
-        return;
-      }
+        router.push("/");
+      } else {
+        const roleDoc = await getDoc(doc(db, "users", user.uid));
+        const role = roleDoc.exists() ? roleDoc.data().role : "user";
 
-      const roleDoc = await getDoc(doc(db, "roles", user.uid));
-      const role = roleDoc.exists() ? roleDoc.data().role : "user";
-
-      if (role !== "admin" && role !== "user") {
-        router.push("/unauthorized");
+        if (role !== "admin" && role !== "user") {
+          router.push("/unauthorized");
+        }
       }
     });
 
     return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+
+    if (!token) {
+      router.push("/");
+    }
   }, []);
 
   useEffect(() => {
@@ -300,399 +308,404 @@ export default function AdminDashboard() {
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-  return (
-    <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar */}
-      <div className="hidden md:flex w-64 flex-col bg-white border-r">
-        <div className="p-4 border-b">
-          <div className="flex items-center gap-2">
-            <ShoppingBag className="h-6 w-6 text-emerald-600" />
-            <span className="font-semibold text-lg">Shopify Support Pro</span>
+  if (localStorage.getItem("authToken") !== null) {
+    return (
+      <div className="flex min-h-screen bg-gray-50">
+        {/* Sidebar */}
+        <div className="hidden md:flex w-64 flex-col bg-white border-r">
+          <div className="p-4 border-b">
+            <div className="flex items-center gap-2">
+              <ShoppingBag className="h-6 w-6 text-emerald-600" />
+              <span className="font-semibold text-lg">Shopify Support Pro</span>
+            </div>
+          </div>
+          <div className="flex flex-col p-4 space-y-2 flex-1">
+            <Button variant="ghost" className="justify-start" asChild>
+              <a href="/admin/dashboard" className="flex items-center">
+                <LayoutDashboard className="mr-2 h-4 w-4" />
+                Dashboard
+              </a>
+            </Button>
+            <Button
+              variant="ghost"
+              className="justify-start bg-emerald-50 text-emerald-700"
+              asChild
+            >
+              <a href="/admin/dashboard" className="flex items-center">
+                <Star className="mr-2 h-4 w-4" />
+                Reviews
+              </a>
+            </Button>
+            <Button variant="ghost" className="justify-start" asChild>
+              <a href="#" className="flex items-center">
+                <Users className="mr-2 h-4 w-4" />
+                Customers
+              </a>
+            </Button>
+            <Button variant="ghost" className="justify-start" asChild>
+              <a href="#" className="flex items-center">
+                <Settings className="mr-2 h-4 w-4" />
+                Settings
+              </a>
+            </Button>
+            <Button
+              variant="ghost"
+              className="justify-start w-full"
+              onClick={handleLogout}
+              asChild
+            >
+              <span className="flex items-center">
+                <LogOutIcon className="mr-2 h-4 w-4" />
+                <a
+                  href="#"
+                  className="flex items-center text-red-500 hover:text-red-600 hover:bg-red-50"
+                >
+                  Logout
+                </a>
+              </span>
+            </Button>
           </div>
         </div>
-        <div className="flex flex-col p-4 space-y-2 flex-1">
-          <Button variant="ghost" className="justify-start" asChild>
-            <a href="/admin/dashboard" className="flex items-center">
-              <LayoutDashboard className="mr-2 h-4 w-4" />
-              Dashboard
-            </a>
-          </Button>
-          <Button
-            variant="ghost"
-            className="justify-start bg-emerald-50 text-emerald-700"
-            asChild
-          >
-            <a href="/admin/dashboard" className="flex items-center">
-              <Star className="mr-2 h-4 w-4" />
-              Reviews
-            </a>
-          </Button>
-          <Button variant="ghost" className="justify-start" asChild>
-            <a href="#" className="flex items-center">
-              <Users className="mr-2 h-4 w-4" />
-              Customers
-            </a>
-          </Button>
-          <Button variant="ghost" className="justify-start" asChild>
-            <a href="#" className="flex items-center">
-              <Settings className="mr-2 h-4 w-4" />
-              Settings
-            </a>
-          </Button>
-          <Button
-            variant="ghost"
-            className="justify-start w-full"
-            onClick={handleLogout}
-            asChild
-          >
-            <span className="flex items-center">
-              <LogOutIcon className="mr-2 h-4 w-4" />
-              <a
-                href="#"
-                className="flex items-center text-red-500 hover:text-red-600 hover:bg-red-50"
-              >
-                Logout
-              </a>
-            </span>
-          </Button>
-        </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <header className="bg-white border-b p-4 flex items-center justify-between">
-          <h1 className="text-xl font-semibold">Reviews Management</h1>
-          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="bg-emerald-600 hover:bg-emerald-700">
-                <Plus className="mr-2 h-4 w-4" /> Add Review
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Add New Review</DialogTitle>
-                <DialogDescription>
-                  Add a new customer review. Click save when you&apos;re done.
-                </DialogDescription>
-              </DialogHeader>
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(addReview)}
-                  className="space-y-4"
-                >
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Customer Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="John Doe" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="rating"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Rating</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col">
+          {/* Header */}
+          <header className="bg-white border-b p-4 flex items-center justify-between">
+            <h1 className="text-xl font-semibold">Reviews Management</h1>
+            <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+              <DialogTrigger asChild>
+                <Button className="bg-emerald-600 hover:bg-emerald-700">
+                  <Plus className="mr-2 h-4 w-4" /> Add Review
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Add New Review</DialogTitle>
+                  <DialogDescription>
+                    Add a new customer review. Click save when you&apos;re done.
+                  </DialogDescription>
+                </DialogHeader>
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(addReview)}
+                    className="space-y-4"
+                  >
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Customer Name</FormLabel>
                           <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select a rating" />
-                            </SelectTrigger>
+                            <Input placeholder="John Doe" {...field} />
                           </FormControl>
-                          <SelectContent>
-                            <SelectItem value="1">1 Star</SelectItem>
-                            <SelectItem value="2">2 Stars</SelectItem>
-                            <SelectItem value="3">3 Stars</SelectItem>
-                            <SelectItem value="4">4 Stars</SelectItem>
-                            <SelectItem value="5">5 Stars</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="review"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Review Text</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Write the review here..."
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <DialogFooter>
-                    {loading && (
-                      <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
-                    )}
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setIsAddDialogOpen(false)}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      type="submit"
-                      className="bg-emerald-600 hover:bg-emerald-700"
-                    >
-                      Save Review
-                    </Button>
-                  </DialogFooter>
-                </form>
-              </Form>
-            </DialogContent>
-          </Dialog>
-        </header>
-
-        {/* Content */}
-        <div className="flex-1 p-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Customer Reviews</CardTitle>
-              <CardDescription>
-                Manage and moderate customer reviews for your business.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {loading ? (
-                <div className="flex justify-center items-center py-8">
-                  <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
-                </div>
-              ) : reviews.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <p>No reviews found. Add your first review to get started.</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {currentReviews.map((review) => (
-                    <div
-                      key={review.id}
-                      className="border rounded-lg p-4 bg-white"
-                    >
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h3 className="font-semibold">{review.name}</h3>
-                            <div className="flex">
-                              {[...Array(5)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`h-4 w-4 ${
-                                    i < review.rating
-                                      ? "fill-amber-400 text-amber-400"
-                                      : "text-gray-300"
-                                  }`}
-                                />
-                              ))}
-                            </div>
-                          </div>
-                          <p className="text-muted-foreground text-sm mt-1">
-                            {review.createdAt?.toDate().toLocaleDateString() ||
-                              "No date"}
-                          </p>
-                          <p className="mt-2">{review.review}</p>
-                        </div>
-                        <div className="flex space-x-2">
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={() => handleEditReview(review)}
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="rating"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Rating</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
                           >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button
-                                variant="outline"
-                                size="icon"
-                                className="text-red-500 hover:text-red-600"
-                              >
-                                <Trash className="h-4 w-4" />
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>
-                                  Are you sure?
-                                </AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  This action cannot be undone. This will
-                                  permanently delete the review from your
-                                  database.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction
-                                  onClick={() =>
-                                    deleteReview(review.id.toString())
-                                  }
-                                  className="bg-red-500 hover:bg-red-600"
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select a rating" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="1">1 Star</SelectItem>
+                              <SelectItem value="2">2 Stars</SelectItem>
+                              <SelectItem value="3">3 Stars</SelectItem>
+                              <SelectItem value="4">4 Stars</SelectItem>
+                              <SelectItem value="5">5 Stars</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="review"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Review Text</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Write the review here..."
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <DialogFooter>
+                      {loading && (
+                        <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
+                      )}
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setIsAddDialogOpen(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        type="submit"
+                        className="bg-emerald-600 hover:bg-emerald-700"
+                      >
+                        Save Review
+                      </Button>
+                    </DialogFooter>
+                  </form>
+                </Form>
+              </DialogContent>
+            </Dialog>
+          </header>
+
+          {/* Content */}
+          <div className="flex-1 p-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Customer Reviews</CardTitle>
+                <CardDescription>
+                  Manage and moderate customer reviews for your business.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <div className="flex justify-center items-center py-8">
+                    <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
+                  </div>
+                ) : reviews.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <p>
+                      No reviews found. Add your first review to get started.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {currentReviews.map((review) => (
+                      <div
+                        key={review.id}
+                        className="border rounded-lg p-4 bg-white"
+                      >
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <h3 className="font-semibold">{review.name}</h3>
+                              <div className="flex">
+                                {[...Array(5)].map((_, i) => (
+                                  <Star
+                                    key={i}
+                                    className={`h-4 w-4 ${
+                                      i < review.rating
+                                        ? "fill-amber-400 text-amber-400"
+                                        : "text-gray-300"
+                                    }`}
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                            <p className="text-muted-foreground text-sm mt-1">
+                              {review.createdAt
+                                ?.toDate()
+                                .toLocaleDateString() || "No date"}
+                            </p>
+                            <p className="mt-2">{review.review}</p>
+                          </div>
+                          <div className="flex space-x-2">
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              onClick={() => handleEditReview(review)}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  size="icon"
+                                  className="text-red-500 hover:text-red-600"
                                 >
-                                  Delete
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
+                                  <Trash className="h-4 w-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>
+                                    Are you sure?
+                                  </AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    This action cannot be undone. This will
+                                    permanently delete the review from your
+                                    database.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() =>
+                                      deleteReview(review.id.toString())
+                                    }
+                                    className="bg-red-500 hover:bg-red-600"
+                                  >
+                                    Delete
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-            <CardFooter>
-              {reviews.length > reviewsPerPage && (
-                <Pagination className="w-full">
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationPrevious
-                        onClick={() => paginate(Math.max(1, currentPage - 1))}
-                        className={
-                          currentPage === 1
-                            ? "pointer-events-none opacity-50"
-                            : ""
-                        }
-                      />
-                    </PaginationItem>
-                    {[...Array(totalPages)].map((_, i) => (
-                      <PaginationItem key={i}>
-                        <PaginationLink
-                          onClick={() => paginate(i + 1)}
-                          isActive={currentPage === i + 1}
-                        >
-                          {i + 1}
-                        </PaginationLink>
-                      </PaginationItem>
                     ))}
-                    <PaginationItem>
-                      <PaginationNext
-                        onClick={() =>
-                          paginate(Math.min(totalPages, currentPage + 1))
-                        }
-                        className={
-                          currentPage === totalPages
-                            ? "pointer-events-none opacity-50"
-                            : ""
-                        }
-                      />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
-              )}
-            </CardFooter>
-          </Card>
+                  </div>
+                )}
+              </CardContent>
+              <CardFooter>
+                {reviews.length > reviewsPerPage && (
+                  <Pagination className="w-full">
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious
+                          onClick={() => paginate(Math.max(1, currentPage - 1))}
+                          className={
+                            currentPage === 1
+                              ? "pointer-events-none opacity-50"
+                              : ""
+                          }
+                        />
+                      </PaginationItem>
+                      {[...Array(totalPages)].map((_, i) => (
+                        <PaginationItem key={i}>
+                          <PaginationLink
+                            onClick={() => paginate(i + 1)}
+                            isActive={currentPage === i + 1}
+                          >
+                            {i + 1}
+                          </PaginationLink>
+                        </PaginationItem>
+                      ))}
+                      <PaginationItem>
+                        <PaginationNext
+                          onClick={() =>
+                            paginate(Math.min(totalPages, currentPage + 1))
+                          }
+                          className={
+                            currentPage === totalPages
+                              ? "pointer-events-none opacity-50"
+                              : ""
+                          }
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                )}
+              </CardFooter>
+            </Card>
+          </div>
         </div>
-      </div>
 
-      {/* Edit Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit Review</DialogTitle>
-            <DialogDescription>
-              Make changes to the review. Click save when you&apos;re done.
-            </DialogDescription>
-          </DialogHeader>
-          <Form {...editForm}>
-            <form
-              onSubmit={editForm.handleSubmit(submitEditReview)}
-              className="space-y-4"
-            >
-              <FormField
-                control={editForm.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Customer Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="John Doe" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={editForm.control}
-                name="rating"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Rating</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+        {/* Edit Dialog */}
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit Review</DialogTitle>
+              <DialogDescription>
+                Make changes to the review. Click save when you&apos;re done.
+              </DialogDescription>
+            </DialogHeader>
+            <Form {...editForm}>
+              <form
+                onSubmit={editForm.handleSubmit(submitEditReview)}
+                className="space-y-4"
+              >
+                <FormField
+                  control={editForm.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Customer Name</FormLabel>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a rating" />
-                        </SelectTrigger>
+                        <Input placeholder="John Doe" {...field} />
                       </FormControl>
-                      <SelectContent>
-                        <SelectItem value="1">1 Star</SelectItem>
-                        <SelectItem value="2">2 Stars</SelectItem>
-                        <SelectItem value="3">3 Stars</SelectItem>
-                        <SelectItem value="4">4 Stars</SelectItem>
-                        <SelectItem value="5">5 Stars</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={editForm.control}
-                name="review"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Review Text</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Write the review here..."
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <DialogFooter>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setIsEditDialogOpen(false)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  className="bg-emerald-600 hover:bg-emerald-700"
-                >
-                  Save Changes
-                </Button>
-              </DialogFooter>
-            </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={editForm.control}
+                  name="rating"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Rating</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a rating" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="1">1 Star</SelectItem>
+                          <SelectItem value="2">2 Stars</SelectItem>
+                          <SelectItem value="3">3 Stars</SelectItem>
+                          <SelectItem value="4">4 Stars</SelectItem>
+                          <SelectItem value="5">5 Stars</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={editForm.control}
+                  name="review"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Review Text</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Write the review here..."
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <DialogFooter>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsEditDialogOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="bg-emerald-600 hover:bg-emerald-700"
+                  >
+                    Save Changes
+                  </Button>
+                </DialogFooter>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
 
-      <Toaster />
-    </div>
-  );
+        <Toaster />
+      </div>
+    );
+  }
 }
