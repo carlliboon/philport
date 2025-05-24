@@ -1,4 +1,4 @@
-import { TestimonialCard } from "@/app/components/TestimonialCard";
+import { TestimonialCard } from "@/components/common/TestimonialCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Loader2 } from "lucide-react";

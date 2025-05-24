@@ -1,8 +1,8 @@
-import westandwillow from "@/images/westandwillow.png";
-import thewhisperingpages from "@/images/whispering.png";
-import haroldhome from "@/images/haroldhome.png";
-import cloudlift from "@/images/cloudlift.png";
-import tagsmate from "@/images/tagsmate.png";
+import westandwillow from "@/assets/images/portfolio/westandwillow.png";
+import thewhisperingpages from "@/assets/images/portfolio/whispering.png";
+import haroldhome from "@/assets/images/portfolio/haroldhome.png";
+import cloudlift from "@/assets/images/portfolio/cloudlift.png";
+import tagsmate from "@/assets/images/portfolio/tagsmate.png";
 import Image from "next/image";
 
 export const TrustedBy = () => {

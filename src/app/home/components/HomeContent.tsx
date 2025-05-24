@@ -1,18 +1,17 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { NavHeaderMenus } from "../../components/NavHeaderMenus";
-import { FooterMenus } from "../../components/FooterMenus";
+import { NavHeaderMenus, FooterMenus } from "@/components/layout";
 import { HeroSection } from "./HeroSection";
 import { TrustedBy } from "./TrustedBy";
 import { HowWeHelp } from "./HowWeHelp";
 import { ServicesOverview } from "./ServicesOverview";
 import { Testimonials } from "./Testimonials";
-import { stats } from "@/util/stats";
+import { stats } from "@/data/stats";
 import { HowItWorks } from "./HowItWorks";
 import { CallToAction } from "./CallToAction";
 import dynamic from "next/dynamic";
-import { ScrollToTop } from "../../components/ScrollToTop";
+import { ScrollToTop } from "@/components/common";
 
 interface Review {
   id: number;
@@ -37,7 +36,9 @@ export default function HomeContent({ clientReviews, loading }: Props) {
 
   const StatsCounter = dynamic(
     () =>
-      import("../../components/StatsCounter").then((mod) => mod.StatsCounter),
+      import("@/components/common/StatsCounter").then(
+        (mod) => mod.StatsCounter
+      ),
     {
       ssr: false,
       loading: () => (

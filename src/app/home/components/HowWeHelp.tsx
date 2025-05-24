@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { CheckCircle2, Clock, TrendingUp, Zap } from "lucide-react";
-import { CardMotion } from "../../components/CardMotion";
+import { CardMotion } from "@/components/common/CardMotion";
 
 export const HowWeHelp = () => {
   return (

@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
-import { db } from "../../firebase/firebase";
+import { db } from "../../../lib/firebase";
 
 import { collection, setDoc, doc, serverTimestamp } from "firebase/firestore";
 
@@ -13,15 +13,15 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     console.log("Received body:", body);
 
-    const { firstName, lastName, email, shopifyUrl, message } = body;
+    const { firstName, lastName, email, shopifyUrl, message, subject, phone } =
+      body;
 
-    // Validate input
-    if (!firstName || !lastName || !email || !shopifyUrl || !message) {
-      console.error("Missing fields", {
+    // Validate required fields
+    if (!firstName || !lastName || !email || !message) {
+      console.error("Missing required fields", {
         firstName,
         lastName,
         email,
-        shopifyUrl,
         message,
       });
       return NextResponse.json(
@@ -30,18 +30,25 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Determine email subject
+    const emailSubject = subject
+      ? `New Contact: ${subject}`
+      : "New Contact Submission";
+
     // Send email
     try {
       await resend.emails.send({
         from: "Shopify Support Pro <support@shopifysupportpro.com>",
         to: "carlliboon12@gmail.com",
-        subject: "New Contact Submission",
+        subject: emailSubject,
         html: `
             <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-              <h2 style="color: #10b981;">New Contact Submission</h2>
+              <h2 style="color: #10b981;">${emailSubject}</h2>
               <p><strong>Name:</strong> ${firstName} ${lastName}</p>
               <p><strong>Email:</strong> ${email}</p>
-              <p><strong>Store:</strong> ${shopifyUrl}</p>
+              ${phone ? `<p><strong>Phone:</strong> ${phone}</p>` : ""}
+              ${shopifyUrl ? `<p><strong>Store:</strong> ${shopifyUrl}</p>` : ""}
+              ${subject ? `<p><strong>Subject:</strong> ${subject}</p>` : ""}
               <p><strong>Message:</strong><br/>${message}</p>
             </div>
           `,
@@ -57,15 +64,31 @@ export async function POST(req: NextRequest) {
       const newDocRef = doc(contactsRef);
       const newId = newDocRef.id;
 
-      await setDoc(newDocRef, {
+      const contactData: {
+        id: string;
+        firstName: string;
+        lastName: string;
+        email: string;
+        message: string;
+        createdAt: ReturnType<typeof serverTimestamp>;
+        shopifyUrl?: string;
+        subject?: string;
+        phone?: string;
+      } = {
         id: newId,
         firstName,
         lastName,
         email,
-        shopifyUrl,
         message,
         createdAt: serverTimestamp(),
-      });
+      };
+
+      // Add optional fields if they exist
+      if (shopifyUrl) contactData.shopifyUrl = shopifyUrl;
+      if (subject) contactData.subject = subject;
+      if (phone) contactData.phone = phone;
+
+      await setDoc(newDocRef, contactData);
     } catch (firestoreErr: unknown) {
       console.error(
         "🔥 Firestore write failed:",

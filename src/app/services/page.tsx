@@ -4,15 +4,11 @@ import { ArrowRight, CheckCircle2 } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ServiceCard } from "../components/ServiceCard";
-import { GetStarted } from "../components/GetStarted";
-import { NavHeaderMenus } from "../components/NavHeaderMenus";
-import { FooterMenus } from "../components/FooterMenus";
-import { Title } from "../components/Title";
-import { services } from "../../util/services";
+import { ServiceCard, GetStarted, Title, CalCom } from "@/components/common";
+import { NavHeaderMenus, FooterMenus } from "@/components/layout";
+import { services } from "@/data/services";
 
-import businessOwner from "@/images/business-owner-working.jpg";
-import CalCom from "../components/CalCom";
+import businessOwner from "@/assets/images/general/business-owner-working.jpg";
 
 export default function Services() {
   return (

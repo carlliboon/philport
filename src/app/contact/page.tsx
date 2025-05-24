@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import {
   Mail,
   // Phone,
@@ -11,6 +14,7 @@ import {
   Facebook,
   Instagram,
   Twitter,
+  Loader2,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -28,11 +32,58 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { NavHeaderMenus } from "../components/NavHeaderMenus";
-import { FooterMenus } from "../components/FooterMenus";
-import CalCom from "../components/CalCom";
+import { NavHeaderMenus, FooterMenus } from "@/components/layout";
+import { CalCom } from "@/components/common";
+import { useContactForm, ContactFormFields } from "../../hooks/contactHandler";
 
 export default function ContactPage() {
+  const [form, setForm] = useState<ContactFormFields>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    message: "",
+    subject: "",
+    phone: "",
+  });
+
+  const { status, isLoading, submitContactForm, resetStatus } =
+    useContactForm();
+
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const success = await submitContactForm(form);
+    if (success) {
+      setForm({
+        firstName: "",
+        lastName: "",
+        email: "",
+        message: "",
+        subject: "",
+        phone: "",
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (
+      !isLoading &&
+      (form.firstName !== "" ||
+        form.lastName !== "" ||
+        form.email !== "" ||
+        form.message !== "")
+    ) {
+      resetStatus();
+    }
+  }, [form, resetStatus, isLoading]);
+
   return (
     <div className="flex min-h-screen flex-col">
       <NavHeaderMenus />
@@ -65,106 +116,141 @@ export default function ContactPage() {
               {/* Contact Form */}
               <div>
                 <h2 className="text-2xl font-bold mb-6">Send Us a Message</h2>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
+                <form onSubmit={handleSubmit}>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label
+                          htmlFor="firstName"
+                          className="text-sm font-medium"
+                        >
+                          First name
+                        </label>
+                        <input
+                          id="firstName"
+                          name="firstName"
+                          value={form.firstName}
+                          onChange={handleChange}
+                          required
+                          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                          placeholder="John"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label
+                          htmlFor="lastName"
+                          className="text-sm font-medium"
+                        >
+                          Last name
+                        </label>
+                        <input
+                          id="lastName"
+                          name="lastName"
+                          value={form.lastName}
+                          onChange={handleChange}
+                          required
+                          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                          placeholder="Doe"
+                        />
+                      </div>
+                    </div>
                     <div className="space-y-2">
-                      <label
-                        htmlFor="first-name"
-                        className="text-sm font-medium"
-                      >
-                        First name
+                      <label htmlFor="email" className="text-sm font-medium">
+                        Email
                       </label>
                       <input
-                        id="first-name"
+                        id="email"
+                        name="email"
+                        type="email"
+                        value={form.email}
+                        onChange={handleChange}
+                        required
                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                        placeholder="John"
+                        placeholder="john@example.com"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label
-                        htmlFor="last-name"
-                        className="text-sm font-medium"
-                      >
-                        Last name
+                      <label htmlFor="phone" className="text-sm font-medium">
+                        Phone (optional)
                       </label>
                       <input
-                        id="last-name"
+                        id="phone"
+                        name="phone"
+                        type="tel"
+                        value={form.phone}
+                        onChange={handleChange}
                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                        placeholder="Doe"
+                        placeholder="+1 (555) 000-0000"
                       />
                     </div>
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="email" className="text-sm font-medium">
-                      Email
-                    </label>
-                    <input
-                      id="email"
-                      type="email"
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                      placeholder="john@example.com"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="phone" className="text-sm font-medium">
-                      Phone (optional)
-                    </label>
-                    <input
-                      id="phone"
-                      type="tel"
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                      placeholder="+1 (555) 000-0000"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="subject" className="text-sm font-medium">
-                      Subject
-                    </label>
-                    <select
-                      id="subject"
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                    <div className="space-y-2">
+                      <label htmlFor="subject" className="text-sm font-medium">
+                        Subjects
+                      </label>
+                      <select
+                        id="subject"
+                        name="subject"
+                        value={form.subject}
+                        onChange={handleChange}
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                      >
+                        <option value="">Select a subject</option>
+                        <option value="Shopify App Support">
+                          Shopify App Support
+                        </option>
+                        <option value="Admin & Customer Support">
+                          Admin & Customer Support
+                        </option>
+                        <option value="Virtual Assistance">
+                          Virtual Assistance
+                        </option>
+                        <option value="Product Page Customization">
+                          Product Page Customization
+                        </option>
+                        <option value="Creative & Digital Media (Graphic Design, Social Media, Video Editing)">
+                          Creative & Digital Media (Graphic Design, Social
+                          Media, Video Editing)
+                        </option>
+                        <option value="General Inquiry">
+                          Not Sure / General Inquiry
+                        </option>
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <label htmlFor="message" className="text-sm font-medium">
+                        Message
+                      </label>
+                      <textarea
+                        id="message"
+                        name="message"
+                        value={form.message}
+                        onChange={handleChange}
+                        required
+                        className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                        placeholder="Tell us about your project or inquiry..."
+                      />
+                    </div>
+                    <Button
+                      type="submit"
+                      className="w-full bg-emerald-600 hover:bg-emerald-700 relative"
+                      disabled={isLoading}
                     >
-                      <option value="shopify-app-support">
-                        Shopify App Support
-                      </option>
-                      <option value="admin-customer-support">
-                        Admin & Customer Support
-                      </option>
-                      <option value="virtual-assistance">
-                        Virtual Assistance
-                      </option>
-                      <option value="product-page-customization">
-                        Product Page Customization
-                      </option>
-                      <option value="creative-digital-media">
-                        Creative & Digital Media (Graphic Design, Social Media,
-                        Video Editing)
-                      </option>
-                      <option value="general-inquiry">
-                        Not Sure / General Inquiry
-                      </option>
-                    </select>
+                      {isLoading ? (
+                        <span className="flex items-center justify-center gap-2">
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Sending...
+                        </span>
+                      ) : (
+                        status || "Send Message"
+                      )}
+                    </Button>
+                    <p className="text-xs text-muted-foreground text-center">
+                      We&apos;ll get back to you within 24 hours during business
+                      days.
+                    </p>
                   </div>
-                  <div className="space-y-2">
-                    <label htmlFor="message" className="text-sm font-medium">
-                      Message
-                    </label>
-                    <textarea
-                      id="message"
-                      className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                      placeholder="Tell us about your project or inquiry..."
-                    />
-                  </div>
-                  <Button className="w-full bg-emerald-600 hover:bg-emerald-700">
-                    Send Message
-                  </Button>
-                  <p className="text-xs text-muted-foreground text-center">
-                    We&apos;ll get back to you within 24 hours during business
-                    days.
-                  </p>
-                </div>
+                </form>
               </div>
-
               {/* Contact Info */}
               <div className="space-y-6 max-w-screen-xl mx-auto">
                 <h2 className="text-2xl font-bold">Contact Information</h2>
@@ -343,7 +429,7 @@ export default function ContactPage() {
                     height="100%"
                     frameBorder="0"
                     style={{ border: 0 }}
-                    src={process.env.GOOGLE_MAP_URL_WITH_API_KEY}
+                    src={process.env.NEXT_PUBLIC_GOOGLE_MAP_URL_WITH_API_KEY}
                     allowFullScreen
                   ></iframe>
                 </div>

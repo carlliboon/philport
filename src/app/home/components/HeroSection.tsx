@@ -5,12 +5,12 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
-import teamMeeting from "@/images/team-meeting.jpg";
-import clients from "@/images/clients.png";
-import ben from "@/images/ben.jpg";
-import nolan from "@/images/nolan.jpeg";
-import michael from "@/images/michael.png";
-import CalCom from "@/app/components/CalCom";
+import teamMeeting from "@/assets/images/general/team-meeting.jpg";
+import clients from "@/assets/images/clients/clients.png";
+import ben from "@/assets/images/team/ben.jpg";
+import nolan from "@/assets/images/team/nolan.jpeg";
+import michael from "@/assets/images/team/michael.png";
+import { CalCom } from "@/components/common";
 
 export const HeroSection = () => {
   return (

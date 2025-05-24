@@ -2,21 +2,21 @@
 
 import type React from "react";
 import { useMemo, useState, useEffect } from "react";
-import { auth, db } from "../firebase/firebase";
+import { auth, db } from "@/lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { signInAnonymously } from "firebase/auth";
-import { NavHeaderMenus } from "../components/NavHeaderMenus";
-import { FooterMenus } from "../components/FooterMenus";
+import { NavHeaderMenus } from "@/components/layout";
+import { FooterMenus } from "@/components/layout";
 import { HeroSection } from "./components/HeroSection";
 import { TrustedBy } from "./components/TrustedBy";
 import { HowWeHelp } from "./components/HowWeHelp";
 import { ServicesOverview } from "./components/ServicesOverview";
 import { Testimonials } from "./components/Testimonials";
-import { stats } from "@/util/stats";
+import { stats } from "@/data/stats";
 import { HowItWorks } from "./components/HowItWorks";
 import { CallToAction } from "./components/CallToAction";
 import dynamic from "next/dynamic";
-import { ScrollToTop } from "../components/ScrollToTop";
+import { ScrollToTop } from "@/components/common";
 
 interface Review {
   id: number;
@@ -46,7 +46,10 @@ export default function HomePage() {
   }, [clientReviews, visibleCount]);
 
   const StatsCounter = dynamic(
-    () => import("../components/StatsCounter").then((mod) => mod.StatsCounter),
+    () =>
+      import("@/components/common/StatsCounter").then(
+        (mod) => mod.StatsCounter
+      ),
     {
       ssr: false,
       loading: () => (

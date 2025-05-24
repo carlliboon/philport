@@ -5,9 +5,8 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X, ShoppingBag, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { LoginModal } from "./LoginModal";
-
-import CalCom from "./CalCom";
+import { LoginModal } from "@/components/forms";
+import { CalCom } from "@/components/common";
 
 export const NavHeaderMenus = () => {
   const pathname = usePathname();

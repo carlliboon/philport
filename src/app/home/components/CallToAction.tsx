@@ -1,19 +1,29 @@
 "use client";
 
-import { JSX, useEffect, useState } from "react";
-import { GetStarted } from "@/app/components/GetStarted";
+import { useEffect, useState } from "react";
+import { GetStarted } from "@/components/common";
 import { Button } from "@/components/ui/button";
-import { Check, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
+// import { Check, Loader2 } from "lucide-react";
+
+import {
+  useContactForm,
+  ContactFormFields,
+} from "../../../hooks/contactHandler";
 
 export const CallToAction = () => {
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<ContactFormFields>({
     firstName: "",
     lastName: "",
     email: "",
     shopifyUrl: "",
     message: "",
+    subject: "",
+    phone: "",
   });
-  const [status, setStatus] = useState<string | JSX.Element>("");
+
+  const { status, isLoading, submitContactForm, resetStatus } =
+    useContactForm();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -23,48 +33,32 @@ export const CallToAction = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus(
-      <span className="flex items-center gap-2 text-white">
-        Sending
-        <Loader2 className="w-4 h-4 animate-spin" />
-      </span>
-    );
-
-    const res = await fetch("/api/contact", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-
-    if (res.ok) {
-      setStatus(
-        <span className="flex items-center gap-2 text-white">
-          <Check className="w-4 h-4" /> Message sent!
-        </span>
-      );
+    const success = await submitContactForm(form);
+    if (success) {
       setForm({
         firstName: "",
         lastName: "",
         email: "",
         shopifyUrl: "",
         message: "",
+        subject: "",
+        phone: "",
       });
-    } else {
-      setStatus("❌ Failed to send. Please try again.");
     }
   };
 
   useEffect(() => {
     if (
-      form.firstName !== "" ||
-      form.lastName !== "" ||
-      form.email !== "" ||
-      form.shopifyUrl !== "" ||
-      form.message !== ""
+      !isLoading &&
+      (form.firstName !== "" ||
+        form.lastName !== "" ||
+        form.email !== "" ||
+        form.shopifyUrl !== "" ||
+        form.message !== "")
     ) {
-      setStatus("");
+      resetStatus();
     }
-  }, [form]);
+  }, [form, resetStatus, isLoading]);
 
   return (
     <section id="contact" className="w-full py-12 md:py-24 bg-emerald-50">
@@ -165,9 +159,17 @@ export const CallToAction = () => {
 
                 <Button
                   type="submit"
-                  className="w-full bg-emerald-600 hover:bg-emerald-700"
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 relative"
+                  disabled={isLoading}
                 >
-                  {status ? status : "Submit"}
+                  {isLoading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Sending...
+                    </span>
+                  ) : (
+                    status || "Submit"
+                  )}
                 </Button>
               </div>
             </form>

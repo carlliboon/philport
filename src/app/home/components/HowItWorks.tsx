@@ -1,4 +1,4 @@
-import CalCom from "@/app/components/CalCom";
+import CalCom from "@/components/common/CalCom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Calendar, FileText, Rocket } from "lucide-react";

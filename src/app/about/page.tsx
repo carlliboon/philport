@@ -14,16 +14,16 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ServiceCard } from "../components/ServiceCard";
-import { GetStarted } from "../components/GetStarted";
-import { NavHeaderMenus } from "../components/NavHeaderMenus";
-import { FooterMenus } from "../components/FooterMenus";
-import { services } from "../../util/services";
-import { Title } from "../components/Title";
-import CalCom from "../components/CalCom";
+import { ServiceCard } from "@/components/common";
+import { GetStarted } from "@/components/common";
+import { NavHeaderMenus } from "@/components/layout";
+import { FooterMenus } from "@/components/layout";
+import { services } from "@/data/services";
+import { Title } from "@/components/common";
+import { CalCom } from "@/components/common";
 import Image from "next/image";
 
-import teamMeeting from "@/images/team-meeting.jpg";
+import teamMeeting from "@/assets/images/general/team-meeting.jpg";
 
 export default function AboutPage() {
   return (

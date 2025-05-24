@@ -24,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { NavHeaderMenus } from "../components/NavHeaderMenus";
+import { NavHeaderMenus } from "@/components/layout";
 import { useEffect, useRef, useState } from "react";
 import intlTelInput from "intl-tel-input";
 

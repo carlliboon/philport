@@ -1,9 +1,9 @@
-import { ServiceCard } from "@/app/components/ServiceCard";
+import { ServiceCard } from "@/components/common/ServiceCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { services } from "../../../util/services";
+import { services } from "@/data/services";
 
 export const ServicesOverview = () => {
   return (
