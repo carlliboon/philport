@@ -1,7 +1,7 @@
+import CalCom from "@/app/components/CalCom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Calendar, FileText, Rocket } from "lucide-react";
-import Link from "next/link";
 
 export const HowItWorks = () => {
   return (
@@ -72,10 +72,10 @@ export const HowItWorks = () => {
 
         <div className="flex justify-center mt-10">
           <Button asChild className="bg-emerald-600 hover:bg-emerald-700">
-            <Link href="https://cal.com/carl-michael/shopify-support-pro">
-              Schedule Your Free Consultation{" "}
+            <span className="flex items-center cursor-pointer">
+              <CalCom btnTitle="Schedule Your Free Consultation " />
               <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
+            </span>
           </Button>
         </div>
       </div>

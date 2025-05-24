@@ -12,6 +12,7 @@ import { Title } from "../components/Title";
 import { services } from "../../util/services";
 
 import businessOwner from "@/images/business-owner-working.jpg";
+import CalCom from "../components/CalCom";
 
 export default function Services() {
   return (
@@ -45,7 +46,7 @@ export default function Services() {
                     </Link>
                   </Button>
                   <Button variant="outline">
-                    <Link href="#contact">Contact Us</Link>
+                    <Link href="/contact">Contact Us</Link>
                   </Button>
                 </div>
               </div>
@@ -103,9 +104,9 @@ export default function Services() {
                         asChild
                         className="bg-emerald-600 hover:bg-emerald-700"
                       >
-                        <Link href="https://cal.com/carl-michael/shopify-support-pro">
-                          Schedule a Consultation
-                        </Link>
+                        <a className="cursor-pointer">
+                          <CalCom btnTitle="Schedule a Consultation" />
+                        </a>
                       </Button>
                     </div>
                   </div>

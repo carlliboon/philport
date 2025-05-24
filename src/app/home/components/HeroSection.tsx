@@ -10,6 +10,7 @@ import clients from "@/images/clients.png";
 import ben from "@/images/ben.jpg";
 import nolan from "@/images/nolan.jpeg";
 import michael from "@/images/michael.png";
+import CalCom from "@/app/components/CalCom";
 
 export const HeroSection = () => {
   return (
@@ -46,9 +47,9 @@ export const HeroSection = () => {
                 variant="outline"
                 className="text-sm font-medium w-[190px] sm:w-auto px-3 py-2"
               >
-                <Link href="https://cal.com/carl-michael/shopify-support-pro">
-                  Book a Free Consultation
-                </Link>
+                <span className="cursor-pointer">
+                  <CalCom btnTitle="Book a Free Consultation" />
+                </span>
               </Button>
             </div>
 

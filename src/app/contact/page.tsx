@@ -1,11 +1,11 @@
 import Link from "next/link";
 import {
   Mail,
-  Phone,
+  // Phone,
   MapPin,
   Clock,
   ArrowRight,
-  MessageSquare,
+  // MessageSquare,
   Calendar,
   Linkedin,
   Facebook,
@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/accordion";
 import { NavHeaderMenus } from "../components/NavHeaderMenus";
 import { FooterMenus } from "../components/FooterMenus";
+import CalCom from "../components/CalCom";
 
 export default function ContactPage() {
   return (
@@ -179,7 +180,7 @@ export default function ContactPage() {
                     </CardContent>
                   </Card>
 
-                  <Card>
+                  {/* <Card>
                     <CardHeader className="flex flex-row items-center gap-4 pb-2">
                       <Phone className="h-6 w-6 text-emerald-600" />
                       <CardTitle>Call Us</CardTitle>
@@ -215,7 +216,7 @@ export default function ContactPage() {
                         Start Chat
                       </Button>
                     </CardContent>
-                  </Card>
+                  </Card> */}
 
                   <Card>
                     <CardHeader className="flex flex-row items-center gap-4 pb-2">
@@ -230,9 +231,9 @@ export default function ContactPage() {
                         Discuss your project with our experts
                       </CardDescription>
                       <Button className="mt-2 bg-emerald-600 hover:bg-emerald-700">
-                        <Link href="https://cal.com/carl-michael/shopify-support-pro">
-                          Book Appointment
-                        </Link>
+                        <a className="cursor-pointer">
+                          <CalCom btnTitle="Book Appointment" />
+                        </a>
                       </Button>
                     </CardContent>
                   </Card>
@@ -286,12 +287,8 @@ export default function ContactPage() {
                   <div className="flex items-start gap-4 mb-4">
                     <MapPin className="h-6 w-6 text-emerald-600 mt-1" />
                     <div>
-                      <h3 className="font-semibold text-lg">
-                        Shopify Support Pro Headquarters
-                      </h3>
+                      <h3 className="font-semibold text-lg">Main Office</h3>
                       <p className="text-muted-foreground">
-                        18th Tupas St.
-                        <br />
                         Poblacion 1, Charmaine Village
                         <br />
                         Negros Occidental, Sagay City 6122
@@ -308,10 +305,6 @@ export default function ContactPage() {
                         Monday - Friday: 9:00 AM - 5:00 PM EST
                         <br />
                         Saturday - Sunday: Closed
-                      </p>
-                      <p className="text-sm text-muted-foreground mt-2">
-                        Our online support team is available 24/7 for urgent
-                        matters.
                       </p>
                     </div>
                   </div>
@@ -481,10 +474,10 @@ export default function ContactPage() {
                   size="lg"
                   className="bg-white text-emerald-900 hover:bg-emerald-100"
                 >
-                  <Link href="https://cal.com/carl-michael/shopify-support-pro">
-                    Schedule a Free Consultation{" "}
+                  <a className="cursor-pointer">
+                    <CalCom btnTitle="Schedule a Free Consultation " />
                     <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
+                  </a>
                 </Button>
                 <Button
                   asChild

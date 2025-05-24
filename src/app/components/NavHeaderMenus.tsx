@@ -7,6 +7,8 @@ import { Menu, X, ShoppingBag, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LoginModal } from "./LoginModal";
 
+import CalCom from "./CalCom";
+
 export const NavHeaderMenus = () => {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -64,10 +66,11 @@ export const NavHeaderMenus = () => {
         {/* Call-to-action buttons */}
         <div className="hidden md:flex items-center gap-2">
           <Button asChild variant="outline" size="sm">
-            <Link href="https://cal.com/carl-michael/shopify-support-pro">
-              Book a Call
-            </Link>
+            <span className="cursor-pointer">
+              <CalCom btnTitle="Book a Call" />
+            </span>
           </Button>
+
           <Button
             onClick={() => setLoginOpen(true)}
             size="sm"

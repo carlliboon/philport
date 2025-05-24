@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import CalCom from "./CalCom";
 
 interface GetStartedProps {
   title: string;
@@ -40,11 +41,10 @@ export const GetStarted: React.FC<GetStartedProps> = ({
           asChild
           className="bg-emerald-600 hover:bg-emerald-700 text-sm font-medium px-4 py-2 flex-1 max-w-[200px]"
         >
-          <Link href="https://cal.com/carl-michael/shopify-support-pro">
-            {scheduleBtnText}
-          </Link>
+          <span className="cursor-pointer">
+            <CalCom btnTitle={scheduleBtnText} />
+          </span>
         </Button>
-
         {hasViewOurServices && (
           <Button
             asChild

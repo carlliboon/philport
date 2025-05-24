@@ -20,6 +20,10 @@ import { NavHeaderMenus } from "../components/NavHeaderMenus";
 import { FooterMenus } from "../components/FooterMenus";
 import { services } from "../../util/services";
 import { Title } from "../components/Title";
+import CalCom from "../components/CalCom";
+import Image from "next/image";
+
+import teamMeeting from "@/images/team-meeting.jpg";
 
 export default function AboutPage() {
   return (
@@ -58,7 +62,9 @@ export default function AboutPage() {
                       </Link>
                     </Button>
                     <Button asChild variant="outline" size="lg">
-                      <Link href="#contact">Contact Us</Link>
+                      <a className="cursor-pointer">
+                        <CalCom btnTitle="Contact Us" />
+                      </a>
                     </Button>
                   </div>
                   <div className="flex items-center pt-4 space-x-4">
@@ -84,12 +90,11 @@ export default function AboutPage() {
                 </div>
                 <div className="relative">
                   <div className="relative h-[400px] w-full overflow-hidden rounded-xl">
-                    <picture>
-                      <img
-                        src="https://i.postimg.cc/WpykK47v/team-meeting.jpg"
-                        alt="Team Meeting"
-                      />
-                    </picture>
+                    <Image
+                      src={teamMeeting}
+                      alt="Team Meeting"
+                      className="object-cover rounded-xl"
+                    />
                   </div>
                   <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-lg shadow-lg">
                     <div className="flex items-center gap-2">
