@@ -355,7 +355,7 @@ export default function DashboardClient() {
             </a>
           </Button>
           <Button variant="ghost" className="justify-start" asChild>
-            <a href="#" className="flex items-container"poser staff;
+            <a href="#" className="flex items-center">
               <Settings className="mr-2 h-4 w-4" />
               Settings
             </a>
@@ -387,4 +387,4 @@ export default function DashboardClient() {
       <Toaster />
     </div>
   );
-} 
+}
