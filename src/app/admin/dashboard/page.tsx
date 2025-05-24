@@ -308,7 +308,12 @@ export default function AdminDashboard() {
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-  if (localStorage.getItem("authToken") !== null) {
+  // Guard against accessing localStorage during server-side build/prerender
+  const isBrowser = typeof window !== "undefined";
+  const isAuthenticated =
+    isBrowser && localStorage.getItem("authToken") !== null;
+
+  if (isAuthenticated) {
     return (
       <div className="flex min-h-screen bg-gray-50">
         {/* Sidebar */}
@@ -708,4 +713,7 @@ export default function AdminDashboard() {
       </div>
     );
   }
+
+  // For the initial server-side render or when not authenticated, render nothing
+  return null;
 }
