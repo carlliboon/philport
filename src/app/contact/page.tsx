@@ -124,11 +124,25 @@ export default function ContactPage() {
                       id="subject"
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                     >
-                      <option value="">Select a subject</option>
-                      <option value="shopify-support">Shopify Support</option>
-                      <option value="customer-service">Customer Service</option>
-                      <option value="creative-design">Creative & Design</option>
-                      <option value="general-inquiry">General Inquiry</option>
+                      <option value="shopify-app-support">
+                        Shopify App Support
+                      </option>
+                      <option value="admin-customer-support">
+                        Admin & Customer Support
+                      </option>
+                      <option value="virtual-assistance">
+                        Virtual Assistance
+                      </option>
+                      <option value="product-page-customization">
+                        Product Page Customization
+                      </option>
+                      <option value="creative-digital-media">
+                        Creative & Digital Media (Graphic Design, Social Media,
+                        Video Editing)
+                      </option>
+                      <option value="general-inquiry">
+                        Not Sure / General Inquiry
+                      </option>
                     </select>
                   </div>
                   <div className="space-y-2">
