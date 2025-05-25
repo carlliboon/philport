@@ -101,6 +101,14 @@ interface Review {
   createdAt?: Timestamp;
 }
 
+interface Customer {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  createdAt: Timestamp;
+}
+
 const reviewSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters" }),
   rating: z.string().refine(
@@ -117,15 +125,20 @@ const reviewSchema = z.object({
 
 export default function DashboardClient() {
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingReview, setEditingReview] = useState<Review | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [activeTab, setActiveTab] = useState<"reviews" | "customers">(
+    "reviews"
+  );
   const router = useRouter();
   const reviewsPerPage = 5;
 
   const reviewsRef = collection(db, "reviews");
+  const customersRef = collection(db, "customers");
 
   const form = useForm<z.infer<typeof reviewSchema>>({
     resolver: zodResolver(reviewSchema),
@@ -167,6 +180,35 @@ export default function DashboardClient() {
       toast(
         <div>
           <strong>Error:</strong> Failed to load reviews
+        </div>
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch Customers
+  const fetchCustomers = async () => {
+    setLoading(true);
+    try {
+      const q = query(customersRef, orderBy("createdAt", "desc"));
+      const querySnapshot = await getDocs(q);
+      const fetchedCustomers = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Customer[];
+      setCustomers(fetchedCustomers);
+      toast(
+        <div>
+          <strong>Customers loaded:</strong> Successfully loaded{" "}
+          {fetchedCustomers.length} customers
+        </div>
+      );
+    } catch (error) {
+      console.error("Error fetching customers:", error);
+      toast(
+        <div>
+          <strong>Error:</strong> Failed to load customers
         </div>
       );
     } finally {
@@ -301,8 +343,12 @@ export default function DashboardClient() {
   }, []);
 
   useEffect(() => {
-    fetchReviews();
-  }, []);
+    if (activeTab === "reviews") {
+      fetchReviews();
+    } else {
+      fetchCustomers();
+    }
+  }, [activeTab]);
 
   // Pagination
   const indexOfLastReview = currentPage * reviewsPerPage;
@@ -340,19 +386,19 @@ export default function DashboardClient() {
           </Button>
           <Button
             variant="ghost"
-            className="justify-start bg-emerald-50 text-emerald-700"
-            asChild
+            className={`justify-start ${activeTab === "reviews" ? "bg-emerald-50 text-emerald-700" : ""}`}
+            onClick={() => setActiveTab("reviews")}
           >
-            <a href="/admin/dashboard" className="flex items-center">
-              <Star className="mr-2 h-4 w-4" />
-              Reviews
-            </a>
+            <Star className="mr-2 h-4 w-4" />
+            Reviews
           </Button>
-          <Button variant="ghost" className="justify-start" asChild>
-            <a href="#" className="flex items-center">
-              <Users className="mr-2 h-4 w-4" />
-              Customers
-            </a>
+          <Button
+            variant="ghost"
+            className={`justify-start ${activeTab === "customers" ? "bg-emerald-50 text-emerald-700" : ""}`}
+            onClick={() => setActiveTab("customers")}
+          >
+            <Users className="mr-2 h-4 w-4" />
+            Customers
           </Button>
           <Button variant="ghost" className="justify-start" asChild>
             <a href="#" className="flex items-center">
@@ -364,25 +410,338 @@ export default function DashboardClient() {
             variant="ghost"
             className="justify-start w-full"
             onClick={handleLogout}
-            asChild
           >
-            <span className="flex items-center">
-              <LogOutIcon className="mr-2 h-4 w-4" />
-              <a
-                href="#"
-                className="flex items-center text-red-500 hover:text-red-600 hover:bg-red-50"
-              >
-                Logout
-              </a>
-            </span>
+            <LogOutIcon className="mr-2 h-4 w-4" />
+            <span className="text-red-500 hover:text-red-600">Logout</span>
           </Button>
         </div>
       </div>
 
       {/* Main Content */}
-      {/* The rest of the original JSX remains unchanged */}
+      <div className="flex-1 p-8">
+        <div className="max-w-7xl mx-auto">
+          {activeTab === "reviews" ? (
+            <>
+              <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold">Reviews</h1>
+                <Dialog
+                  open={isAddDialogOpen}
+                  onOpenChange={setIsAddDialogOpen}
+                >
+                  <DialogTrigger asChild>
+                    <Button>
+                      <Plus className="mr-2 h-4 w-4" />
+                      Add Review
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Add New Review</DialogTitle>
+                      <DialogDescription>
+                        Add a new review to the system.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <Form {...form}>
+                      <form
+                        onSubmit={form.handleSubmit(addReview)}
+                        className="space-y-4"
+                      >
+                        <FormField
+                          control={form.control}
+                          name="name"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Name</FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="rating"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Rating</FormLabel>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select rating" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {[1, 2, 3, 4, 5].map((rating) => (
+                                    <SelectItem
+                                      key={rating}
+                                      value={rating.toString()}
+                                    >
+                                      {rating} Stars
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="review"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Review</FormLabel>
+                              <FormControl>
+                                <Textarea {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <DialogFooter>
+                          <Button type="submit">Add Review</Button>
+                        </DialogFooter>
+                      </form>
+                    </Form>
+                  </DialogContent>
+                </Dialog>
+              </div>
 
-      {/* ... The remainder of your long JSX content (header, table, dialogs, etc.) ... */}
+              <Card>
+                <CardContent className="p-0">
+                  <div className="relative overflow-x-auto">
+                    <table className="w-full text-sm text-left">
+                      <thead className="text-xs uppercase bg-gray-50">
+                        <tr>
+                          <th className="px-6 py-3">Name</th>
+                          <th className="px-6 py-3">Rating</th>
+                          <th className="px-6 py-3">Review</th>
+                          <th className="px-6 py-3">Date</th>
+                          <th className="px-6 py-3">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {currentReviews.map((review) => (
+                          <tr key={review.id} className="bg-white border-b">
+                            <td className="px-6 py-4">{review.name}</td>
+                            <td className="px-6 py-4">
+                              <div className="flex items-center">
+                                {[...Array(review.rating)].map((_, i) => (
+                                  <Star
+                                    key={i}
+                                    className="h-4 w-4 text-yellow-400 fill-yellow-400"
+                                  />
+                                ))}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4">{review.review}</td>
+                            <td className="px-6 py-4">
+                              {review.createdAt?.toDate().toLocaleDateString()}
+                            </td>
+                            <td className="px-6 py-4">
+                              <div className="flex space-x-2">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => handleEditReview(review)}
+                                >
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <Button variant="ghost" size="icon">
+                                      <Trash className="h-4 w-4 text-red-500" />
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>
+                                        Delete Review
+                                      </AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        Are you sure you want to delete this
+                                        review? This action cannot be undone.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>
+                                        Cancel
+                                      </AlertDialogCancel>
+                                      <AlertDialogAction
+                                        onClick={() =>
+                                          deleteReview(review.id.toString())
+                                        }
+                                      >
+                                        Delete
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+                <CardFooter className="flex justify-center py-4">
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious
+                          onClick={() => paginate(currentPage - 1)}
+                          className={
+                            currentPage === 1
+                              ? "pointer-events-none opacity-50"
+                              : ""
+                          }
+                        />
+                      </PaginationItem>
+                      {[...Array(totalPages)].map((_, index) => (
+                        <PaginationItem key={index + 1}>
+                          <PaginationLink
+                            onClick={() => paginate(index + 1)}
+                            isActive={currentPage === index + 1}
+                          >
+                            {index + 1}
+                          </PaginationLink>
+                        </PaginationItem>
+                      ))}
+                      <PaginationItem>
+                        <PaginationNext
+                          onClick={() => paginate(currentPage + 1)}
+                          className={
+                            currentPage === totalPages
+                              ? "pointer-events-none opacity-50"
+                              : ""
+                          }
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </CardFooter>
+              </Card>
+            </>
+          ) : (
+            <>
+              <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold">Customers</h1>
+              </div>
+
+              <Card>
+                <CardContent className="p-0">
+                  <div className="relative overflow-x-auto">
+                    <table className="w-full text-sm text-left">
+                      <thead className="text-xs uppercase bg-gray-50">
+                        <tr>
+                          <th className="px-6 py-3">Name</th>
+                          <th className="px-6 py-3">Email</th>
+                          <th className="px-6 py-3">Phone</th>
+                          <th className="px-6 py-3">Joined Date</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {customers.map((customer) => (
+                          <tr key={customer.id} className="bg-white border-b">
+                            <td className="px-6 py-4">{customer.name}</td>
+                            <td className="px-6 py-4">{customer.email}</td>
+                            <td className="px-6 py-4">
+                              {customer.phone || "N/A"}
+                            </td>
+                            <td className="px-6 py-4">
+                              {customer.createdAt.toDate().toLocaleDateString()}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              </Card>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Edit Review Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Review</DialogTitle>
+            <DialogDescription>
+              Edit the review details below.
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...editForm}>
+            <form
+              onSubmit={editForm.handleSubmit(submitEditReview)}
+              className="space-y-4"
+            >
+              <FormField
+                control={editForm.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={editForm.control}
+                name="rating"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Rating</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select rating" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {[1, 2, 3, 4, 5].map((rating) => (
+                          <SelectItem key={rating} value={rating.toString()}>
+                            {rating} Stars
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={editForm.control}
+                name="review"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Review</FormLabel>
+                    <FormControl>
+                      <Textarea {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <DialogFooter>
+                <Button type="submit">Save Changes</Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
 
       <Toaster />
     </div>

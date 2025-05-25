@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Menu, X, ShoppingBag, User } from "lucide-react";
+import { Menu, X, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LoginModal } from "@/components/forms";
 import { CalCom } from "@/components/common";
+import Image from "next/image";
+import sspLogo from "@/assets/images/general/ssp-logo.png";
 
 export const NavHeaderMenus = () => {
   const pathname = usePathname();
@@ -26,10 +28,12 @@ export const NavHeaderMenus = () => {
       <div className="container flex h-16 items-center justify-between max-w-screen-xl mx-auto px-4">
         <div className="flex items-center gap-2 text-lg font-semibold">
           <Link href="/" className="flex items-center gap-2">
-            <ShoppingBag className="h-5 w-5 text-emerald-700" />
-            <span className="text-emerald-700 font-bold">
-              ShopifySupportPro
-            </span>
+            <Image
+              src={sspLogo}
+              alt="Shopify Support Pro Logo"
+              width={150}
+              height={150}
+            />
           </Link>
         </div>
 
@@ -39,9 +43,9 @@ export const NavHeaderMenus = () => {
             <Link
               key={label}
               href={href}
-              className={`text-sm font-medium transition-colors ${
+              className={`text-md font-semibold transition-colors ${
                 pathname === href
-                  ? "text-emerald-600"
+                  ? "text-emerald-800"
                   : "hover:text-emerald-600"
               }`}
             >
@@ -71,9 +75,9 @@ export const NavHeaderMenus = () => {
           </Button>
 
           <Button
-            onClick={() => setLoginOpen(true)}
             size="sm"
-            className="bg-emerald-600 hover:bg-emerald-700"
+            className="w-1/2 bg-emerald-600 hover:bg-emerald-700"
+            onClick={() => setLoginOpen(true)}
           >
             <User className="mr-1 h-4 w-4" /> Login
           </Button>
@@ -90,9 +94,9 @@ export const NavHeaderMenus = () => {
                 key={label}
                 href={href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`text-sm font-medium py-2 px-2 rounded ${
+                className={`text-md font-semibold py-2 px-2 rounded ${
                   pathname === href
-                    ? "text-emerald-600 bg-emerald-50"
+                    ? "text-emerald-800 bg-emerald-50"
                     : "hover:text-emerald-600"
                 }`}
               >
@@ -102,18 +106,25 @@ export const NavHeaderMenus = () => {
 
             {/* Two-button row */}
             <div className="flex gap-2">
+              {/* <Button asChild variant="outline" size="sm" className="w-1/2"> */}
+              {/* <span className="cursor-pointer w-1/2">
+                <CalCom btnTitle="Book a Call" />
+              </span> */}
+              {/* </Button> */}
+
               <Button asChild variant="outline" size="sm" className="w-1/2">
-                <Link href="https://cal.com/carl-michael/shopify-support-pro">
-                  Book a Call
-                </Link>
+                <span className="cursor-pointer">
+                  <CalCom btnTitle="Book a Call" />
+                </span>
               </Button>
               <Button
-                asChild
                 size="sm"
                 className="w-1/2 bg-emerald-600 hover:bg-emerald-700"
+                onClick={() => setLoginOpen(true)}
               >
-                <Link href="#">Get Started</Link>
+                <User className="mr-1 h-4 w-4" /> Login
               </Button>
+              <LoginModal open={loginOpen} onOpenChange={setLoginOpen} />
             </div>
           </div>
         </div>
