@@ -3,14 +3,6 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  signInWithEmailAndPassword,
-  setPersistence,
-  browserLocalPersistence,
-  browserSessionPersistence,
-} from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -25,7 +17,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
-import { auth as fbAuth } from "@/lib/firebase";
+// import { signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from "firebase/auth";
+// import { auth } from "@/lib/firebase";
 
 export function LoginModal({
   open,
@@ -57,58 +50,69 @@ export function LoginModal({
     }
   }, []);
 
-  // const handleLogin = async () => {
-  //   setLoading(true);
-  //   const auth = fbAuth;
-  //   if (!auth) {
-  //     toast("Login currently unavailable. Database not configured.");
-  //     setLoading(false);
-  //     return;
-  //   }
+  const handleLogin = async () => {
+    setLoading(true);
+    setLoginStatus("default");
 
-  //   try {
-  //     await setPersistence(
-  //       auth,
-  //       rememberMe ? browserLocalPersistence : browserSessionPersistence
-  //     );
+    try {
+      // Handle remember me functionality
+      if (rememberMe) {
+        localStorage.setItem("rememberedEmail", email);
+        localStorage.setItem("rememberedPassword", password);
+        localStorage.setItem("rememberMe", "true");
+      } else {
+        localStorage.removeItem("rememberedEmail");
+        localStorage.removeItem("rememberedPassword");
+        localStorage.removeItem("rememberMe");
+      }
 
-  //     if (rememberMe) {
-  //       localStorage.setItem("rememberedEmail", email);
-  //       localStorage.setItem("rememberedPassword", password);
-  //       localStorage.setItem("rememberMe", "true");
-  //     } else {
-  //       localStorage.removeItem("rememberedEmail");
-  //       localStorage.removeItem("rememberedPassword");
-  //       localStorage.removeItem("rememberMe");
-  //     }
+      // TODO: Implement Firebase authentication
+      // await setPersistence(auth, browserLocalPersistence);
+      // const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      // const user = userCredential.user;
 
-  //     const userCredential = await signInWithEmailAndPassword(
-  //       auth,
-  //       email,
-  //       password
-  //     );
-  //     const uid = userCredential.user.uid;
+      // For now, just simulate login
+      console.log("Login attempt with:", { email, password });
 
-  //     const docRef = doc(db, "users", uid);
-  //     const roleDoc = await getDoc(docRef);
-  //     const role = roleDoc.exists() ? roleDoc.data().role : "user";
+      // Simulate API call delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-  //     if (role === "admin" || role === "user") {
-  //       setLoginStatus("success");
-  //       localStorage.setItem("authToken", uid);
-  //       router.push("/admin/dashboard");
-  //     } else {
-  //       setLoginStatus("error");
-  //       toast("Access denied. You are not an admin.");
-  //     }
-  //   } catch (error) {
-  //     setLoginStatus("error");
-  //     console.log("Login status:", loginStatus);
-  //     console.error(error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+      // TODO: Replace with actual authentication logic
+      if (email === "admin@example.com" && password === "password") {
+        setLoginStatus("success");
+        toast.success("Login successful!");
+        onOpenChange(false); // Close the modal
+        router.push("/admin/dashboard");
+      } else {
+        setLoginStatus("error");
+        toast.error("Invalid email or password.");
+      }
+    } catch (error: unknown) {
+      setLoginStatus("error");
+      console.error("Login error:", error);
+
+      // Handle Firebase auth errors
+      if (error instanceof Error) {
+        if (
+          error.message.includes("auth/user-not-found") ||
+          error.message.includes("auth/wrong-password") ||
+          error.message.includes("auth/invalid-credential")
+        ) {
+          toast.error("Invalid email or password.");
+        } else if (error.message.includes("auth/too-many-requests")) {
+          toast.error("Too many failed attempts. Please try again later.");
+        } else if (error.message.includes("auth/user-disabled")) {
+          toast.error("This account has been disabled.");
+        } else {
+          toast.error("Login failed. Please try again.");
+        }
+      } else {
+        toast.error("Login failed. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
@@ -211,9 +215,7 @@ export function LoginModal({
 
             <CardFooter className="flex flex-col space-y-4">
               <Button
-                onClick={() => {
-                  console.log("Login button clicked");
-                }}
+                onClick={handleLogin}
                 disabled={loading || email === "" || password === ""}
                 className="w-full bg-emerald-600 hover:bg-emerald-700"
               >

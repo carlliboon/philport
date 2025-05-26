@@ -55,7 +55,40 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Email failed" }, { status: 500 });
     }
 
-    // TODO: Persist contact data to MySQL (phpMyAdmin) here if required.
+    // Save to Java backend database
+    try {
+      const backendResponse = await fetch(
+        "http://localhost:8080/api/contacts",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            firstName,
+            lastName,
+            email,
+            phone: phone || null,
+            shopifyUrl: shopifyUrl || null,
+            subject: subject || null,
+            message,
+          }),
+        }
+      );
+
+      if (!backendResponse.ok) {
+        console.error(
+          "Failed to save to backend:",
+          await backendResponse.text()
+        );
+        // Continue anyway - email was sent successfully
+      } else {
+        console.log("Contact saved to backend successfully");
+      }
+    } catch (backendErr) {
+      console.error("Backend save failed:", backendErr);
+      // Continue anyway - email was sent successfully
+    }
 
     return NextResponse.json({ success: true });
   } catch (err) {
