@@ -747,3 +747,5 @@ export default function DashboardClient() {
     </div>
   );
 }
+
+export const dynamic = "force-dynamic";
