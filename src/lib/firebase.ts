@@ -14,10 +14,16 @@ const firebaseConfig = {
   databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
 };
 
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+let db: ReturnType<typeof getFirestore> | null = null;
+let auth: ReturnType<typeof getAuth> | null = null;
+let rtdb: ReturnType<typeof getDatabase> | null = null;
 
-const db = getFirestore(app);
-const auth = getAuth(app);
-const rtdb = getDatabase(app);
+// Only initialize in the browser and when a valid API key exists
+if (typeof window !== "undefined" && firebaseConfig.apiKey) {
+  const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+  db = getFirestore(app);
+  auth = getAuth(app);
+  rtdb = getDatabase(app);
+}
 
 export { db, auth, rtdb };
