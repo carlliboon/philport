@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   signInWithEmailAndPassword,
-  getAuth,
   setPersistence,
   browserLocalPersistence,
   browserSessionPersistence,
@@ -26,6 +25,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
+import { auth as fbAuth } from "@/lib/firebase";
 
 export function LoginModal({
   open,
@@ -59,7 +59,12 @@ export function LoginModal({
 
   const handleLogin = async () => {
     setLoading(true);
-    const auth = getAuth();
+    const auth = fbAuth;
+    if (!auth) {
+      toast("Login currently unavailable. Database not configured.");
+      setLoading(false);
+      return;
+    }
 
     try {
       await setPersistence(
@@ -220,7 +225,7 @@ export function LoginModal({
                 )}
               </Button>
               <div className="text-center text-sm">
-                Don’t have an account?{" "}
+                Don't have an account?{" "}
                 <Link
                   href="/signup"
                   className="text-emerald-600 hover:text-emerald-700 font-medium"

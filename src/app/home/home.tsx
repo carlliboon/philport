@@ -62,20 +62,20 @@ export default function HomePage() {
 
   useEffect(() => {
     const authenticateAndFetch = async () => {
+      if (!auth || !db) return; // Skip if Firebase not ready
       setLoading(true);
       try {
         await signInAnonymously(auth);
         const reviewsCollection = collection(db, "reviews");
         const querySnapshot = await getDocs(reviewsCollection);
 
-        // Map the data to the `Review` type
         const reviewsData: Review[] = querySnapshot.docs.map((doc) => {
           const data = doc.data();
           return {
             id: Number(data.id),
-            name: data.name ?? "Unknown", // Default value if missing
-            rating: data.rating ?? 0, // Default value if missing
-            review: data.review ?? "No review provided", // Default value if missing
+            name: data.name ?? "Unknown",
+            rating: data.rating ?? 0,
+            review: data.review ?? "No review provided",
           };
         });
 
@@ -87,7 +87,7 @@ export default function HomePage() {
       }
     };
 
-    authenticateAndFetch();
+    if (auth && db) authenticateAndFetch();
   }, []);
 
   return (

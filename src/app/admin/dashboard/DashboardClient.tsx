@@ -6,7 +6,8 @@
 
 import { useEffect, useState } from "react";
 import { db } from "@/lib/firebase";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { auth as fbAuth } from "@/lib/firebase";
+import { onAuthStateChanged, signOut, getAuth } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import {
   collection,
@@ -305,9 +306,9 @@ export default function DashboardClient() {
   };
 
   const handleLogout = async () => {
-    const auth = getAuth();
+    const authInstance = fbAuth ?? getAuth();
     try {
-      await signOut(auth);
+      await signOut(authInstance);
       localStorage.removeItem("authToken");
       router.push("/");
     } catch (error) {
@@ -317,8 +318,8 @@ export default function DashboardClient() {
   };
 
   useEffect(() => {
-    const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    const authInstance2 = fbAuth ?? getAuth();
+    const unsubscribe = onAuthStateChanged(authInstance2, async (user) => {
       if (!user) {
         router.push("/");
       } else {
@@ -365,6 +366,16 @@ export default function DashboardClient() {
 
   if (!isAuthenticated) {
     return null;
+  }
+
+  if (!db) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-muted-foreground">
+          Dashboard unavailable. Database not configured.
+        </p>
+      </div>
+    );
   }
 
   return (
