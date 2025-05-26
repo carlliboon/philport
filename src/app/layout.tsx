@@ -23,6 +23,8 @@ export const metadata: Metadata = {
     "Shopify Support Pro offers expert assistance for your Shopify store, ensuring smooth operations and enhanced performance.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default function RootLayout({
   children,
 }: Readonly<{
