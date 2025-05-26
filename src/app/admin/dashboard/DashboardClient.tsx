@@ -137,8 +137,8 @@ export default function DashboardClient() {
   const router = useRouter();
   const reviewsPerPage = 5;
 
-  const reviewsRef = collection(db, "reviews");
-  const customersRef = collection(db, "customers");
+  const reviewsRef = collection(db!, "reviews");
+  const customersRef = collection(db!, "customers");
 
   const form = useForm<z.infer<typeof reviewSchema>>({
     resolver: zodResolver(reviewSchema),
@@ -249,7 +249,7 @@ export default function DashboardClient() {
   // Delete Review
   const deleteReview = async (id: string) => {
     try {
-      await deleteDoc(doc(db, "reviews", id));
+      await deleteDoc(doc(db!, "reviews", id));
       fetchReviews();
       toast(
         <div>
@@ -280,7 +280,7 @@ export default function DashboardClient() {
     if (!editingReview) return;
 
     try {
-      await updateDoc(doc(db, "reviews", editingReview.id.toString()), {
+      await updateDoc(doc(db!, "reviews", editingReview.id.toString()), {
         name: data.name,
         rating: Number.parseInt(data.rating),
         review: data.review,
@@ -322,7 +322,7 @@ export default function DashboardClient() {
       if (!user) {
         router.push("/");
       } else {
-        const roleDoc = await getDoc(doc(db, "users", user.uid));
+        const roleDoc = await getDoc(doc(db!, "users", user.uid));
         const role = roleDoc.exists() ? roleDoc.data().role : "user";
 
         if (role !== "admin" && role !== "user") {
