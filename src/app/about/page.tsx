@@ -25,6 +25,8 @@ import Image from "next/image";
 
 import teamMeeting from "@/assets/images/general/team-meeting.jpg";
 
+export const dynamic = "force-dynamic";
+
 export default function AboutPage() {
   return (
     <>
