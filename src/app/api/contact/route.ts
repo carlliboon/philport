@@ -4,9 +4,8 @@ import { Resend } from "resend";
 
 // Firebase has been removed; replace with your own DB logic if needed.
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(req: NextRequest) {
+  const resend = new Resend(process.env.RESEND_API_KEY);
   try {
     const body = await req.json();
     console.log("Received body:", body);
