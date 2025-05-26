@@ -2,9 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
-import { db } from "../../../lib/firebase";
-
-import { collection, setDoc, doc, serverTimestamp } from "firebase/firestore";
+// Firebase has been removed; replace with your own DB logic if needed.
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -58,55 +56,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Email failed" }, { status: 500 });
     }
 
-    // Firestore log
-    try {
-      const contactsRef = collection(db, "contacts");
-      const newDocRef = doc(contactsRef);
-      const newId = newDocRef.id;
-
-      const contactData: {
-        id: string;
-        firstName: string;
-        lastName: string;
-        email: string;
-        message: string;
-        createdAt: ReturnType<typeof serverTimestamp>;
-        shopifyUrl?: string;
-        subject?: string;
-        phone?: string;
-      } = {
-        id: newId,
-        firstName,
-        lastName,
-        email,
-        message,
-        createdAt: serverTimestamp(),
-      };
-
-      // Add optional fields if they exist
-      if (shopifyUrl) contactData.shopifyUrl = shopifyUrl;
-      if (subject) contactData.subject = subject;
-      if (phone) contactData.phone = phone;
-
-      await setDoc(newDocRef, contactData);
-    } catch (firestoreErr: unknown) {
-      console.error(
-        "🔥 Firestore write failed:",
-        JSON.stringify(firestoreErr, null, 2)
-      );
-      return NextResponse.json(
-        {
-          error: "Database write failed",
-          details:
-            typeof firestoreErr === "object" &&
-            firestoreErr !== null &&
-            "message" in firestoreErr
-              ? (firestoreErr as { message?: string }).message
-              : String(firestoreErr),
-        },
-        { status: 500 }
-      );
-    }
+    // TODO: Persist contact data to MySQL (phpMyAdmin) here if required.
 
     return NextResponse.json({ success: true });
   } catch (err) {

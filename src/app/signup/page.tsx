@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingBag, CheckCircle2, Upload } from "lucide-react";
+import { ShoppingBag, CheckCircle2, Upload, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,7 +32,12 @@ export default function CareerApplicationPage() {
   const resumeInputRef = useRef<HTMLInputElement>(null);
   const [resumeFileName, setResumeFileName] = useState("");
   const [isDragging, setIsDragging] = useState(false);
+  const [selectedSkill, setSelectedSkill] = useState<string[]>([]);
   const phoneInputRef = useRef(null);
+
+  const handleOnRemoveSkillBadge = (skill: string) => {
+    setSelectedSkill((prev) => prev.filter((s) => s !== skill));
+  };
 
   type ExtendedOptions = Parameters<typeof intlTelInput>[1] & {
     utilsScript?: string;
@@ -144,7 +149,7 @@ export default function CareerApplicationPage() {
                       <h3 className="text-lg font-medium">
                         Personal Information
                       </h3>
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-2 gap-2">
                         <div className="space-y-2">
                           <Label htmlFor="first-name">First name</Label>
                           <Input
@@ -162,14 +167,28 @@ export default function CareerApplicationPage() {
                           />
                         </div>
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="first-name">Phone #</Label>
-                        <input
-                          type="tel"
-                          id="phone-number"
-                          ref={phoneInputRef}
-                          className="w-full rounded-md border border-emerald-200 px-3 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600"
-                        />
+                      <div className="flex gap-2 items-center">
+                        <div className="space-y-2 w-1/2">
+                          <Label htmlFor="first-name">Phone #</Label>
+                          <input
+                            type="tel"
+                            id="phone-number"
+                            ref={phoneInputRef}
+                            className="rounded-md border border-emerald-200 px-3 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 w-full"
+                          />
+                        </div>
+                        <div className="space-y-2 w-1/2">
+                          <Label htmlFor="gender">Gender</Label>
+                          <Select>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Gender" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="male">Male</SelectItem>
+                              <SelectItem value="female">Female</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="email">Email</Label>
@@ -181,11 +200,43 @@ export default function CareerApplicationPage() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="address">Street Address</Label>
+                        <Label htmlFor="street-address">Street Address</Label>
                         <Input
-                          id="address"
+                          id="street-address"
                           className="border-emerald-200 focus-visible:ring-emerald-600"
                         />
+                      </div>
+                      <div className="flex gap-2">
+                        <div className="space-y-2 w-full">
+                          <Label htmlFor="city">City</Label>
+                          <Input
+                            id="city"
+                            className="border-emerald-200 focus-visible:ring-emerald-600"
+                          />
+                        </div>
+                        <div className="space-y-2 w-full">
+                          <Label htmlFor="state">State</Label>
+                          <Input
+                            id="state"
+                            className="border-emerald-200 focus-visible:ring-emerald-600"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <div className="space-y-2 w-full">
+                          <Label htmlFor="country">Country</Label>
+                          <Input
+                            id="country"
+                            className="border-emerald-200 focus-visible:ring-emerald-600"
+                          />
+                        </div>
+                        <div className="space-y-2 ">
+                          <Label htmlFor="zip-code">Zip Code</Label>
+                          <Input
+                            id="zip-code"
+                            className="border-emerald-200 focus-visible:ring-emerald-600"
+                          />
+                        </div>
                       </div>
                     </div>
 
@@ -271,37 +322,57 @@ export default function CareerApplicationPage() {
                       </h3>
                       <div className="space-y-2">
                         <Label htmlFor="skills">Select Your Skills</Label>
-                        <Select>
+                        <Select
+                          onValueChange={(value) =>
+                            setSelectedSkill((prev) => [...prev, value])
+                          }
+                        >
                           <SelectTrigger className="border-emerald-200 focus:ring-emerald-600">
                             <SelectValue placeholder="Select your skills" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="customer-support">
+                            <SelectItem value="Customer Support">
                               Customer Support
                             </SelectItem>
-                            <SelectItem value="shopify-admin">
+                            <SelectItem value="Shopify Admin">
                               Shopify Admin
                             </SelectItem>
-                            <SelectItem value="shopify-theme">
+                            <SelectItem value="Shopify Theme Development">
                               Shopify Theme Development
                             </SelectItem>
-                            <SelectItem value="shopify-apps">
+                            <SelectItem value="Shopify App Development">
                               Shopify App Development
                             </SelectItem>
-                            <SelectItem value="graphic-design">
+                            <SelectItem value="Graphic Design">
                               Graphic Design
                             </SelectItem>
-                            <SelectItem value="content-writing">
+                            <SelectItem value="Content Writing">
                               Content Writing
                             </SelectItem>
-                            <SelectItem value="digital-marketing">
+                            <SelectItem value="Digital Marketing">
                               Digital Marketing
                             </SelectItem>
-                            <SelectItem value="project-management">
+                            <SelectItem value="Project Management">
                               Project Management
                             </SelectItem>
                           </SelectContent>
                         </Select>
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {selectedSkill.map((skill) => {
+                          return (
+                            <span
+                              key={skill}
+                              className="flex items-center align-baseline gap-1 text-xs border rounded-lg px-2 py-1"
+                            >
+                              {skill}
+                              <X
+                                className="w-3 h-3 cursor-pointer"
+                                onClick={() => handleOnRemoveSkillBadge(skill)}
+                              />
+                            </span>
+                          );
+                        })}
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="store-url">
