@@ -57,58 +57,58 @@ export function LoginModal({
     }
   }, []);
 
-  const handleLogin = async () => {
-    setLoading(true);
-    const auth = fbAuth;
-    if (!auth) {
-      toast("Login currently unavailable. Database not configured.");
-      setLoading(false);
-      return;
-    }
+  // const handleLogin = async () => {
+  //   setLoading(true);
+  //   const auth = fbAuth;
+  //   if (!auth) {
+  //     toast("Login currently unavailable. Database not configured.");
+  //     setLoading(false);
+  //     return;
+  //   }
 
-    try {
-      await setPersistence(
-        auth,
-        rememberMe ? browserLocalPersistence : browserSessionPersistence
-      );
+  //   try {
+  //     await setPersistence(
+  //       auth,
+  //       rememberMe ? browserLocalPersistence : browserSessionPersistence
+  //     );
 
-      if (rememberMe) {
-        localStorage.setItem("rememberedEmail", email);
-        localStorage.setItem("rememberedPassword", password);
-        localStorage.setItem("rememberMe", "true");
-      } else {
-        localStorage.removeItem("rememberedEmail");
-        localStorage.removeItem("rememberedPassword");
-        localStorage.removeItem("rememberMe");
-      }
+  //     if (rememberMe) {
+  //       localStorage.setItem("rememberedEmail", email);
+  //       localStorage.setItem("rememberedPassword", password);
+  //       localStorage.setItem("rememberMe", "true");
+  //     } else {
+  //       localStorage.removeItem("rememberedEmail");
+  //       localStorage.removeItem("rememberedPassword");
+  //       localStorage.removeItem("rememberMe");
+  //     }
 
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const uid = userCredential.user.uid;
+  //     const userCredential = await signInWithEmailAndPassword(
+  //       auth,
+  //       email,
+  //       password
+  //     );
+  //     const uid = userCredential.user.uid;
 
-      const docRef = doc(db, "users", uid);
-      const roleDoc = await getDoc(docRef);
-      const role = roleDoc.exists() ? roleDoc.data().role : "user";
+  //     const docRef = doc(db, "users", uid);
+  //     const roleDoc = await getDoc(docRef);
+  //     const role = roleDoc.exists() ? roleDoc.data().role : "user";
 
-      if (role === "admin" || role === "user") {
-        setLoginStatus("success");
-        localStorage.setItem("authToken", uid);
-        router.push("/admin/dashboard");
-      } else {
-        setLoginStatus("error");
-        toast("Access denied. You are not an admin.");
-      }
-    } catch (error) {
-      setLoginStatus("error");
-      console.log("Login status:", loginStatus);
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     if (role === "admin" || role === "user") {
+  //       setLoginStatus("success");
+  //       localStorage.setItem("authToken", uid);
+  //       router.push("/admin/dashboard");
+  //     } else {
+  //       setLoginStatus("error");
+  //       toast("Access denied. You are not an admin.");
+  //     }
+  //   } catch (error) {
+  //     setLoginStatus("error");
+  //     console.log("Login status:", loginStatus);
+  //     console.error(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
@@ -211,7 +211,9 @@ export function LoginModal({
 
             <CardFooter className="flex flex-col space-y-4">
               <Button
-                onClick={handleLogin}
+                onClick={() => {
+                  console.log("Login button clicked");
+                }}
                 disabled={loading || email === "" || password === ""}
                 className="w-full bg-emerald-600 hover:bg-emerald-700"
               >
@@ -225,7 +227,7 @@ export function LoginModal({
                 )}
               </Button>
               <div className="text-center text-sm">
-                Don't have an account?{" "}
+                Don&apos;t have an account?{" "}
                 <Link
                   href="/signup"
                   className="text-emerald-600 hover:text-emerald-700 font-medium"
