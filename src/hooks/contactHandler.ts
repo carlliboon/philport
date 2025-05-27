@@ -24,7 +24,9 @@ export const useContactForm = () => {
     setIsLoading(false);
   };
 
-  const submitContactForm = async (form: ContactFormFields) => {
+  const submitContactForm = async (
+    form: ContactFormFields & { skills?: string[] }
+  ) => {
     setIsLoading(true);
     setStatus(
       React.createElement(
@@ -51,6 +53,7 @@ export const useContactForm = () => {
             " Message sent!"
           )
         );
+
         setIsLoading(false);
         return true;
       } else {

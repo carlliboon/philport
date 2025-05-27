@@ -33,7 +33,7 @@ export const CallToAction = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const success = await submitContactForm(form);
+    const success = await submitContactForm({ ...form });
     if (success) {
       setForm({
         firstName: "",
@@ -129,14 +129,14 @@ export const CallToAction = () => {
 
                 <div className="space-y-2">
                   <label htmlFor="shopifyUrl" className="text-sm font-medium">
-                    Shopify Store URL
+                    Shopify Store URL{" "}
+                    <span className="text-gray-500 mb-2">(optional)</span>
                   </label>
                   <input
                     id="shopifyUrl"
                     name="shopifyUrl"
                     value={form.shopifyUrl}
                     onChange={handleChange}
-                    required
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                     placeholder="yourstore.myshopify.com"
                   />

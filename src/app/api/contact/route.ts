@@ -4,95 +4,43 @@ import { Resend } from "resend";
 
 // Firebase has been removed; replace with your own DB logic if needed.
 
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 export async function POST(req: NextRequest) {
-  const resend = new Resend(process.env.RESEND_API_KEY);
   try {
-    const body = await req.json();
-    console.log("Received body:", body);
+    const form = await req.json();
 
-    const { firstName, lastName, email, shopifyUrl, message, subject, phone } =
-      body;
+    const { error } = await resend.emails.send({
+      from: "Shopify Support Pro <onboarding@resend.dev>",
+      to: ["carlliboon12@gmail.com"],
+      subject: "New Contact Form Submission",
+      html: `
+        <h2>Contact Form Submission</h2>
+        <p><strong>Name:</strong> ${form.firstName} ${form.lastName}</p>
+        <p><strong>Email:</strong> ${form.email}</p>
+        <p><strong>Phone:</strong> ${form.phone || ""}</p>
+        <p><strong>Skills:</strong> ${Array.isArray(form.skills) ? form.skills.join(", ") : ""}</p>
+        <p><strong>Shopify URL:</strong> ${form.shopifyUrl || ""}</p>
+        
+        <p><strong>Message:</strong> ${form.message}</p>
+      `,
+    });
 
-    // Validate required fields
-    if (!firstName || !lastName || !email || !message) {
-      console.error("Missing required fields", {
-        firstName,
-        lastName,
-        email,
-        message,
-      });
+    if (error) {
       return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
+        { message: "Failed to send email.", error },
+        { status: 500 }
       );
     }
 
-    // Determine email subject
-    const emailSubject = subject
-      ? `New Contact: ${subject}`
-      : "New Contact Submission";
-
-    // Send email
-    try {
-      await resend.emails.send({
-        from: "Shopify Support Pro <support@shopifysupportpro.com>",
-        to: "carlliboon12@gmail.com",
-        subject: emailSubject,
-        html: `
-            <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-              <h2 style="color: #10b981;">${emailSubject}</h2>
-              <p><strong>Name:</strong> ${firstName} ${lastName}</p>
-              <p><strong>Email:</strong> ${email}</p>
-              ${phone ? `<p><strong>Phone:</strong> ${phone}</p>` : ""}
-              ${shopifyUrl ? `<p><strong>Store:</strong> ${shopifyUrl}</p>` : ""}
-              ${subject ? `<p><strong>Subject:</strong> ${subject}</p>` : ""}
-              <p><strong>Message:</strong><br/>${message}</p>
-            </div>
-          `,
-      });
-    } catch (emailErr) {
-      console.error("Email sending failed:", emailErr);
-      return NextResponse.json({ error: "Email failed" }, { status: 500 });
-    }
-
-    // Save to Java backend database
-    try {
-      const backendResponse = await fetch(
-        "http://localhost:8080/api/contacts",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            firstName,
-            lastName,
-            email,
-            phone: phone || null,
-            shopifyUrl: shopifyUrl || null,
-            subject: subject || null,
-            message,
-          }),
-        }
-      );
-
-      if (!backendResponse.ok) {
-        console.error(
-          "Failed to save to backend:",
-          await backendResponse.text()
-        );
-        // Continue anyway - email was sent successfully
-      } else {
-        console.log("Contact saved to backend successfully");
-      }
-    } catch (backendErr) {
-      console.error("Backend save failed:", backendErr);
-      // Continue anyway - email was sent successfully
-    }
-
-    return NextResponse.json({ success: true });
-  } catch (err) {
-    console.error("Unhandled server error:", err);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    return NextResponse.json({ message: "Message sent!" });
+  } catch (error: unknown) {
+    return NextResponse.json(
+      {
+        message: "Failed to send message.",
+        error: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 }
+    );
   }
 }

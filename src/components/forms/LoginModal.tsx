@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import { Eye, EyeOff, X, Loader2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -17,8 +16,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
-// import { signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from "firebase/auth";
-// import { auth } from "@/lib/firebase";
 
 export function LoginModal({
   open,
@@ -66,49 +63,33 @@ export function LoginModal({
         localStorage.removeItem("rememberMe");
       }
 
-      // TODO: Implement Firebase authentication
-      // await setPersistence(auth, browserLocalPersistence);
-      // const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      // const user = userCredential.user;
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-      // For now, just simulate login
-      console.log("Login attempt with:", { email, password });
+      if (!response.ok) {
+        throw new Error("Failed to login");
+      }
 
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const data = await response.json();
 
-      // TODO: Replace with actual authentication logic
-      if (email === "admin@example.com" && password === "password") {
+      console.log("Login response:", data);
+
+      if (data.success) {
         setLoginStatus("success");
-        toast.success("Login successful!");
-        onOpenChange(false); // Close the modal
         router.push("/admin/dashboard");
+        onOpenChange(false); // Close the modal
+        // router.push("/admin/dashboard");
       } else {
         setLoginStatus("error");
-        toast.error("Invalid email or password.");
       }
     } catch (error: unknown) {
       setLoginStatus("error");
       console.error("Login error:", error);
-
-      // Handle Firebase auth errors
-      if (error instanceof Error) {
-        if (
-          error.message.includes("auth/user-not-found") ||
-          error.message.includes("auth/wrong-password") ||
-          error.message.includes("auth/invalid-credential")
-        ) {
-          toast.error("Invalid email or password.");
-        } else if (error.message.includes("auth/too-many-requests")) {
-          toast.error("Too many failed attempts. Please try again later.");
-        } else if (error.message.includes("auth/user-disabled")) {
-          toast.error("This account has been disabled.");
-        } else {
-          toast.error("Login failed. Please try again.");
-        }
-      } else {
-        toast.error("Login failed. Please try again.");
-      }
     } finally {
       setLoading(false);
     }
@@ -228,15 +209,6 @@ export function LoginModal({
                   "Log in"
                 )}
               </Button>
-              <div className="text-center text-sm">
-                Don&apos;t have an account?{" "}
-                <Link
-                  href="/signup"
-                  className="text-emerald-600 hover:text-emerald-700 font-medium"
-                >
-                  Sign up
-                </Link>
-              </div>
             </CardFooter>
           </Card>
         </Dialog.Content>

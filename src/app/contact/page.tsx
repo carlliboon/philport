@@ -15,6 +15,7 @@ import {
   Instagram,
   Twitter,
   Loader2,
+  X,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -46,6 +47,8 @@ export default function ContactPage() {
     phone: "",
   });
 
+  const [skills, setSkills] = useState<string[]>([]);
+
   const { status, isLoading, submitContactForm, resetStatus } =
     useContactForm();
 
@@ -57,18 +60,33 @@ export default function ContactPage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const handleSetSkills = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const skill = e.target.value;
+    if (skill && !skills.includes(skill)) {
+      setSkills((prev) => [...prev, skill]);
+    }
+    // Optionally reset the select to default after selection:
+    e.target.value = "";
+  };
+
+  const handleRemoveSkill = (skill: string) => {
+    setSkills((prev) => prev.filter((s) => s !== skill));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const success = await submitContactForm(form);
+    const success = await submitContactForm({ ...form, skills });
     if (success) {
       setForm({
         firstName: "",
         lastName: "",
         email: "",
         message: "",
+        shopifyUrl: "",
         subject: "",
         phone: "",
       });
+      setSkills([]);
     }
   };
 
@@ -171,7 +189,8 @@ export default function ContactPage() {
                     </div>
                     <div className="space-y-2">
                       <label htmlFor="phone" className="text-sm font-medium">
-                        Phone (optional)
+                        Phone{" "}
+                        <span className="text-gray-500 mb-2">(optional)</span>
                       </label>
                       <input
                         id="phone"
@@ -184,6 +203,23 @@ export default function ContactPage() {
                       />
                     </div>
                     <div className="space-y-2">
+                      <label
+                        htmlFor="shopifyUrl"
+                        className="text-sm font-medium"
+                      >
+                        Shopify Store URL{" "}
+                        <span className="text-gray-500 mb-2">(optional)</span>
+                      </label>
+                      <input
+                        id="shopifyUrl"
+                        name="shopifyUrl"
+                        value={form.shopifyUrl}
+                        onChange={handleChange}
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                        placeholder="yourstore.myshopify.com"
+                      />
+                    </div>
+                    <div className="space-y-2">
                       <label htmlFor="subject" className="text-sm font-medium">
                         Subjects
                       </label>
@@ -191,7 +227,7 @@ export default function ContactPage() {
                         id="subject"
                         name="subject"
                         value={form.subject}
-                        onChange={handleChange}
+                        onChange={handleSetSkills}
                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                       >
                         <option value="">Select a subject</option>
@@ -215,6 +251,20 @@ export default function ContactPage() {
                           Not Sure / General Inquiry
                         </option>
                       </select>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {skills.map((skill) => (
+                        <div
+                          key={skill}
+                          className="relative group bg-gray-100 text-xs rounded-full px-3 py-1"
+                        >
+                          <span>{skill}</span>
+                          <X
+                            onClick={() => handleRemoveSkill(skill)}
+                            className="w-3 h-3 hidden group-hover:flex items-center justify-center absolute -top-1 -right-1 bg-white rounded-full text-gray-500 hover:text-red-600 cursor-pointer shadow"
+                          />
+                        </div>
+                      ))}
                     </div>
                     <div className="space-y-2">
                       <label htmlFor="message" className="text-sm font-medium">

@@ -99,7 +99,7 @@ interface Review {
   name: string;
   rating: number;
   review: string;
-  createdAt?: Timestamp;
+  createdAt?: string;
 }
 
 interface Customer {
@@ -107,7 +107,7 @@ interface Customer {
   name: string;
   email: string;
   phone?: string;
-  createdAt: Timestamp;
+  createdAt: string;
 }
 
 const reviewSchema = z.object({
@@ -125,258 +125,12 @@ const reviewSchema = z.object({
 });
 
 export default function DashboardClient() {
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [customers, setCustomers] = useState<Customer[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [editingReview, setEditingReview] = useState<Review | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+
   const [activeTab, setActiveTab] = useState<"reviews" | "customers">(
     "reviews"
   );
-  const router = useRouter();
-  const reviewsPerPage = 5;
-
-  const reviewsRef = collection(db!, "reviews");
-  const customersRef = collection(db!, "customers");
-
-  const form = useForm<z.infer<typeof reviewSchema>>({
-    resolver: zodResolver(reviewSchema),
-    defaultValues: {
-      name: "",
-      rating: "5",
-      review: "",
-    },
-  });
-
-  const editForm = useForm<z.infer<typeof reviewSchema>>({
-    resolver: zodResolver(reviewSchema),
-    defaultValues: {
-      name: "",
-      rating: "5",
-      review: "",
-    },
-  });
-
-  // Fetch Reviews
-  const fetchReviews = async () => {
-    setLoading(true);
-    try {
-      const q = query(reviewsRef, orderBy("createdAt", "desc"));
-      const querySnapshot = await getDocs(q);
-      const fetchedReviews = querySnapshot.docs.map((doc) => ({
-        id: doc.data().id,
-        ...doc.data(),
-      })) as Review[];
-      setReviews(fetchedReviews);
-      toast(
-        <div>
-          <strong>Reviews loaded:</strong> Successfully loaded{" "}
-          {fetchedReviews.length} reviews
-        </div>
-      );
-    } catch (error) {
-      console.error("Error fetching reviews:", error);
-      toast(
-        <div>
-          <strong>Error:</strong> Failed to load reviews
-        </div>
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Fetch Customers
-  const fetchCustomers = async () => {
-    setLoading(true);
-    try {
-      const q = query(customersRef, orderBy("createdAt", "desc"));
-      const querySnapshot = await getDocs(q);
-      const fetchedCustomers = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Customer[];
-      setCustomers(fetchedCustomers);
-      toast(
-        <div>
-          <strong>Customers loaded:</strong> Successfully loaded{" "}
-          {fetchedCustomers.length} customers
-        </div>
-      );
-    } catch (error) {
-      console.error("Error fetching customers:", error);
-      toast(
-        <div>
-          <strong>Error:</strong> Failed to load customers
-        </div>
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Add Review
-  const addReview = async (data: z.infer<typeof reviewSchema>) => {
-    setLoading(true);
-    try {
-      // Calculate the new ID
-      const q = query(reviewsRef, orderBy("id", "desc"));
-      const querySnapshot = await getDocs(q);
-      const lastReview = querySnapshot.docs[0]?.data();
-      const newId = lastReview ? lastReview.id + 1 : 0;
-
-      await addDoc(reviewsRef, {
-        id: newId,
-        name: data.name,
-        rating: Number.parseInt(data.rating),
-        review: data.review,
-        createdAt: new Date(),
-      });
-
-      form.reset();
-      setIsAddDialogOpen(false);
-      fetchReviews();
-      toast("Review added successfully");
-    } catch (error) {
-      console.error("Error adding review:", error);
-      toast("Failed to add review");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Delete Review
-  const deleteReview = async (id: string) => {
-    try {
-      await deleteDoc(doc(db!, "reviews", id));
-      fetchReviews();
-      toast(
-        <div>
-          <strong>Review deleted:</strong> The review has been successfully
-          deleted
-        </div>
-      );
-    } catch (error) {
-      console.error("Error deleting review:", error);
-      toast(
-        <div>
-          <strong>Error:</strong> Failed to delete review
-        </div>
-      );
-    }
-  };
-
-  // Edit Review
-  const handleEditReview = (review: Review) => {
-    setEditingReview(review);
-    editForm.setValue("name", review.name);
-    editForm.setValue("rating", review.rating.toString());
-    editForm.setValue("review", review.review);
-    setIsEditDialogOpen(true);
-  };
-
-  const submitEditReview = async (data: z.infer<typeof reviewSchema>) => {
-    if (!editingReview) return;
-
-    try {
-      await updateDoc(doc(db!, "reviews", editingReview.id.toString()), {
-        name: data.name,
-        rating: Number.parseInt(data.rating),
-        review: data.review,
-      });
-
-      setIsEditDialogOpen(false);
-      fetchReviews();
-      toast(
-        <div>
-          <strong>Review updated:</strong> The review has been successfully
-          updated
-        </div>
-      );
-    } catch (error) {
-      console.error("Error updating review:", error);
-      toast(
-        <div>
-          <strong>Error:</strong> Failed to update review
-        </div>
-      );
-    }
-  };
-
-  const handleLogout = async () => {
-    const authInstance = fbAuth ?? getAuth();
-    try {
-      await signOut(authInstance);
-      localStorage.removeItem("authToken");
-      router.push("/");
-    } catch (error) {
-      console.error("Error signing out:", error);
-      toast("Failed to sign out");
-    }
-  };
-
-  useEffect(() => {
-    const authInstance2 = fbAuth ?? getAuth();
-    const unsubscribe = onAuthStateChanged(authInstance2, async (user) => {
-      if (!user) {
-        router.push("/");
-      } else {
-        const roleDoc = await getDoc(doc(db!, "users", user.uid));
-        const role = roleDoc.exists() ? roleDoc.data().role : "user";
-
-        if (role !== "admin" && role !== "user") {
-          router.push("/unauthorized");
-        }
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    const token = localStorage.getItem("authToken");
-
-    if (!token) {
-      router.push("/");
-    }
-  }, []);
-
-  useEffect(() => {
-    if (activeTab === "reviews") {
-      fetchReviews();
-    } else {
-      fetchCustomers();
-    }
-  }, [activeTab]);
-
-  // Pagination
-  const indexOfLastReview = currentPage * reviewsPerPage;
-  const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
-  const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
-  const totalPages = Math.ceil(reviews.length / reviewsPerPage);
-
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
-  // Guard against accessing localStorage during server-side build/prerender
-  const isBrowser = typeof window !== "undefined";
-  const isAuthenticated =
-    isBrowser && localStorage.getItem("authToken") !== null;
-
-  if (!isAuthenticated) {
-    return null;
-  }
-
-  if (!db) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p className="text-muted-foreground">
-          Dashboard unavailable. Database not configured.
-        </p>
-      </div>
-    );
-  }
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -551,14 +305,18 @@ export default function DashboardClient() {
                             </td>
                             <td className="px-6 py-4">{review.review}</td>
                             <td className="px-6 py-4">
-                              {review.createdAt?.toDate().toLocaleDateString()}
+                              {review.createdAt
+                                ? new Date(
+                                    review.createdAt
+                                  ).toLocaleDateString()
+                                : ""}
                             </td>
                             <td className="px-6 py-4">
                               <div className="flex space-x-2">
                                 <Button
                                   variant="ghost"
                                   size="icon"
-                                  onClick={() => handleEditReview(review)}
+                                  onClick={() => {}}
                                 >
                                   <Edit className="h-4 w-4" />
                                 </Button>
@@ -665,7 +423,9 @@ export default function DashboardClient() {
                               {customer.phone || "N/A"}
                             </td>
                             <td className="px-6 py-4">
-                              {customer.createdAt.toDate().toLocaleDateString()}
+                              {new Date(
+                                customer.createdAt
+                              ).toLocaleDateString()}
                             </td>
                           </tr>
                         ))}

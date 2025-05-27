@@ -19,7 +19,7 @@ export const NavHeaderMenus = () => {
     { label: "Home", href: "/" },
     { label: "Services", href: "/services" },
     { label: "About", href: "/about" },
-    // { label: "Portfolio", href: "/portfolio" },
+    { label: "Career", href: "/signup" },
     { label: "Contact", href: "/contact" },
   ];
 
@@ -74,14 +74,18 @@ export const NavHeaderMenus = () => {
             </span>
           </Button>
 
-          <Button
-            size="sm"
-            className="w-1/2 bg-emerald-600 hover:bg-emerald-700"
-            onClick={() => setLoginOpen(true)}
-          >
-            <User className="mr-1 h-4 w-4" /> Login
-          </Button>
-          <LoginModal open={loginOpen} onOpenChange={setLoginOpen} />
+          {pathname === "/signup" && (
+            <>
+              <Button
+                size="sm"
+                className="w-1/2 bg-emerald-600 hover:bg-emerald-700"
+                onClick={() => setLoginOpen(true)}
+              >
+                <User className="mr-1 h-4 w-4" /> Login
+              </Button>
+              <LoginModal open={loginOpen} onOpenChange={setLoginOpen} />
+            </>
+          )}
         </div>
       </div>
 
@@ -117,14 +121,18 @@ export const NavHeaderMenus = () => {
                   <CalCom btnTitle="Book a Call" />
                 </span>
               </Button>
-              <Button
-                size="sm"
-                className="w-1/2 bg-emerald-600 hover:bg-emerald-700"
-                onClick={() => setLoginOpen(true)}
-              >
-                <User className="mr-1 h-4 w-4" /> Login
-              </Button>
-              <LoginModal open={loginOpen} onOpenChange={setLoginOpen} />
+              {pathname === "signup" && (
+                <>
+                  <Button
+                    size="sm"
+                    className="w-1/2 bg-emerald-600 hover:bg-emerald-700"
+                    onClick={() => setLoginOpen(true)}
+                  >
+                    <User className="mr-1 h-4 w-4" /> Login
+                  </Button>
+                  <LoginModal open={loginOpen} onOpenChange={setLoginOpen} />
+                </>
+              )}
             </div>
           </div>
         </div>
