@@ -1,11 +1,15 @@
-import { Headphones, Layout, PenTool, Settings, Users2 } from "lucide-react";
+import SUPPORT_ICON from "@/assets/lordicon/support.json";
+import VIRTUAL_ASSISTANT_ICON from "@/assets/lordicon/virtual-assistant.json";
+import SHOPIFY_APP_SUPPORT_ICON from "@/assets/lordicon/shopify-app.json";
+import DESIGN_ICON from "@/assets/lordicon/design.json";
+import LAYOUT_ICON from "@/assets/lordicon/layout.json";
 
 export const services = [
   {
     title: "Admin & Customer Support",
     description:
       "We handle your store's admin tasks and provide exceptional customer support.",
-    icon: <Headphones className="h-6 w-6 text-emerald-600" />,
+    icon: SUPPORT_ICON,
     featured: true,
     features: [
       "Order management & processing",
@@ -19,7 +23,7 @@ export const services = [
     title: "Virtual Assistance",
     description:
       "Dedicated virtual assistants to handle day-to-day operations for your Shopify store.",
-    icon: <Users2 className="h-6 w-6 text-emerald-600" />,
+    icon: VIRTUAL_ASSISTANT_ICON,
     featured: false,
     features: [
       "Email management",
@@ -33,7 +37,7 @@ export const services = [
     title: "Shopify App Support",
     description:
       "Expert assistance with installing, configuring, and optimizing Shopify apps.",
-    icon: <Settings className="h-6 w-6 text-emerald-600" />,
+    icon: SHOPIFY_APP_SUPPORT_ICON,
     featured: false,
     features: [
       "App installation & setup",
@@ -47,7 +51,7 @@ export const services = [
     title: "Creative & Digital Media",
     description:
       "Professional creative services to enhance your store's visual appeal and brand identity.",
-    icon: <PenTool className="h-6 w-6 text-emerald-600" />,
+    icon: DESIGN_ICON,
     featured: false,
     features: [
       "Graphic design for marketing materials",
@@ -61,7 +65,7 @@ export const services = [
     title: "Product Page Customization",
     description:
       "Optimize your product pages for better user experience and increased conversions.",
-    icon: <Layout className="h-6 w-6 text-emerald-600" />,
+    icon: LAYOUT_ICON,
     featured: false,
     features: [
       "Custom product descriptions",

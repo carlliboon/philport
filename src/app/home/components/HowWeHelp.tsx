@@ -6,10 +6,27 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { CheckCircle2, Clock, TrendingUp, Zap } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { CardMotion } from "@/components/common/CardMotion";
 
+import { useEffect, useRef } from "react";
+import { Player } from "@lordicon/react";
+import type { Player as LordiconPlayer } from "@lordicon/react";
+import TIME_ICON from "@/assets/lordicon/time.json";
+import STRESS_ICON from "@/assets/lordicon/stress.json";
+import GROWTH_ICON from "@/assets/lordicon/growth.json";
+
 export const HowWeHelp = () => {
+  const timePlayerRef = useRef<LordiconPlayer>(null);
+  const stressPlayerRef = useRef<LordiconPlayer>(null);
+  const growthPlayerRef = useRef<LordiconPlayer>(null);
+
+  useEffect(() => {
+    timePlayerRef.current?.playFromBeginning();
+    stressPlayerRef.current?.playFromBeginning();
+    growthPlayerRef.current?.playFromBeginning();
+  }, []);
+
   return (
     <section className="w-full py-12 md:py-24">
       <div className="container px-4 md:px-6 max-w-screen-xl mx-auto">
@@ -31,9 +48,13 @@ export const HowWeHelp = () => {
             <Card className="h-full flex flex-col">
               <CardHeader>
                 <div className="p-2 w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mb-2">
-                  <Clock
-                    className="h-6 w-6 text-emerald-600"
-                    aria-label="Clock icon representing time savings and efficiency"
+                  <Player
+                    ref={timePlayerRef}
+                    size={100}
+                    icon={TIME_ICON}
+                    onComplete={() =>
+                      timePlayerRef.current?.playFromBeginning()
+                    }
                   />
                 </div>
                 <CardTitle>Save Time</CardTitle>
@@ -70,9 +91,13 @@ export const HowWeHelp = () => {
             <Card className="h-full flex flex-col">
               <CardHeader>
                 <div className="p-2 w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mb-2">
-                  <Zap
-                    className="h-6 w-6 text-emerald-600"
-                    aria-label="Lightning bolt icon symbolizing reduced stress and technical support"
+                  <Player
+                    ref={stressPlayerRef}
+                    size={100}
+                    icon={STRESS_ICON}
+                    onComplete={() =>
+                      stressPlayerRef.current?.playFromBeginning()
+                    }
                   />
                 </div>
                 <CardTitle>Reduce Stress</CardTitle>
@@ -107,9 +132,13 @@ export const HowWeHelp = () => {
             <Card className="h-full flex flex-col">
               <CardHeader>
                 <div className="p-2 w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mb-2">
-                  <TrendingUp
-                    className="h-6 w-6 text-emerald-600"
-                    aria-label="Arrow icon indicating business growth and improvement"
+                  <Player
+                    ref={growthPlayerRef}
+                    size={100}
+                    icon={GROWTH_ICON}
+                    onComplete={() =>
+                      growthPlayerRef.current?.playFromBeginning()
+                    }
                   />
                 </div>
                 <CardTitle>Grow Your Business</CardTitle>

@@ -1,15 +1,7 @@
+"use client";
+
 import Link from "next/link";
-import {
-  ArrowRight,
-  ShoppingBag,
-  CheckCircle2,
-  Star,
-  Users,
-  BarChart,
-  MessageCircle,
-  Target,
-  Rocket,
-} from "lucide-react";
+import { ArrowRight, CheckCircle2, Star } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,9 +17,52 @@ import Image from "next/image";
 
 import teamMeeting from "@/assets/images/general/team-meeting.jpg";
 
+import TARGET_ICON from "@/assets/lordicon/target.json";
+import GOAL_ICON from "@/assets/lordicon/goal.json";
+import SHOPIFY_SPECIALIST_ICON from "@/assets/lordicon/shopify-specialist.json";
+import CHAT_ICON from "@/assets/lordicon/chat.json";
+import MARKETING_ICON from "@/assets/lordicon/marketing.json";
+import BAG_ICON from "@/assets/lordicon/bag.json";
+import TOP_RATED_ICON from "@/assets/lordicon/top-rated.json";
+import BUSINESS_NETWORK_ICON from "@/assets/lordicon/business-network.json";
+import RELIABLE_ICON from "@/assets/lordicon/reliable.json";
+
 export const dynamic = "force-dynamic";
 
+import { useEffect, useRef } from "react";
+import { Player } from "@lordicon/react";
+import { Player as LordiconPlayer } from "@lordicon/react";
+
 export default function AboutPage() {
+  const refs = useRef<(unknown | null)[]>([]);
+  const targetPlayerRef = useRef<LordiconPlayer>(null);
+  const goalPlayerRef = useRef<LordiconPlayer>(null);
+  const shopifySpecialistPlayerRef = useRef<LordiconPlayer>(null);
+  const chatPlayerRef = useRef<LordiconPlayer>(null);
+  const marketingPlayerRef = useRef<LordiconPlayer>(null);
+  const bagPlayerRef = useRef<LordiconPlayer>(null);
+  const topRatedPlayerRef = useRef<LordiconPlayer>(null);
+  const businessNetworkPlayerRef = useRef<LordiconPlayer>(null);
+  const reliablePlayerRef = useRef<LordiconPlayer>(null);
+
+  useEffect(() => {
+    refs.current.forEach((ref) => {
+      (ref as LordiconPlayer)?.playFromBeginning();
+    });
+  }, []);
+
+  useEffect(() => {
+    targetPlayerRef.current?.playFromBeginning();
+    goalPlayerRef.current?.playFromBeginning();
+    shopifySpecialistPlayerRef.current?.playFromBeginning();
+    chatPlayerRef.current?.playFromBeginning();
+    marketingPlayerRef.current?.playFromBeginning();
+    bagPlayerRef.current?.playFromBeginning();
+    topRatedPlayerRef.current?.playFromBeginning();
+    businessNetworkPlayerRef.current?.playFromBeginning();
+    reliablePlayerRef.current?.playFromBeginning();
+  }, []);
+
   return (
     <>
       <Title />
@@ -122,7 +157,14 @@ export default function AboutPage() {
                 <Card className="border-emerald-200">
                   <CardHeader>
                     <div className="p-2 w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mb-2">
-                      <Target className="h-6 w-6 text-emerald-600" />
+                      <Player
+                        ref={targetPlayerRef}
+                        size={100}
+                        icon={TARGET_ICON}
+                        onComplete={() =>
+                          targetPlayerRef.current?.playFromBeginning()
+                        }
+                      />
                     </div>
                     <CardTitle className="text-2xl">Our Mission</CardTitle>
                   </CardHeader>
@@ -139,7 +181,14 @@ export default function AboutPage() {
                 <Card className="border-emerald-200">
                   <CardHeader>
                     <div className="p-2 w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mb-2">
-                      <Rocket className="h-6 w-6 text-emerald-600" />
+                      <Player
+                        ref={goalPlayerRef}
+                        size={100}
+                        icon={GOAL_ICON}
+                        onComplete={() =>
+                          goalPlayerRef.current?.playFromBeginning()
+                        }
+                      />
                     </div>
                     <CardTitle className="text-2xl">Our Vision</CardTitle>
                   </CardHeader>
@@ -176,7 +225,14 @@ export default function AboutPage() {
               <div className="grid gap-8 md:grid-cols-3 mt-8">
                 <div className="flex flex-col items-center text-center space-y-3">
                   <div className="w-24 h-24 rounded-full bg-emerald-100 flex items-center justify-center">
-                    <Users className="h-12 w-12 text-emerald-600" />
+                    <Player
+                      ref={shopifySpecialistPlayerRef}
+                      size={70}
+                      icon={SHOPIFY_SPECIALIST_ICON}
+                      onComplete={() =>
+                        shopifySpecialistPlayerRef.current?.playFromBeginning()
+                      }
+                    />
                   </div>
                   <h3 className="text-xl font-bold">Shopify Specialists</h3>
                   <p className="text-muted-foreground">
@@ -187,7 +243,14 @@ export default function AboutPage() {
 
                 <div className="flex flex-col items-center text-center space-y-3">
                   <div className="w-24 h-24 rounded-full bg-emerald-100 flex items-center justify-center">
-                    <MessageCircle className="h-12 w-12 text-emerald-600" />
+                    <Player
+                      ref={chatPlayerRef}
+                      size={70}
+                      icon={CHAT_ICON}
+                      onComplete={() =>
+                        chatPlayerRef.current?.playFromBeginning()
+                      }
+                    />
                   </div>
                   <h3 className="text-xl font-bold">Customer Support Pros</h3>
                   <p className="text-muted-foreground">
@@ -198,7 +261,14 @@ export default function AboutPage() {
 
                 <div className="flex flex-col items-center text-center space-y-3">
                   <div className="w-24 h-24 rounded-full bg-emerald-100 flex items-center justify-center">
-                    <BarChart className="h-12 w-12 text-emerald-600" />
+                    <Player
+                      ref={marketingPlayerRef}
+                      size={70}
+                      icon={MARKETING_ICON}
+                      onComplete={() =>
+                        marketingPlayerRef.current?.playFromBeginning()
+                      }
+                    />
                   </div>
                   <h3 className="text-xl font-bold">Marketing Strategists</h3>
                   <p className="text-muted-foreground">
@@ -229,7 +299,14 @@ export default function AboutPage() {
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2 mt-8">
                 <div className="flex flex-col p-6 bg-white rounded-lg border shadow-sm">
                   <div className="p-2 w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mb-4">
-                    <ShoppingBag className="h-6 w-6 text-emerald-600" />
+                    <Player
+                      ref={bagPlayerRef}
+                      size={100}
+                      icon={BAG_ICON}
+                      onComplete={() =>
+                        bagPlayerRef.current?.playFromBeginning()
+                      }
+                    />
                   </div>
                   <h3 className="text-xl font-bold mb-2">
                     Proven Shopify Expertise
@@ -256,7 +333,14 @@ export default function AboutPage() {
 
                 <div className="flex flex-col p-6 bg-white rounded-lg border shadow-sm">
                   <div className="p-2 w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mb-4">
-                    <MessageCircle className="h-6 w-6 text-emerald-600" />
+                    <Player
+                      ref={reliablePlayerRef}
+                      size={100}
+                      icon={RELIABLE_ICON}
+                      onComplete={() =>
+                        reliablePlayerRef.current?.playFromBeginning()
+                      }
+                    />
                   </div>
                   <h3 className="text-xl font-bold mb-2">
                     Reliable Customer Support
@@ -283,7 +367,14 @@ export default function AboutPage() {
 
                 <div className="flex flex-col p-6 bg-white rounded-lg border shadow-sm">
                   <div className="p-2 w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mb-4">
-                    <Star className="h-6 w-6 text-emerald-600" />
+                    <Player
+                      ref={topRatedPlayerRef}
+                      size={100}
+                      icon={TOP_RATED_ICON}
+                      onComplete={() =>
+                        topRatedPlayerRef.current?.playFromBeginning()
+                      }
+                    />
                   </div>
                   <h3 className="text-xl font-bold mb-2">
                     Top-Rated Upwork Agency
@@ -310,7 +401,14 @@ export default function AboutPage() {
 
                 <div className="flex flex-col p-6 bg-white rounded-lg border shadow-sm">
                   <div className="p-2 w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mb-4">
-                    <BarChart className="h-6 w-6 text-emerald-600" />
+                    <Player
+                      ref={businessNetworkPlayerRef}
+                      size={100}
+                      icon={BUSINESS_NETWORK_ICON}
+                      onComplete={() =>
+                        businessNetworkPlayerRef.current?.playFromBeginning()
+                      }
+                    />
                   </div>
                   <h3 className="text-xl font-bold mb-2">
                     Comprehensive E-Commerce Solutions
@@ -358,16 +456,31 @@ export default function AboutPage() {
               </div>
 
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-8">
-                {services.map((service) => {
-                  return (
-                    <ServiceCard
-                      key={service.title}
-                      icon={service.icon}
-                      title={service.title}
-                      description={service.description}
-                    />
-                  );
-                })}
+                {services.map((service, idx) => (
+                  <ServiceCard
+                    key={service.title}
+                    icon={
+                      service.icon ? (
+                        <Player
+                          ref={(el) => {
+                            refs.current[idx] = el;
+                          }}
+                          icon={service.icon}
+                          size={48}
+                          onComplete={() => {
+                            const player = refs.current[idx] as LordiconPlayer;
+                            player?.playFromBeginning();
+                          }}
+                        />
+                      ) : (
+                        // fallback to Lucide or other icon
+                        <ArrowRight size={48} />
+                      )
+                    }
+                    title={service.title}
+                    description={service.description}
+                  />
+                ))}
               </div>
             </div>
           </section>

@@ -5,7 +5,19 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { services } from "@/data/services";
 
+import { useEffect, useRef } from "react";
+import { Player } from "@lordicon/react";
+import type { Player as LordiconPlayer } from "@lordicon/react";
+
 export const ServicesOverview = () => {
+  const refs = useRef<(unknown | null)[]>([]);
+
+  useEffect(() => {
+    refs.current.forEach((ref) => {
+      (ref as LordiconPlayer)?.playFromBeginning();
+    });
+  }, []);
+
   return (
     <section className="w-full py-12 md:py-24 bg-emerald-50">
       <div className="container px-4 md:px-6 max-w-screen-xl mx-auto">
@@ -23,22 +35,31 @@ export const ServicesOverview = () => {
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-8">
-          {services.map(
-            (service: {
-              title: string;
-              icon: React.ReactNode;
-              description: string;
-            }) => {
-              return (
-                <ServiceCard
-                  key={service.title}
-                  icon={service.icon}
-                  title={service.title}
-                  description={service.description}
-                />
-              );
-            }
-          )}
+          {services.map((service, idx) => (
+            <ServiceCard
+              key={service.title}
+              icon={
+                service.icon ? (
+                  <Player
+                    ref={(el) => {
+                      refs.current[idx] = el;
+                    }}
+                    icon={service.icon}
+                    size={48}
+                    onComplete={() => {
+                      const player = refs.current[idx] as LordiconPlayer;
+                      player?.playFromBeginning();
+                    }}
+                  />
+                ) : (
+                  // fallback to Lucide or other icon
+                  <ArrowRight size={48} />
+                )
+              }
+              title={service.title}
+              description={service.description}
+            />
+          ))}
 
           <div className="flex flex-col p-6 bg-white rounded-lg border shadow-sm">
             <div className="flex items-center justify-center h-full">

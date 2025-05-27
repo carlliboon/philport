@@ -1,3 +1,5 @@
+"use client";
+
 import type React from "react";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
@@ -10,7 +12,19 @@ import { services } from "@/data/services";
 
 import businessOwner from "@/assets/images/general/business-owner-working.jpg";
 
+import { useEffect, useRef } from "react";
+import { Player } from "@lordicon/react";
+import type { Player as LordiconPlayer } from "@lordicon/react";
+
 export default function Services() {
+  const refs = useRef<(unknown | null)[]>([]);
+
+  useEffect(() => {
+    refs.current.forEach((ref) => {
+      (ref as LordiconPlayer)?.playFromBeginning();
+    });
+  }, []);
+
   return (
     <>
       <Title />
@@ -65,26 +79,31 @@ export default function Services() {
               </div>
 
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-8">
-                {services.map(
-                  (service: {
-                    title: string;
-                    icon: React.ReactNode;
-                    description: string;
-                    featured: boolean;
-                    features: string[];
-                  }) => {
-                    return (
-                      <ServiceCard
-                        key={service.title}
-                        icon={service.icon}
-                        title={service.title}
-                        description={service.description}
-                        featured={service.featured}
-                        features={service.features}
-                      />
-                    );
-                  }
-                )}
+                {services.map((service, idx) => (
+                  <ServiceCard
+                    key={service.title}
+                    icon={
+                      service.icon ? (
+                        <Player
+                          ref={(el) => {
+                            refs.current[idx] = el;
+                          }}
+                          icon={service.icon}
+                          size={48}
+                          onComplete={() => {
+                            const player = refs.current[idx] as LordiconPlayer;
+                            player?.playFromBeginning();
+                          }}
+                        />
+                      ) : (
+                        // fallback to Lucide or other icon
+                        <ArrowRight size={48} />
+                      )
+                    }
+                    title={service.title}
+                    description={service.description}
+                  />
+                ))}
 
                 <div className="flex flex-col p-6 bg-emerald-50 rounded-lg border border-emerald-100">
                   <div className="flex items-center justify-center h-full">

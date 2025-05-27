@@ -1,9 +1,27 @@
 import CalCom from "@/components/common/CalCom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Calendar, FileText, Rocket } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { useEffect, useRef } from "react";
+
+import { Player } from "@lordicon/react";
+import type { Player as LordiconPlayer } from "@lordicon/react";
+
+import APPPOINTMENT_ICON from "@/assets/lordicon/appointment.json";
+import PLAN_ICON from "@/assets/lordicon/plan.json";
+import IMPLEMENTATION_ICON from "@/assets/lordicon/launch.json";
 
 export const HowItWorks = () => {
+  const appointmentPlayerRef = useRef<LordiconPlayer>(null);
+  const planPlayerRef = useRef<LordiconPlayer>(null);
+  const implementationPlayerRef = useRef<LordiconPlayer>(null);
+
+  useEffect(() => {
+    appointmentPlayerRef.current?.playFromBeginning();
+    planPlayerRef.current?.playFromBeginning();
+    implementationPlayerRef.current?.playFromBeginning();
+  }, []);
+
   return (
     <section className="w-full py-12 md:py-24">
       <div className="container px-4 md:px-6 max-w-screen-xl mx-auto">
@@ -27,19 +45,46 @@ export const HowItWorks = () => {
                 title: "Consultation",
                 description:
                   "We start with a free consultation to understand your Shopify store's specific needs and challenges.",
-                icon: <Calendar className="h-8 w-8 text-emerald-600" />,
+                icon: (
+                  <Player
+                    ref={appointmentPlayerRef}
+                    size={100}
+                    icon={APPPOINTMENT_ICON}
+                    onComplete={() =>
+                      appointmentPlayerRef.current?.playFromBeginning()
+                    }
+                  />
+                ),
               },
               {
                 title: "Custom Plan",
                 description:
                   "We create a tailored support plan based on your specific requirements and budget.",
-                icon: <FileText className="h-8 w-8 text-emerald-600" />,
+                icon: (
+                  <Player
+                    ref={planPlayerRef}
+                    size={100}
+                    icon={PLAN_ICON}
+                    onComplete={() =>
+                      planPlayerRef.current?.playFromBeginning()
+                    }
+                  />
+                ),
               },
               {
                 title: "Implementation",
                 description:
                   "Our team seamlessly integrates with your business and begins providing support right away.",
-                icon: <Rocket className="h-8 w-8 text-emerald-600" />,
+                icon: (
+                  <Player
+                    ref={implementationPlayerRef}
+                    size={100}
+                    icon={IMPLEMENTATION_ICON}
+                    onComplete={() =>
+                      implementationPlayerRef.current?.playFromBeginning()
+                    }
+                  />
+                ),
               },
             ];
 

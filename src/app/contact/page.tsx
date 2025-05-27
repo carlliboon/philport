@@ -1,15 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
-  Mail,
   // Phone,
-  MapPin,
-  Clock,
+
   ArrowRight,
   // MessageSquare,
-  Calendar,
   Linkedin,
   Facebook,
   Instagram,
@@ -37,7 +34,20 @@ import { NavHeaderMenus, FooterMenus } from "@/components/layout";
 import { CalCom } from "@/components/common";
 import { useContactForm, ContactFormFields } from "../../hooks/contactHandler";
 
+import { Player } from "@lordicon/react";
+import type { Player as LordiconPlayer } from "@lordicon/react";
+
+import LOCATION_ICON from "@/assets/lordicon/location.json";
+import CLOCK_ICON from "@/assets/lordicon/clock.json";
+import EMAIL_ICON from "@/assets/lordicon/email.json";
+import APPOINTMENT_ICON from "@/assets/lordicon/appointment.json";
+
 export default function ContactPage() {
+  const locationPlayerRef = useRef<LordiconPlayer>(null);
+  const clockPlayerRef = useRef<LordiconPlayer>(null);
+  const emailPlayerRef = useRef<LordiconPlayer>(null);
+  const appointmentPlayerRef = useRef<LordiconPlayer>(null);
+
   const [form, setForm] = useState<ContactFormFields>({
     firstName: "",
     lastName: "",
@@ -89,6 +99,13 @@ export default function ContactPage() {
       setSkills([]);
     }
   };
+
+  useEffect(() => {
+    locationPlayerRef.current?.playFromBeginning();
+    clockPlayerRef.current?.playFromBeginning();
+    emailPlayerRef.current?.playFromBeginning();
+    appointmentPlayerRef.current?.playFromBeginning();
+  }, []);
 
   useEffect(() => {
     if (
@@ -312,7 +329,14 @@ export default function ContactPage() {
                 <div className="grid gap-4">
                   <Card>
                     <CardHeader className="flex flex-row items-center gap-4 pb-2">
-                      <Mail className="h-6 w-6 text-emerald-600" />
+                      <Player
+                        ref={emailPlayerRef}
+                        size={30}
+                        icon={EMAIL_ICON}
+                        onComplete={() =>
+                          emailPlayerRef.current?.playFromBeginning()
+                        }
+                      />
                       <CardTitle>Email Us</CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -370,7 +394,14 @@ export default function ContactPage() {
 
                   <Card>
                     <CardHeader className="flex flex-row items-center gap-4 pb-2">
-                      <Calendar className="h-6 w-6 text-emerald-600" />
+                      <Player
+                        ref={appointmentPlayerRef}
+                        size={30}
+                        icon={APPOINTMENT_ICON}
+                        onComplete={() =>
+                          appointmentPlayerRef.current?.playFromBeginning()
+                        }
+                      />
                       <CardTitle>Schedule a Call</CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -435,7 +466,14 @@ export default function ContactPage() {
                 <h2 className="text-2xl font-bold mb-6">Our Office</h2>
                 <div className="bg-white p-6 rounded-lg border shadow-sm">
                   <div className="flex items-start gap-4 mb-4">
-                    <MapPin className="h-6 w-6 text-emerald-600 mt-1" />
+                    <Player
+                      ref={locationPlayerRef}
+                      size={25}
+                      icon={LOCATION_ICON}
+                      onComplete={() =>
+                        locationPlayerRef.current?.playFromBeginning()
+                      }
+                    />
                     <div>
                       <h3 className="font-semibold text-lg">Main Office</h3>
                       <p className="text-muted-foreground">
@@ -448,7 +486,14 @@ export default function ContactPage() {
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
-                    <Clock className="h-6 w-6 text-emerald-600 mt-1" />
+                    <Player
+                      ref={clockPlayerRef}
+                      size={25}
+                      icon={CLOCK_ICON}
+                      onComplete={() =>
+                        clockPlayerRef.current?.playFromBeginning()
+                      }
+                    />
                     <div>
                       <h3 className="font-semibold text-lg">Business Hours</h3>
                       <p className="text-muted-foreground">
