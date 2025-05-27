@@ -171,11 +171,7 @@ export default function DashboardClient() {
               Settings
             </a>
           </Button>
-          <Button
-            variant="ghost"
-            className="justify-start w-full"
-            onClick={handleLogout}
-          >
+          <Button variant="ghost" className="justify-start w-full">
             <LogOutIcon className="mr-2 h-4 w-4" />
             <span className="text-red-500 hover:text-red-600">Logout</span>
           </Button>
