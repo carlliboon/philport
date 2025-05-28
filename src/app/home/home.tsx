@@ -1,10 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import type React from "react";
-import { useMemo, useState, useEffect } from "react";
-import { auth, db } from "@/lib/firebase";
-import { collection, getDocs } from "firebase/firestore";
-import { signInAnonymously } from "firebase/auth";
+import { useMemo, useState } from "react";
 import { NavHeaderMenus } from "@/components/layout";
 import { FooterMenus } from "@/components/layout";
 import { HeroSection } from "./components/HeroSection";
@@ -17,13 +15,7 @@ import { HowItWorks } from "./components/HowItWorks";
 import { CallToAction } from "./components/CallToAction";
 import dynamic from "next/dynamic";
 import { ScrollToTop } from "@/components/common";
-
-interface Review {
-  id: number;
-  name: string;
-  rating: number;
-  review: string;
-}
+import { reviews } from "@/data/reviews";
 
 export const metadata = {
   title: "Shopify Support Pro - Your Trusted Partner for Shopify Store Success",
@@ -33,7 +25,7 @@ export const metadata = {
 
 export default function HomePage() {
   const [visibleCount, setVisibleCount] = useState(3);
-  const [clientReviews, setReviews] = useState<Review[]>([]);
+  const [clientReviews, setReviews] = useState<[]>([]);
   const [loading, setLoading] = useState(false);
 
   const handleLoadMore = () => {
@@ -60,36 +52,6 @@ export default function HomePage() {
     }
   );
 
-  useEffect(() => {
-    const authenticateAndFetch = async () => {
-      if (!auth || !db) return; // Skip if Firebase not ready
-      setLoading(true);
-      try {
-        await signInAnonymously(auth);
-        const reviewsCollection = collection(db, "reviews");
-        const querySnapshot = await getDocs(reviewsCollection);
-
-        const reviewsData: Review[] = querySnapshot.docs.map((doc) => {
-          const data = doc.data();
-          return {
-            id: Number(data.id),
-            name: data.name ?? "Unknown",
-            rating: data.rating ?? 0,
-            review: data.review ?? "No review provided",
-          };
-        });
-
-        setReviews(reviewsData);
-      } catch (error) {
-        console.error("Error fetching reviews: ", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (auth && db) authenticateAndFetch();
-  }, []);
-
   return (
     <>
       <div className="flex min-h-screen flex-col">
@@ -100,7 +62,7 @@ export default function HomePage() {
           <HowWeHelp />
           <ServicesOverview />
           <Testimonials
-            reviews={visibleReviews}
+            reviews={reviews}
             loading={loading}
             handleLoadMore={handleLoadMore}
             visibleCount={visibleCount}

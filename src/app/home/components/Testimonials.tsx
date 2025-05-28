@@ -9,6 +9,7 @@ interface TestimonialsProps {
     name: string;
     review: string;
     rating: number;
+    title: string;
   }[];
   loading: boolean;
   handleLoadMore: () => void;
@@ -51,6 +52,7 @@ export const Testimonials = ({
                 quote={review.review}
                 author={review.name}
                 role={`Rating: ${review.rating}/5`}
+                title={review.title}
               />
             ))}
           </div>

@@ -114,9 +114,9 @@ export default function AboutPage() {
                       ))}
                     </div>
                     <p className="text-sm font-medium">
-                      Top-Rated on{" "}
+                      Top-Rated Plus on{" "}
                       <Link
-                        href="https://www.upwork.com/agencies/1751209110057144320/"
+                        href="https://www.upwork.com/freelancers/~013da667a64c2056fc?mp_source=share"
                         target="_blank"
                         className="text-emerald-600 font-bold tracking-tighter"
                       >

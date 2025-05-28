@@ -1,6 +1,7 @@
 import { Star } from "lucide-react";
 
 interface TestimonialCardProps {
+  title: string;
   quote: string;
   author: string;
   role: string;
@@ -8,6 +9,7 @@ interface TestimonialCardProps {
 }
 
 export const TestimonialCard = ({
+  title,
   quote,
   author,
   role,
@@ -20,6 +22,7 @@ export const TestimonialCard = ({
       } border shadow-sm`}
     >
       <div className="mb-4">
+        <h3 className="text-lg font-semibold mb-2">{title}</h3>
         <div className="flex">
           {[1, 2, 3, 4, 5].map((star) => (
             <Star
