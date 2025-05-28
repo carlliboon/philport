@@ -18,6 +18,7 @@ interface Review {
   name: string;
   rating: number;
   review: string;
+  title: string;
 }
 
 interface Props {
