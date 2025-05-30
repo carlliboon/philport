@@ -16,11 +16,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Shopify Support Pro",
-    template: "%s | Shopify Support Pro",
+    default: "PhilPort",
+    template: "%s | PhilPort",
   },
   description:
-    "Shopify Support Pro offers expert assistance for your Shopify store, ensuring smooth operations and enhanced performance.",
+    "PhilPort offers expert assistance for your e-commerce store, ensuring smooth operations and enhanced performance.",
 };
 
 export const dynamic = "force-dynamic";
@@ -35,18 +35,18 @@ export default function RootLayout({
       <Head>
         <meta
           name="description"
-          content="We provide professional Shopify support services including setup, customization, and ongoing assistance to help your store succeed."
+          content="We provide professional e-commerce support services including setup, customization, and ongoing assistance to help your store succeed."
         />
-        <meta property="og:title" content="Shopify Support Pro" />
+        <meta property="og:title" content="PhilPort" />
         <meta
           property="og:description"
-          content="Expert Shopify support services to grow your online store."
+          content="Expert e-commerce support services to grow your online store."
         />
         <meta
           property="og:image"
-          content="https://shopifysupportpro.com/logo.png"
+          content="https://philport.com/logo.png"
         />
-        <meta property="og:url" content="https://shopifysupportpro.com" />
+        <meta property="og:url" content="https://philport.com" />
         <meta name="twitter:card" content="summary_large_image" />
 
         {/* Organization Schema */}
@@ -56,9 +56,9 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Organization",
-              name: "Shopify Support Pro",
-              url: "https://shopifysupportpro.com",
-              logo: "https://shopifysupportpro.com/logo.png",
+              name: "PhilPort",
+              url: "https://philport.com",
+              logo: "https://philport.com/logo.png",
             }),
           }}
         />

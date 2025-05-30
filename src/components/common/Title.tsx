@@ -4,11 +4,11 @@ export const Title = () => {
   return (
     <Head>
       <title>
-        Shopify Support Pro - Your Trusted Partner for Shopify Store Success
+        PhilPort - Your Trusted Partner for E-commerce Store Success
       </title>
       <meta
         name="description"
-        content="Shopify Support Pro offers expert assistance for your Shopify store, ensuring smooth operations and enhanced performance."
+        content="PhilPort offers expert assistance for your e-commerce store, ensuring smooth operations and enhanced performance."
       />
     </Head>
   );

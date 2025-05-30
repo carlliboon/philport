@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { LoginModal } from "@/components/forms";
 import { CalCom } from "@/components/common";
 import Image from "next/image";
-import sspLogo from "@/assets/images/general/ssp-logo.png";
+import ppLogo from "@/assets/images/general/philport-logo.png";
 
 export const NavHeaderMenus = () => {
   const pathname = usePathname();
@@ -26,15 +26,18 @@ export const NavHeaderMenus = () => {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between max-w-screen-xl mx-auto px-4">
-        <div className="flex items-center gap-2 text-lg font-semibold">
-          <Link href="/" className="flex items-center gap-2">
-            <Image
-              src={sspLogo}
-              alt="Shopify Support Pro Logo"
-              width={150}
-              height={150}
-            />
+        <div className="flex items-center text-lg font-semibold">
+          <Link href="/" className="flex items-center">
+            
+            <span className="text-2xl font-bold flex items-center text-emerald-700"><Image
+            className="-mr-2.5"
+              src={ppLogo}
+              alt="Philport Logo"
+              width={50}
+              height={50}
+            />hilport</span>
           </Link>
+          
         </div>
 
         {/* Desktop Navigation */}

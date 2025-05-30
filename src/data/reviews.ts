@@ -5,7 +5,7 @@ export const reviews = [
     title: "Ecommerce Collection Curation",
     rating: 5,
     review:
-      "The ShopifySupportPro team & Carl were super efficient and helped me out very quickly. Always quick to respond and willing to go the extra mile",
+      "The PhilPort team & Carl were super efficient and helped me out very quickly. Always quick to respond and willing to go the extra mile",
   },
   {
     id: 2,
@@ -48,7 +48,7 @@ export const reviews = [
     title: "Organized VA with Shopify Experience",
     rating: 5,
     review:
-      "Jesamae is an incredibly organized VA with solid Shopify experience. She’s efficient, detail-oriented, and always delivers tasks on time. A true asset to any e-commerce team—highly recommended!",
+      "Jesamae is an incredibly organized VA with solid Shopify experience. She's efficient, detail-oriented, and always delivers tasks on time. A true asset to any e-commerce team—highly recommended!",
   },
   {
     id: 7,

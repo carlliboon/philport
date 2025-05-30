@@ -83,7 +83,7 @@ export default function AboutPage() {
                     <span className="text-emerald-600">Excellence</span>
                   </h1>
                   <p className="text-muted-foreground text-lg md:text-xl max-w-[600px]">
-                    Welcome to Shopify Support Pro, where exceptional customer
+                    Welcome to PhilPort, where exceptional customer
                     service meets expert technical solutions in the e-commerce
                     world. With 8+ years of experience, we take pride in being
                     Top-Rated Plus Freelancers on Upwork.

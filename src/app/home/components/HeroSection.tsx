@@ -25,10 +25,10 @@ export const HeroSection = () => {
         <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center lg:flex-row flex-col-reverse">
           <div className="space-y-4">
             <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">
-              Shopify Support Specialists
+              eCommerce Support Specialists
             </Badge>
-            <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tighter">
-              Your Dedicated <span className="text-emerald-600">Shopify</span>{" "}
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tighter">
+              Your Dedicated <span className="text-emerald-600">eCommerce</span>{" "}
               Support Team
             </h1>
             <p className="text-muted-foreground text-lg md:text-xl max-w-[600px]">

@@ -18,9 +18,9 @@ import { ScrollToTop } from "@/components/common";
 import { reviews } from "@/data/reviews";
 
 export const metadata = {
-  title: "Shopify Support Pro - Your Trusted Partner for Shopify Store Success",
+  title: "PhilPort - Your Trusted Partner for E-commerce Store Success",
   description:
-    "Shopify Support Pro offers expert assistance for your Shopify store, ensuring smooth operations and enhanced performance.",
+    "PhilPort offers expert assistance for your e-commerce store, ensuring smooth operations and enhanced performance.",
 };
 
 export default function HomePage() {

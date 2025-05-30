@@ -136,7 +136,7 @@ export default function ContactPage() {
                 <span className="text-emerald-600">E-Commerce</span> Needs
               </h1>
               <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                We&apos;re here to help you with your Shopify store, customer
+                We&apos;re here to help you with your PhilPort store, customer
                 support, or creative needs. Reach out to us today to start the
                 conversation.
               </p>
@@ -224,7 +224,7 @@ export default function ContactPage() {
                         htmlFor="shopifyUrl"
                         className="text-sm font-medium"
                       >
-                        Shopify Store URL{" "}
+                        PhilPort Store URL{" "}
                         <span className="text-gray-500 mb-2">(optional)</span>
                       </label>
                       <input
@@ -248,11 +248,11 @@ export default function ContactPage() {
                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                       >
                         <option value="">Select a subject</option>
-                        <option value="Shopify App Support">
-                          Shopify App Support
+                        <option value="PhilPort App Support">
+                          PhilPort App Support
                         </option>
-                        <option value="Admin & Customer Support">
-                          Admin & Customer Support
+                        <option value="Admin & PhilPort Customer Support">
+                          Admin & PhilPort Customer Support
                         </option>
                         <option value="Virtual Assistance">
                           Virtual Assistance
@@ -601,7 +601,7 @@ export default function ContactPage() {
                   </AccordionTrigger>
                   <AccordionContent>
                     Yes, we offer various support packages to ensure your
-                    Shopify store continues to run smoothly after the initial
+                    PhilPort store continues to run smoothly after the initial
                     project is complete. Our support packages include regular
                     maintenance, updates, and priority assistance for any issues
                     that may arise.
@@ -634,12 +634,12 @@ export default function ContactPage() {
                 </AccordionItem>
                 <AccordionItem value="item-6">
                   <AccordionTrigger>
-                    What makes Shopify Support Pro different from other
+                    What makes PhilPort different from other
                     agencies?
                   </AccordionTrigger>
                   <AccordionContent>
-                    Shopify Support Pro specializes exclusively in e-commerce
-                    and Shopify support, giving us deep expertise in this
+                    PhilPort specializes exclusively in e-commerce
+                    and PhilPort support, giving us deep expertise in this
                     specific area. Our team consists of dedicated specialists
                     rather than generalists, and we pride ourselves on building
                     long-term relationships with our clients. Our Top-Rated Plus

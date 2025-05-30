@@ -9,7 +9,7 @@ export const FooterMenus = () => {
         <div className="flex items-center gap-2">
           <ShoppingBag className="h-5 w-5 text-emerald-700" />
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} ShopifySupportPro. All rights
+            © {new Date().getFullYear()} PhilPort. All rights
             reserved.
           </p>
         </div>
