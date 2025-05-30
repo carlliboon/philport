@@ -2,6 +2,7 @@ export const runtime = "nodejs";
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import mysql from "mysql2/promise";
+import type { ResultSetHeader } from "mysql2";
 
 export async function POST(req: Request) {
   try {
@@ -18,7 +19,7 @@ export async function POST(req: Request) {
         database: process.env.DB_NAME,
       });
 
-      const [result] = await connection.execute(
+      const [execResult] = await connection.execute<ResultSetHeader>(
         `INSERT INTO users (
           username,
           first_name,
@@ -57,10 +58,11 @@ export async function POST(req: Request) {
         ]
       );
 
+      const insertId = execResult.insertId;
+
       await connection.end();
 
-      const insertId = (result as { insertId: number }).insertId;
-      return NextResponse.json({ success: true, id: insertId });
+      return NextResponse.json({ success: true, id: insertId }, { status: 200 });
     }
 
     // Fallback multipart resume upload (original behaviour)
