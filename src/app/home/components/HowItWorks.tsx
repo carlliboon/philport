@@ -10,17 +10,20 @@ import type { Player as LordiconPlayer } from "@lordicon/react";
 import APPPOINTMENT_ICON from "@/assets/lordicon/appointment.json";
 import PLAN_ICON from "@/assets/lordicon/plan.json";
 import IMPLEMENTATION_ICON from "@/assets/lordicon/launch.json";
+import { AnimationHandler } from "@/app/utils/animationHandler";
 
 export const HowItWorks = () => {
   const appointmentPlayerRef = useRef<LordiconPlayer>(null);
   const planPlayerRef = useRef<LordiconPlayer>(null);
   const implementationPlayerRef = useRef<LordiconPlayer>(null);
+  const animationHandler = useRef<AnimationHandler | null>(null);
+  const players = [appointmentPlayerRef, planPlayerRef, implementationPlayerRef];
 
   useEffect(() => {
-    appointmentPlayerRef.current?.playFromBeginning();
-    planPlayerRef.current?.playFromBeginning();
-    implementationPlayerRef.current?.playFromBeginning();
+    animationHandler.current = AnimationHandler.createFromRefs(players);
   }, []);
+
+  const handleLoopWithDelay = () => animationHandler.current?.handleLoop();
 
   return (
     <section className="w-full py-12 md:py-24">
@@ -50,9 +53,7 @@ export const HowItWorks = () => {
                     ref={appointmentPlayerRef}
                     size={100}
                     icon={APPPOINTMENT_ICON}
-                    onComplete={() =>
-                      appointmentPlayerRef.current?.playFromBeginning()
-                    }
+                    onComplete={handleLoopWithDelay}
                   />
                 ),
               },
@@ -65,9 +66,7 @@ export const HowItWorks = () => {
                     ref={planPlayerRef}
                     size={100}
                     icon={PLAN_ICON}
-                    onComplete={() =>
-                      planPlayerRef.current?.playFromBeginning()
-                    }
+                    onComplete={handleLoopWithDelay}
                   />
                 ),
               },
@@ -80,9 +79,7 @@ export const HowItWorks = () => {
                     ref={implementationPlayerRef}
                     size={100}
                     icon={IMPLEMENTATION_ICON}
-                    onComplete={() =>
-                      implementationPlayerRef.current?.playFromBeginning()
-                    }
+                    onComplete={handleLoopWithDelay}
                   />
                 ),
               },

@@ -27,14 +27,16 @@ import TOP_RATED_ICON from "@/assets/lordicon/top-rated.json";
 import BUSINESS_NETWORK_ICON from "@/assets/lordicon/business-network.json";
 import RELIABLE_ICON from "@/assets/lordicon/reliable.json";
 
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
 
 import { useEffect, useRef } from "react";
 import { Player } from "@lordicon/react";
-import { Player as LordiconPlayer } from "@lordicon/react";
+import type{ Player as LordiconPlayer } from "@lordicon/react";
+
+import { AnimationHandler } from "@/app/utils/animationHandler";
 
 export default function AboutPage() {
-  const refs = useRef<(unknown | null)[]>([]);
+  const playerRefs = useRef<(LordiconPlayer | null)[]>([]);
   const targetPlayerRef = useRef<LordiconPlayer>(null);
   const goalPlayerRef = useRef<LordiconPlayer>(null);
   const shopifySpecialistPlayerRef = useRef<LordiconPlayer>(null);
@@ -44,24 +46,29 @@ export default function AboutPage() {
   const topRatedPlayerRef = useRef<LordiconPlayer>(null);
   const businessNetworkPlayerRef = useRef<LordiconPlayer>(null);
   const reliablePlayerRef = useRef<LordiconPlayer>(null);
+  const animationHandler = useRef<AnimationHandler | null>(null);
+  const players = [targetPlayerRef, goalPlayerRef, shopifySpecialistPlayerRef, chatPlayerRef, marketingPlayerRef, bagPlayerRef, topRatedPlayerRef, businessNetworkPlayerRef, reliablePlayerRef];
 
   useEffect(() => {
-    refs.current.forEach((ref) => {
-      (ref as LordiconPlayer)?.playFromBeginning();
-    });
+    // Initialize all refs at once
+    const allRefs = [
+      ...playerRefs.current.map(player => ({ current: player })),
+      ...players.map(player => ({ current: player.current }))
+    ].filter(ref => ref.current !== null);
+
+    // Create animation handler with a single delay
+    animationHandler.current = AnimationHandler.createFromRefs(allRefs, 5000);
+
+    return () => {
+      // Cleanup animation handler to avoid leaking timers
+      if (animationHandler.current) {
+        animationHandler.current.destroy();
+        animationHandler.current = null;
+      }
+    };
   }, []);
 
-  useEffect(() => {
-    targetPlayerRef.current?.playFromBeginning();
-    goalPlayerRef.current?.playFromBeginning();
-    shopifySpecialistPlayerRef.current?.playFromBeginning();
-    chatPlayerRef.current?.playFromBeginning();
-    marketingPlayerRef.current?.playFromBeginning();
-    bagPlayerRef.current?.playFromBeginning();
-    topRatedPlayerRef.current?.playFromBeginning();
-    businessNetworkPlayerRef.current?.playFromBeginning();
-    reliablePlayerRef.current?.playFromBeginning();
-  }, []);
+  const handleLoopWithDelay = () => animationHandler.current?.handleLoop();
 
   return (
     <>
@@ -89,37 +96,23 @@ export default function AboutPage() {
                     Top-Rated Plus Freelancers on Upwork.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-2 pt-4">
-                    <Button
-                      asChild
-                      size="lg"
-                      className="bg-emerald-600 hover:bg-emerald-700"
-                    >
-                      <Link href="#services">
-                        Our Services <ArrowRight className="ml-2 h-4 w-4" />
-                      </Link>
+                    <Button asChild size="lg" className="bg-emerald-600 hover:bg-emerald-700">
+                      <Link href="#services"> Our Services <ArrowRight className="ml-2 h-4 w-4" /> </Link>
                     </Button>
                     <Button asChild variant="outline" size="lg">
-                      <a className="cursor-pointer">
-                        <CalCom btnTitle="Contact Us" />
-                      </a>
+                      <a className="cursor-pointer"> <CalCom btnTitle="Contact Us"/> </a>
                     </Button>
                   </div>
                   <div className="flex items-center pt-4 space-x-4">
                     <div className="flex">
                       {[1, 2, 3, 4, 5].map((star) => (
-                        <Star
-                          key={star}
-                          className="h-5 w-5 fill-amber-400 text-amber-400"
-                        />
+                        <Star key={star} className="h-5 w-5 fill-amber-400 text-amber-400"/>
                       ))}
                     </div>
                     <p className="text-sm font-medium">
                       Top-Rated Plus on{" "}
-                      <Link
-                        href="https://www.upwork.com/freelancers/~013da667a64c2056fc?mp_source=share"
-                        target="_blank"
-                        className="text-emerald-600 font-bold tracking-tighter"
-                      >
+                      <Link href="https://www.upwork.com/freelancers/~013da667a64c2056fc?mp_source=share"
+                        target="_blank" className="text-emerald-600 font-bold tracking-tighter">
                         Upwork
                       </Link>
                     </p>
@@ -127,22 +120,12 @@ export default function AboutPage() {
                 </div>
                 <div className="relative">
                   <div className="relative h-[400px] w-full overflow-hidden rounded-xl">
-                    <Image
-                      src={teamMeeting}
-                      alt="Team Meeting"
-                      className="object-cover rounded-xl"
-                    />
+                    <Image src={teamMeeting} alt="Team Meeting" className="object-cover rounded-xl"/>
                   </div>
                   <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-lg shadow-lg">
                     <div className="flex items-center gap-2">
-                      <span className="text-4xl font-bold text-emerald-600">
-                        8+
-                      </span>
-                      <span className="text-sm font-medium">
-                        Years of
-                        <br />
-                        Experience
-                      </span>
+                      <span className="text-4xl font-bold text-emerald-600"> 8+ </span>
+                      <span className="text-sm font-medium"> Years of <br /> Experience </span>
                     </div>
                   </div>
                 </div>
@@ -157,14 +140,7 @@ export default function AboutPage() {
                 <Card className="border-emerald-200">
                   <CardHeader>
                     <div className="p-2 w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mb-2">
-                      <Player
-                        ref={targetPlayerRef}
-                        size={100}
-                        icon={TARGET_ICON}
-                        onComplete={() =>
-                          targetPlayerRef.current?.playFromBeginning()
-                        }
-                      />
+                      <Player ref={targetPlayerRef} size={100} icon={TARGET_ICON} onComplete={handleLoopWithDelay} />
                     </div>
                     <CardTitle className="text-2xl">Our Mission</CardTitle>
                   </CardHeader>
@@ -181,14 +157,7 @@ export default function AboutPage() {
                 <Card className="border-emerald-200">
                   <CardHeader>
                     <div className="p-2 w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mb-2">
-                      <Player
-                        ref={goalPlayerRef}
-                        size={100}
-                        icon={GOAL_ICON}
-                        onComplete={() =>
-                          goalPlayerRef.current?.playFromBeginning()
-                        }
-                      />
+                      <Player ref={goalPlayerRef} size={100} icon={GOAL_ICON} onComplete={handleLoopWithDelay} />
                     </div>
                     <CardTitle className="text-2xl">Our Vision</CardTitle>
                   </CardHeader>
@@ -208,12 +177,8 @@ export default function AboutPage() {
           <section className="w-full py-12 md:py-24 bg-emerald-50">
             <div className="container px-4 md:px-6 max-w-screen-xl mx-auto">
               <div className="flex flex-col items-center justify-center space-y-4 text-center mb-10">
-                <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">
-                  Our Team
-                </Badge>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
-                  E-Commerce Experts at Your Service
-                </h2>
+                <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100"> Our Team </Badge>
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl"> E-Commerce Experts at Your Service </h2>
                 <p className="mx-auto max-w-[700px] text-muted-foreground md:text-lg">
                   Our team of skilled Shopify experts and e-commerce
                   professionals is dedicated to helping online businesses thrive
@@ -225,14 +190,7 @@ export default function AboutPage() {
               <div className="grid gap-8 md:grid-cols-3 mt-8">
                 <div className="flex flex-col items-center text-center space-y-3">
                   <div className="w-24 h-24 rounded-full bg-emerald-100 flex items-center justify-center">
-                    <Player
-                      ref={shopifySpecialistPlayerRef}
-                      size={70}
-                      icon={SHOPIFY_SPECIALIST_ICON}
-                      onComplete={() =>
-                        shopifySpecialistPlayerRef.current?.playFromBeginning()
-                      }
-                    />
+                    <Player ref={shopifySpecialistPlayerRef} size={70} icon={SHOPIFY_SPECIALIST_ICON} onComplete={handleLoopWithDelay} />
                   </div>
                   <h3 className="text-xl font-bold">Shopify Specialists</h3>
                   <p className="text-muted-foreground">
@@ -243,14 +201,7 @@ export default function AboutPage() {
 
                 <div className="flex flex-col items-center text-center space-y-3">
                   <div className="w-24 h-24 rounded-full bg-emerald-100 flex items-center justify-center">
-                    <Player
-                      ref={chatPlayerRef}
-                      size={70}
-                      icon={CHAT_ICON}
-                      onComplete={() =>
-                        chatPlayerRef.current?.playFromBeginning()
-                      }
-                    />
+                    <Player ref={chatPlayerRef} size={70} icon={CHAT_ICON} onComplete={handleLoopWithDelay} />
                   </div>
                   <h3 className="text-xl font-bold">Customer Support Pros</h3>
                   <p className="text-muted-foreground">
@@ -261,14 +212,7 @@ export default function AboutPage() {
 
                 <div className="flex flex-col items-center text-center space-y-3">
                   <div className="w-24 h-24 rounded-full bg-emerald-100 flex items-center justify-center">
-                    <Player
-                      ref={marketingPlayerRef}
-                      size={70}
-                      icon={MARKETING_ICON}
-                      onComplete={() =>
-                        marketingPlayerRef.current?.playFromBeginning()
-                      }
-                    />
+                    <Player ref={marketingPlayerRef} size={70} icon={MARKETING_ICON} onComplete={handleLoopWithDelay} />
                   </div>
                   <h3 className="text-xl font-bold">Marketing Strategists</h3>
                   <p className="text-muted-foreground">
@@ -284,12 +228,8 @@ export default function AboutPage() {
           <section className="w-full py-12 md:py-24">
             <div className="container px-4 md:px-6 max-w-screen-xl mx-auto">
               <div className="flex flex-col items-center justify-center space-y-4 text-center mb-10">
-                <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">
-                  Why Choose Us
-                </Badge>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
-                  What Sets Us Apart
-                </h2>
+                <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100"> Why Choose Us </Badge>
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl"> What Sets Us Apart </h2>
                 <p className="mx-auto max-w-[700px] text-muted-foreground md:text-lg">
                   Our commitment to excellence and proven track record make us
                   the ideal partner for your e-commerce success.
@@ -299,18 +239,9 @@ export default function AboutPage() {
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2 mt-8">
                 <div className="flex flex-col p-6 bg-white rounded-lg border shadow-sm">
                   <div className="p-2 w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mb-4">
-                    <Player
-                      ref={bagPlayerRef}
-                      size={100}
-                      icon={BAG_ICON}
-                      onComplete={() =>
-                        bagPlayerRef.current?.playFromBeginning()
-                      }
-                    />
+                    <Player ref={bagPlayerRef} size={100} icon={BAG_ICON} onComplete={handleLoopWithDelay} />
                   </div>
-                  <h3 className="text-xl font-bold mb-2">
-                    Proven Shopify Expertise
-                  </h3>
+                  <h3 className="text-xl font-bold mb-2"> Proven Shopify Expertise </h3>
                   <p className="text-muted-foreground mb-4">
                     We specialize in Shopify support, store optimization, and
                     custom solutions tailored to your needs.
@@ -333,18 +264,9 @@ export default function AboutPage() {
 
                 <div className="flex flex-col p-6 bg-white rounded-lg border shadow-sm">
                   <div className="p-2 w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mb-4">
-                    <Player
-                      ref={reliablePlayerRef}
-                      size={100}
-                      icon={RELIABLE_ICON}
-                      onComplete={() =>
-                        reliablePlayerRef.current?.playFromBeginning()
-                      }
-                    />
+                    <Player ref={reliablePlayerRef} size={100} icon={RELIABLE_ICON} onComplete={handleLoopWithDelay} />
                   </div>
-                  <h3 className="text-xl font-bold mb-2">
-                    Reliable Customer Support
-                  </h3>
+                  <h3 className="text-xl font-bold mb-2"> Reliable Customer Support </h3>
                   <p className="text-muted-foreground mb-4">
                     Our highly skilled team provides outstanding email, chat,
                     and virtual assistance to enhance your customer experience.
@@ -367,18 +289,9 @@ export default function AboutPage() {
 
                 <div className="flex flex-col p-6 bg-white rounded-lg border shadow-sm">
                   <div className="p-2 w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mb-4">
-                    <Player
-                      ref={topRatedPlayerRef}
-                      size={100}
-                      icon={TOP_RATED_ICON}
-                      onComplete={() =>
-                        topRatedPlayerRef.current?.playFromBeginning()
-                      }
-                    />
+                    <Player ref={topRatedPlayerRef} size={100} icon={TOP_RATED_ICON} onComplete={handleLoopWithDelay} />
                   </div>
-                  <h3 className="text-xl font-bold mb-2">
-                    Top-Rated Upwork Agency
-                  </h3>
+                  <h3 className="text-xl font-bold mb-2"> Top-Rated Upwork Agency </h3>
                   <p className="text-muted-foreground mb-4">
                     Our track record of excellence has earned us a Top-Rated
                     Plus status, showcasing our reliability and expertise.
@@ -401,14 +314,7 @@ export default function AboutPage() {
 
                 <div className="flex flex-col p-6 bg-white rounded-lg border shadow-sm">
                   <div className="p-2 w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mb-4">
-                    <Player
-                      ref={businessNetworkPlayerRef}
-                      size={100}
-                      icon={BUSINESS_NETWORK_ICON}
-                      onComplete={() =>
-                        businessNetworkPlayerRef.current?.playFromBeginning()
-                      }
-                    />
+                    <Player ref={businessNetworkPlayerRef} size={100} icon={BUSINESS_NETWORK_ICON} onComplete={handleLoopWithDelay} />
                   </div>
                   <h3 className="text-xl font-bold mb-2">
                     Comprehensive E-Commerce Solutions
@@ -437,15 +343,10 @@ export default function AboutPage() {
           </section>
 
           {/* Services Section */}
-          <section
-            id="services"
-            className="w-full py-12 md:py-24 bg-emerald-50"
-          >
+          <section id="services" className="w-full py-12 md:py-24 bg-emerald-50">
             <div className="container px-4 md:px-6 max-w-screen-xl mx-auto">
               <div className="flex flex-col items-center justify-center space-y-4 text-center mb-10">
-                <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">
-                  Our Services
-                </Badge>
+                <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100"> Our Services </Badge>
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
                   Comprehensive E-Commerce Solutions
                 </h2>
@@ -463,14 +364,13 @@ export default function AboutPage() {
                       service.icon ? (
                         <Player
                           ref={(el) => {
-                            refs.current[idx] = el;
+                            if (playerRefs.current) {
+                              playerRefs.current[idx] = el;
+                            }
                           }}
                           icon={service.icon}
                           size={48}
-                          onComplete={() => {
-                            const player = refs.current[idx] as LordiconPlayer;
-                            player?.playFromBeginning();
-                          }}
+                          onComplete={() => animationHandler.current?.handleLoop()}
                         />
                       ) : (
                         // fallback to Lucide or other icon
@@ -489,11 +389,8 @@ export default function AboutPage() {
           <section id="contact" className="w-full py-12 md:py-24">
             <div className="container px-4 md:px-6 max-w-screen-xl mx-auto">
               <div className="flex flex-col items-center justify-center space-y-4 text-center">
-                <GetStarted
-                  title={"Ready to Take Your Shopify Store to the Next Level?"}
-                  description={
-                    "Contact us today for expert e-commerce support and watch your business grow."
-                  }
+                <GetStarted title={"Ready to Take Your Shopify Store to the Next Level?"}
+                  description={"Contact us today for expert e-commerce support and watch your business grow."}
                   scheduleBtnText={"Schedule a Consultation"}
                   hasViewOurServices={false}
                   hasEmailUs={false}

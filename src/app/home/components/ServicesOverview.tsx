@@ -4,18 +4,22 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { services } from "@/data/services";
-
 import { useEffect, useRef } from "react";
 import { Player } from "@lordicon/react";
 import type { Player as LordiconPlayer } from "@lordicon/react";
+import { AnimationHandler } from "@/app/utils/animationHandler";
 
 export const ServicesOverview = () => {
-  const refs = useRef<(unknown | null)[]>([]);
+  const playerRefs = useRef<(LordiconPlayer | null)[]>([]);
+  const animationHandler = useRef<AnimationHandler | null>(null);
 
   useEffect(() => {
-    refs.current.forEach((ref) => {
-      (ref as LordiconPlayer)?.playFromBeginning();
-    });
+    // Convert refs array to proper format for AnimationHandler
+    const refs = playerRefs.current.map(player => ({
+      current: player
+    }));
+
+    animationHandler.current = AnimationHandler.createFromRefs(refs);
   }, []);
 
   return (
@@ -42,17 +46,15 @@ export const ServicesOverview = () => {
                 service.icon ? (
                   <Player
                     ref={(el) => {
-                      refs.current[idx] = el;
+                      if (playerRefs.current) {
+                        playerRefs.current[idx] = el;
+                      }
                     }}
                     icon={service.icon}
                     size={48}
-                    onComplete={() => {
-                      const player = refs.current[idx] as LordiconPlayer;
-                      player?.playFromBeginning();
-                    }}
+                    onComplete={() => animationHandler.current?.handleLoop()}
                   />
                 ) : (
-                  // fallback to Lucide or other icon
                   <ArrowRight size={48} />
                 )
               }

@@ -21,18 +21,22 @@ import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogHea
 export default function CareerApplicationPage() {
   const resumeInputRef = useRef<HTMLInputElement>(null);
   const [resumeUrl, setResumeUrl] = useState("");
+  const [resumeFileName, setResumeFileName] = useState("");
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
-  const [isDragging, setIsDragging] = useState(false);
+  const [isDraggingResume, setIsDraggingResume] = useState(false);
   const [selectedSkill, setSelectedSkill] = useState<string[]>([]);
   const phoneInputRef = useRef(null);
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const primaryIdInputRef = useRef<HTMLInputElement>(null);
   const [primaryIdUrl, setPrimaryIdUrl] = useState("");
+  const [primaryFileName, setPrimaryFileName] = useState("");
   const [primaryUploading, setPrimaryUploading] = useState(false);
   const [primaryUploadError, setPrimaryUploadError] = useState("");
   const [primaryUploadProgress, setPrimaryUploadProgress] = useState(0);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [isDraggingPrimary, setIsDraggingPrimary] = useState(false);
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -80,11 +84,7 @@ export default function CareerApplicationPage() {
       phone_number: (phoneInputRef.current as HTMLInputElement | null)?.value || "",
       gender: gender,
       email: form.get("email"),
-      street_address: form.get("street-address"),
-      city: form.get("city"),
-      state: form.get("state"),
-      country: form.get("country"),
-      zip_code: form.get("zip-code"),
+      street_address: `${form.get("street-address") || ""} ${form.get("city") || ""} ${form.get("state") || ""} ${form.get("zip-code") || ""} ${form.get("country") || ""}`.trim(),
       skills: selectedSkill.join(", "),
       shopify_url: form.get("store-url"),
       additional_info: form.get("additional-info"),
@@ -103,7 +103,9 @@ export default function CareerApplicationPage() {
         e.currentTarget.reset();
         setSelectedSkill([]);
         setResumeUrl("");
+        setResumeFileName("");
         setPrimaryIdUrl("");
+        setPrimaryFileName("");
       } else {
         const err = await res.json();
         alert(err.message || "Submission failed.");
@@ -112,6 +114,32 @@ export default function CareerApplicationPage() {
       alert("Submission failed.");
     }
   };
+
+  // Delete a previously uploaded file via the server-side API route so that the
+  // service-role key (which has delete permissions) is never exposed to the
+  // browser.
+  const removeSupabaseFile = async (bucket: string, publicUrl: string) => {
+    if (!publicUrl) return;
+
+    // Extract the object path inside the bucket from the public URL.
+    const idx = publicUrl.indexOf(`/${bucket}/`);
+    if (idx === -1) return;
+    const path = decodeURIComponent(publicUrl.slice(idx + bucket.length + 2));
+
+    const res = await fetch("/api/delete-file", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ bucket, path }),
+    });
+
+    if (!res.ok) {
+      // eslint-disable-next-line no-console
+      console.error("Failed to delete file:", await res.text());
+    }
+  };
+
+  const showResumeProgress = uploading || (uploadProgress > 0 && uploadProgress < 100);
+  const showPrimaryProgress = primaryUploading || (primaryUploadProgress > 0 && primaryUploadProgress < 100);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -241,10 +269,12 @@ export default function CareerApplicationPage() {
                       </div>
                       <div className="space-y-4">
                         <h3 className="text-lg font-medium"> Documents </h3>
+
+                        {/* Resume/CV */}
                         <div className="space-y-2">
                           <Label htmlFor="resume"> Resume/CV </Label>
                           <div className={`border-2 rounded-md p-6 flex flex-col items-center justify-center transition-colors relative ${
-                            isDragging
+                            isDraggingResume
                               ? "border-emerald-500 bg-emerald-50 border-dashed"
                               : uploading
                                 ? "border-emerald-500 bg-emerald-50 border-dashed"
@@ -252,9 +282,9 @@ export default function CareerApplicationPage() {
                                   ? "border-emerald-700 border-solid"
                                   : "border-emerald-200 bg-transparent border-dashed"
                           }`}
-                            onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-                            onDragLeave={() => setIsDragging(false)}
-                            onDrop={(e) => { e.preventDefault(); setIsDragging(false);
+                            onDragOver={(e) => { e.preventDefault(); setIsDraggingResume(true); }}
+                            onDragLeave={() => setIsDraggingResume(false)}
+                            onDrop={(e) => { e.preventDefault(); setIsDraggingResume(false);
                               const file = e.dataTransfer.files?.[0];
                               if (file && resumeInputRef.current) {
                                 const dt = new DataTransfer();
@@ -264,12 +294,12 @@ export default function CareerApplicationPage() {
                               }
                             }}>
                             {resumeUrl && (
-                              <div className="absolute top-2 left-2 text-xs text-emerald-700 truncate max-w-[75%]">{resumeUrl.split("/").pop()}</div>
+                              <div className="absolute top-2 left-2 text-xs text-emerald-700 truncate max-w-[75%]">{resumeFileName}</div>
                             )}
                             {resumeUrl && (
-                              <button type="button" className="absolute top-2 right-2 text-gray-500 hover:text-red-500" onClick={() => { setResumeUrl(""); setUploadProgress(0); if(resumeInputRef.current) resumeInputRef.current.value = ""; }}><X className="h-4 w-4"/></button>) }
+                              <button type="button" className="cursor-pointer absolute top-2 right-2 text-gray-500 hover:text-red-500" onClick={async () => { await removeSupabaseFile("resume", resumeUrl); setResumeUrl(""); setResumeFileName(""); setUploadProgress(0); if(resumeInputRef.current) resumeInputRef.current.value = ""; }}><X className="h-4 w-4"/></button>) }
                             <Upload className="h-8 w-8 text-emerald-600 mb-2" />
-                            <p className="text-sm text-muted-foreground mb-2"> Drag and drop your resume/CV here, or click to browse </p>
+                            <p className="text-sm text-muteds-foreground mb-2"> Drag and drop your resume/CV here, or click to browse </p>
                             <Button type="button" variant="outline" size="sm" onClick={() => resumeInputRef.current?.click()}> Browse Files </Button>
                             <input type="file" accept="application/pdf" ref={resumeInputRef} className="hidden" id="resume"
                               onChange={(e) => {
@@ -277,31 +307,37 @@ export default function CareerApplicationPage() {
                                 if (!file) return;
                                 if (file.type !== "application/pdf") { setUploadError("Only PDF files are allowed."); return; }
                                 if (file.size > 2 * 1024 * 1024) { setUploadError("File must be less than 2 MB."); return; }
-                                handleFileUpload({ e, bucket: "resume", prefix: "resume", setFileName: setResumeUrl, setUploading, setUploadError, setFileUrl: setResumeUrl, setUploadProgress });
+                                setResumeUrl("");
+                                setResumeFileName("");
+                                handleFileUpload({ e, bucket: "resume", prefix: "resume", setFileName: setResumeFileName, setUploading, setUploadError, setFileUrl: setResumeUrl, setUploadProgress });
                               }}
                             />
-                            <div className="flex pt-3 w-full align-baseline items-center gap-2">
+                            {(uploadProgress > 0 || uploading || showResumeProgress) && <div className="flex pt-3 w-full align-baseline items-center gap-2">
                               <Progress className="text-emerald-600" value={uploadProgress} />
                               { uploading && <Loader2 className="h-5 w-5 text-emerald-600 animate-spin"/> }
                               { uploadError && <span className="text-red-600 text-xs">{uploadError}</span> }
-                            </div>
+                            </div>}
                           </div>
                         </div>
+
+                        {/* Primary ID Photo */}
                         <div className="space-y-2">
                           <Label htmlFor="id-photo"> Photo of Primary ID </Label>
                           <div className={`border-2 rounded-md p-6 flex flex-col items-center justify-center transition-colors relative ${
-                            primaryUploading
+                            isDraggingPrimary
                               ? "border-emerald-500 bg-emerald-50 border-dashed"
-                              : primaryIdUrl
-                                ? "border-emerald-700 border-solid"
-                                : "border-emerald-200 bg-transparent border-dashed"
+                              : primaryUploading
+                                ? "border-emerald-500 bg-emerald-50 border-dashed"
+                                : primaryIdUrl
+                                  ? "border-emerald-700 border-solid"
+                                  : "border-emerald-200 bg-transparent border-dashed"
                           }`}
                           >
                             {primaryIdUrl && (
-                              <div className="absolute top-2 left-2 text-xs text-emerald-700 truncate max-w-[75%]">{primaryIdUrl.split("/").pop()}</div>
+                              <div className="absolute top-2 left-2 text-xs text-emerald-700 truncate max-w-[75%]">{primaryFileName}</div>
                             )}
                             {primaryIdUrl && (
-                              <button type="button" className="absolute top-2 right-2 text-gray-500 hover:text-red-500" onClick={() => { setPrimaryIdUrl(""); setPrimaryUploadProgress(0); if(primaryIdInputRef.current) primaryIdInputRef.current.value = ""; }}><X className="h-4 w-4"/></button>) }
+                              <button type="button" className="cursor-pointer absolute top-2 right-2 text-gray-500 hover:text-red-500" onClick={async () => { await removeSupabaseFile("primary-id", primaryIdUrl); setPrimaryIdUrl(""); setPrimaryFileName(""); setPrimaryUploadProgress(0); if(primaryIdInputRef.current) primaryIdInputRef.current.value = ""; }}><X className="h-4 w-4"/></button>) }
                             <Upload className="h-8 w-8 text-emerald-600 mb-2" />
                             <p className="text-sm text-muted-foreground mb-2"> Upload a clear JPG/JPEG photo of your primary ID </p>
                             <Button variant="outline" size="sm" type="button" onClick={() => primaryIdInputRef.current?.click()}> Browse Files </Button>
@@ -317,14 +353,16 @@ export default function CareerApplicationPage() {
                                   setPrimaryUploadError("File must be less than 2 MB.");
                                   return;
                                 }
-                                handleFileUpload({ e, bucket: "primary-id", prefix: "primary-id", setFileName: setPrimaryIdUrl, setUploading: setPrimaryUploading, setUploadError: setPrimaryUploadError, setFileUrl: setPrimaryIdUrl, setUploadProgress: setPrimaryUploadProgress });
+                                setPrimaryIdUrl("");
+                                setPrimaryFileName("");
+                                handleFileUpload({ e, bucket: "primary-id", prefix: "primary-id", setFileName: setPrimaryFileName, setUploading: setPrimaryUploading, setUploadError: setPrimaryUploadError, setFileUrl: setPrimaryIdUrl, setUploadProgress: setPrimaryUploadProgress });
                               }}
                             />
-                            <div className="flex pt-3 w-full align-baseline items-center gap-2">
+                            {showPrimaryProgress && <div className="flex pt-3 w-full align-baseline items-center gap-2">
                               <Progress className="text-emerald-600" value={primaryUploadProgress} />
                               { primaryUploading && <Loader2 className="h-5 w-5 text-emerald-600 animate-spin"/> }
                               { primaryUploadError && <span className="text-red-600 text-xs">{primaryUploadError}</span> }
-                            </div>
+                            </div>}
                           </div>
                         </div>
                       </div>

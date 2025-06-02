@@ -15,14 +15,34 @@ import businessOwner from "@/assets/images/general/business-owner-working.jpg";
 import { useEffect, useRef } from "react";
 import { Player } from "@lordicon/react";
 import type { Player as LordiconPlayer } from "@lordicon/react";
+import { AnimationHandler } from "@/app/utils/animationHandler";
 
 export default function Services() {
-  const refs = useRef<(unknown | null)[]>([]);
+  const playerRefs = useRef<(LordiconPlayer | null)[]>([]);
+  const animationHandler = useRef<AnimationHandler | null>(null);
 
   useEffect(() => {
-    refs.current.forEach((ref) => {
-      (ref as LordiconPlayer)?.playFromBeginning();
-    });
+    // Wait for next render to ensure refs are populated
+    const timeoutId = setTimeout(() => {
+      // Convert refs array to proper format for AnimationHandler
+      const refs = playerRefs.current.map(player => ({
+        current: player
+      }));
+
+      animationHandler.current = AnimationHandler.createFromRefs(refs);
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
+  }, []);
+
+  // Ensure animation handler timers are cleared when the component unmounts
+  useEffect(() => {
+    return () => {
+      if (animationHandler.current) {
+        animationHandler.current.destroy();
+        animationHandler.current = null;
+      }
+    };
   }, []);
 
   return (
@@ -34,9 +54,7 @@ export default function Services() {
           <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-emerald-50 to-white">
             <div className="container px-4 md:px-6 max-w-screen-xl mx-auto">
               <div className="flex flex-col items-center justify-center space-y-4 text-center">
-                <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">
-                  Shopify Experts
-                </Badge>
+                <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100"> Shopify Experts </Badge>
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
                   Comprehensive Support for Your{" "}
                   <span className="text-emerald-600">Shopify</span> Store
@@ -46,12 +64,8 @@ export default function Services() {
                   online businesses with our specialized support services.
                 </p>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                  <Button
-                    asChild
-                    className="bg-emerald-600 hover:bg-emerald-700"
-                  >
-                    <Link href="#services">
-                      Explore Our Services{" "}
+                  <Button asChild className="bg-emerald-600 hover:bg-emerald-700" >
+                    <Link href="#services"> Explore Our Services{" "}
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>
@@ -86,14 +100,13 @@ export default function Services() {
                       service.icon ? (
                         <Player
                           ref={(el) => {
-                            refs.current[idx] = el;
+                           if (playerRefs.current) {
+                            playerRefs.current[idx] = el;
+                           }
                           }}
                           icon={service.icon}
                           size={48}
-                          onComplete={() => {
-                            const player = refs.current[idx] as LordiconPlayer;
-                            player?.playFromBeginning();
-                          }}
+                          onComplete={() => animationHandler.current?.handleLoop()}
                         />
                       ) : (
                         // fallback to Lucide or other icon

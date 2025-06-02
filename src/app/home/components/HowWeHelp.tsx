@@ -16,16 +16,20 @@ import TIME_ICON from "@/assets/lordicon/time.json";
 import STRESS_ICON from "@/assets/lordicon/stress.json";
 import GROWTH_ICON from "@/assets/lordicon/growth.json";
 
+import { AnimationHandler } from "@/app/utils/animationHandler";
+
 export const HowWeHelp = () => {
   const timePlayerRef = useRef<LordiconPlayer>(null);
   const stressPlayerRef = useRef<LordiconPlayer>(null);
   const growthPlayerRef = useRef<LordiconPlayer>(null);
+  const animationHandler = useRef<AnimationHandler | null>(null);
+  const players = [timePlayerRef, stressPlayerRef, growthPlayerRef];
 
   useEffect(() => {
-    timePlayerRef.current?.playFromBeginning();
-    stressPlayerRef.current?.playFromBeginning();
-    growthPlayerRef.current?.playFromBeginning();
+    animationHandler.current = AnimationHandler.createFromRefs(players);
   }, []);
+
+  const handleLoopWithDelay = () => animationHandler.current?.handleLoop();
 
   return (
     <section className="w-full py-12 md:py-24">
@@ -52,9 +56,7 @@ export const HowWeHelp = () => {
                     ref={timePlayerRef}
                     size={100}
                     icon={TIME_ICON}
-                    onComplete={() =>
-                      timePlayerRef.current?.playFromBeginning()
-                    }
+                    onComplete={handleLoopWithDelay}
                   />
                 </div>
                 <CardTitle>Save Time</CardTitle>
@@ -95,9 +97,7 @@ export const HowWeHelp = () => {
                     ref={stressPlayerRef}
                     size={100}
                     icon={STRESS_ICON}
-                    onComplete={() =>
-                      stressPlayerRef.current?.playFromBeginning()
-                    }
+                    onComplete={handleLoopWithDelay}
                   />
                 </div>
                 <CardTitle>Reduce Stress</CardTitle>
@@ -136,9 +136,7 @@ export const HowWeHelp = () => {
                     ref={growthPlayerRef}
                     size={100}
                     icon={GROWTH_ICON}
-                    onComplete={() =>
-                      growthPlayerRef.current?.playFromBeginning()
-                    }
+                    onComplete={handleLoopWithDelay}
                   />
                 </div>
                 <CardTitle>Grow Your Business</CardTitle>

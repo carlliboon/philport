@@ -23,6 +23,8 @@ export const TrustedBy = () => {
                   width={100}
                   height={32}
                   loading="lazy"
+                  quality={75}
+                  sizes="(max-width: 768px) 100px, 100px"
                 />
               </div>
             </div>
@@ -35,6 +37,8 @@ export const TrustedBy = () => {
                   width={100}
                   height={32}
                   loading="lazy"
+                  quality={75}
+                  sizes="(max-width: 768px) 100px, 100px"
                 />
               </div>
             </div>
@@ -47,6 +51,8 @@ export const TrustedBy = () => {
                   width={100}
                   height={25}
                   loading="lazy"
+                  quality={75}
+                  sizes="(max-width: 768px) 100px, 100px"
                 />
               </div>
             </div>
@@ -59,6 +65,8 @@ export const TrustedBy = () => {
                   width={100}
                   height={32}
                   loading="lazy"
+                  quality={75}
+                  sizes="(max-width: 768px) 100px, 100px"
                 />
               </div>
             </div>
@@ -71,6 +79,8 @@ export const TrustedBy = () => {
                   width={100}
                   height={32}
                   loading="lazy"
+                  quality={75}
+                  sizes="(max-width: 768px) 100px, 100px"
                 />
               </div>
             </div>

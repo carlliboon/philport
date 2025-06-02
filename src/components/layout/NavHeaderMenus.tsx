@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import Link from "next/link";
@@ -77,7 +78,7 @@ export const NavHeaderMenus = () => {
             </span>
           </Button>
 
-          {pathname === "/signup" && (
+          {/* {pathname === "/signup" && (
             <>
               <Button
                 size="sm"
@@ -88,7 +89,7 @@ export const NavHeaderMenus = () => {
               </Button>
               <LoginModal open={loginOpen} onOpenChange={setLoginOpen} />
             </>
-          )}
+          )} */}
         </div>
       </div>
 
@@ -124,7 +125,7 @@ export const NavHeaderMenus = () => {
                   <CalCom btnTitle="Book a Call" />
                 </span>
               </Button>
-              {pathname === "signup" && (
+              {/* {pathname === "signup" && (
                 <>
                   <Button
                     size="sm"
@@ -135,7 +136,7 @@ export const NavHeaderMenus = () => {
                   </Button>
                   <LoginModal open={loginOpen} onOpenChange={setLoginOpen} />
                 </>
-              )}
+              )} */}
             </div>
           </div>
         </div>

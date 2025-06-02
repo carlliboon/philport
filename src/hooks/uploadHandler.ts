@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { generateFileName } from "@/lib/utils";
 
 interface UploadFileParams {
   e: React.ChangeEvent<HTMLInputElement>;
@@ -11,16 +12,9 @@ interface UploadFileParams {
   setUploadProgress: (progress: number) => void;
 }
 
-export const handleFileUpload = async ({
-  e,
-  bucket,
-  prefix,
-  setFileName,
-  setUploading,
-  setUploadError,
-  setFileUrl,
-  setUploadProgress,
-}: UploadFileParams) => {
+export const handleFileUpload = async ({ e, bucket, prefix, setFileName, setUploading,  setUploadError, setFileUrl,
+  setUploadProgress, }: UploadFileParams) => {
+    
   const file = e.target.files?.[0];
   if (!file) return;
 
@@ -29,8 +23,11 @@ export const handleFileUpload = async ({
   setUploadError("");
   setUploadProgress(0);
 
-  const fileExt = file.name.split(".").pop();
-  const fileName = `${prefix}-${Date.now()}.${fileExt}`;
+  const fileName = generateFileName({
+    prefix,
+    originalName: file.name,
+    timestamp: true // Use timestamp for general uploads to ensure uniqueness
+  });
 
   // Supabase JS client upload – returns detailed error info on failure
   const { error } = await supabase.storage.from(bucket).upload(fileName, file, {

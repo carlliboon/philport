@@ -60,6 +60,10 @@ export const HeroSection = () => {
                     src={michael}
                     alt="Michael Haessig"
                     className="object-cover rounded-xl"
+                    width={32}
+                    height={32}
+                    loading="lazy"
+                    quality={75}
                   />
                 </div>
                 <div className="w-8 h-8 rounded-full bg-emerald-200 flex items-center justify-center text-emerald-700 text-xs font-medium">
@@ -67,6 +71,10 @@ export const HeroSection = () => {
                     src={nolan}
                     alt="Nolan Kahal"
                     className="object-cover rounded-xl"
+                    width={32}
+                    height={32}
+                    loading="lazy"
+                    quality={75}
                   />
                 </div>
                 <div className="w-8 h-8 rounded-full bg-emerald-200 flex items-center justify-center text-emerald-700 text-xs font-medium">
@@ -74,6 +82,10 @@ export const HeroSection = () => {
                     src={ben}
                     alt="Ben Lebowitz"
                     className="object-cover rounded-xl"
+                    width={32}
+                    height={32}
+                    loading="lazy"
+                    quality={75}
                   />
                 </div>
                 <div className="relative w-8 h-8 rounded-full overflow-hidden">
@@ -102,9 +114,11 @@ export const HeroSection = () => {
                 alt="Team Meeting"
                 fill
                 priority
-                quality={75}
-                sizes="(max-width: 768px) 100vw, 50vw"
+                quality={85}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-cover rounded-xl"
+                placeholder="blur"
+                loading="eager"
               />
             </div>
             <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-lg shadow-lg">
