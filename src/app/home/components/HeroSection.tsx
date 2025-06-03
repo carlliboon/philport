@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { StaticImageData } from "next/image";
 
 import teamMeeting from "@/assets/images/general/team-meeting.jpg";
 import clients from "@/assets/images/clients/clients.png";
@@ -55,39 +56,9 @@ export const HeroSection = () => {
 
             <div className="flex items-center pt-4 space-x-4">
               <div className="flex -space-x-2">
-                <div className="w-8 h-8 rounded-full bg-emerald-200 flex items-center justify-center text-emerald-700 text-xs font-medium">
-                  <Image
-                    src={michael}
-                    alt="Michael Haessig"
-                    className="object-cover rounded-xl"
-                    width={32}
-                    height={32}
-                    loading="lazy"
-                    quality={75}
-                  />
-                </div>
-                <div className="w-8 h-8 rounded-full bg-emerald-200 flex items-center justify-center text-emerald-700 text-xs font-medium">
-                  <Image
-                    src={nolan}
-                    alt="Nolan Kahal"
-                    className="object-cover rounded-xl"
-                    width={32}
-                    height={32}
-                    loading="lazy"
-                    quality={75}
-                  />
-                </div>
-                <div className="w-8 h-8 rounded-full bg-emerald-200 flex items-center justify-center text-emerald-700 text-xs font-medium">
-                  <Image
-                    src={ben}
-                    alt="Ben Lebowitz"
-                    className="object-cover rounded-xl"
-                    width={32}
-                    height={32}
-                    loading="lazy"
-                    quality={75}
-                  />
-                </div>
+                <ClientImage src={michael} alt="Michael Haessig" />
+                <ClientImage src={nolan} alt="Nolan Kahal" />
+                <ClientImage src={ben} alt="Ben Lebowitz" />
                 <div className="relative w-8 h-8 rounded-full overflow-hidden">
                   <div
                     className="absolute inset-0 bg-center bg-cover scale-130 blur-md"
@@ -142,3 +113,18 @@ export const HeroSection = () => {
     </section>
   );
 };
+
+function ClientImage({src, alt} : {src: string | StaticImageData, alt: string}) {
+  return (
+    <div className="w-8 h-8 rounded-full bg-emerald-200 flex items-center justify-center text-emerald-700 text-xs font-medium">
+      <Image
+        src={src}
+        alt={alt}
+        className="object-cover rounded-xl"
+        width={32}
+        height={32}
+        loading="lazy"
+        quality={75}/>
+    </div>
+  );
+}

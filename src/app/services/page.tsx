@@ -15,7 +15,7 @@ import businessOwner from "@/assets/images/general/business-owner-working.jpg";
 import { useEffect, useRef } from "react";
 import { Player } from "@lordicon/react";
 import type { Player as LordiconPlayer } from "@lordicon/react";
-import { AnimationHandler } from "@/app/utils/animationHandler";
+import { AnimationHandler } from "@/utils/animationHandler";
 
 export default function Services() {
   const playerRefs = useRef<(LordiconPlayer | null)[]>([]);
@@ -159,51 +159,10 @@ export default function Services() {
                     owners face.
                   </p>
                   <div className="space-y-3">
-                    <div className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-emerald-600 mt-0.5" />
-                      <div>
-                        <h3 className="font-medium">
-                          Shopify Platform Expertise
-                        </h3>
-                        <p className="text-sm text-muted-foreground">
-                          Our team specializes in all aspects of the Shopify
-                          ecosystem
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-emerald-600 mt-0.5" />
-                      <div>
-                        <h3 className="font-medium">
-                          E-commerce Focused Support
-                        </h3>
-                        <p className="text-sm text-muted-foreground">
-                          We understand the unique needs of online retailers
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-emerald-600 mt-0.5" />
-                      <div>
-                        <h3 className="font-medium">
-                          Flexible Service Packages
-                        </h3>
-                        <p className="text-sm text-muted-foreground">
-                          Customized solutions based on your specific
-                          requirements
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-emerald-600 mt-0.5" />
-                      <div>
-                        <h3 className="font-medium">Proven Track Record</h3>
-                        <p className="text-sm text-muted-foreground">
-                          Helping Shopify merchants increase sales and
-                          efficiency
-                        </p>
-                      </div>
-                    </div>
+                    <Advantages heading="Shopify Platform Expertise" description="Our team specializes in all aspects of the Shopify ecosystem" />
+                    <Advantages heading="E-commerce Focused Support" description="We understand the unique needs of online retailers" />
+                    <Advantages heading="Flexible Service Packages" description="Customized solutions based on your specific requirements" />
+                    <Advantages heading="Proven Track Record" description="Helping Shopify merchants increase sales and efficiency" />
                   </div>
                   <div className="flex flex-col gap-2 min-[400px]:flex-row pt-4">
                     <Button
@@ -249,5 +208,17 @@ export default function Services() {
         <FooterMenus />
       </div>
     </>
+  );
+}
+
+function Advantages({heading, description}: {heading: string, description: string}) {
+  return (
+    <div className="flex items-start gap-2">
+      <CheckCircle2 className="h-5 w-5 text-emerald-600 mt-0.5" />
+      <div>
+        <h3 className="font-medium">{heading}</h3>
+        <p className="text-sm text-muted-foreground">{description}</p>
+      </div>
+    </div>
   );
 }

@@ -6,69 +6,23 @@ import { ArrowRight, CheckCircle2, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ServiceCard } from "@/components/common";
-import { GetStarted } from "@/components/common";
-import { NavHeaderMenus } from "@/components/layout";
-import { FooterMenus } from "@/components/layout";
+import { ServiceCard, GetStarted, Title, CalCom } from "@/components/common";
+import { NavHeaderMenus, FooterMenus } from "@/components/layout";
 import { services } from "@/data/services";
-import { Title } from "@/components/common";
-import { CalCom } from "@/components/common";
 import Image from "next/image";
-
 import teamMeeting from "@/assets/images/general/team-meeting.jpg";
 
-import TARGET_ICON from "@/assets/lordicon/target.json";
-import GOAL_ICON from "@/assets/lordicon/goal.json";
-import SHOPIFY_SPECIALIST_ICON from "@/assets/lordicon/shopify-specialist.json";
-import CHAT_ICON from "@/assets/lordicon/chat.json";
-import MARKETING_ICON from "@/assets/lordicon/marketing.json";
-import BAG_ICON from "@/assets/lordicon/bag.json";
-import TOP_RATED_ICON from "@/assets/lordicon/top-rated.json";
-import BUSINESS_NETWORK_ICON from "@/assets/lordicon/business-network.json";
-import RELIABLE_ICON from "@/assets/lordicon/reliable.json";
+import { TARGET, GOAL, SHOPIFY_SPECIALIST, CHAT, MARKETING, BAG, TOP_RATED, BUSINESS_NETWORK, RELIABLE } from "@/assets/lordicon";
 
-// export const dynamic = "force-dynamic";
-
-import { useEffect, useRef } from "react";
 import { Player } from "@lordicon/react";
-import type{ Player as LordiconPlayer } from "@lordicon/react";
-
-import { AnimationHandler } from "@/app/utils/animationHandler";
+import { useLordiconAnimation } from "@/hooks/useLordiconAnimation";
+import type { Player as LordiconPlayer } from "@lordicon/react";
 
 export default function AboutPage() {
-  const playerRefs = useRef<(LordiconPlayer | null)[]>([]);
-  const targetPlayerRef = useRef<LordiconPlayer>(null);
-  const goalPlayerRef = useRef<LordiconPlayer>(null);
-  const shopifySpecialistPlayerRef = useRef<LordiconPlayer>(null);
-  const chatPlayerRef = useRef<LordiconPlayer>(null);
-  const marketingPlayerRef = useRef<LordiconPlayer>(null);
-  const bagPlayerRef = useRef<LordiconPlayer>(null);
-  const topRatedPlayerRef = useRef<LordiconPlayer>(null);
-  const businessNetworkPlayerRef = useRef<LordiconPlayer>(null);
-  const reliablePlayerRef = useRef<LordiconPlayer>(null);
-  const animationHandler = useRef<AnimationHandler | null>(null);
-  const players = [targetPlayerRef, goalPlayerRef, shopifySpecialistPlayerRef, chatPlayerRef, marketingPlayerRef, bagPlayerRef, topRatedPlayerRef, businessNetworkPlayerRef, reliablePlayerRef];
-
-  useEffect(() => {
-    // Initialize all refs at once
-    const allRefs = [
-      ...playerRefs.current.map(player => ({ current: player })),
-      ...players.map(player => ({ current: player.current }))
-    ].filter(ref => ref.current !== null);
-
-    // Create animation handler with a single delay
-    animationHandler.current = AnimationHandler.createFromRefs(allRefs, 5000);
-
-    return () => {
-      // Cleanup animation handler to avoid leaking timers
-      if (animationHandler.current) {
-        animationHandler.current.destroy();
-        animationHandler.current = null;
-      }
-    };
-  }, []);
-
-  const handleLoopWithDelay = () => animationHandler.current?.handleLoop();
+  // 9 icons above + dynamic service icons
+  const totalPlayers = 9 + services.length;
+  const { registerPlayer, replay } = useLordiconAnimation(3000, totalPlayers);
+  const handleLoopWithDelay = replay;
 
   return (
     <>
@@ -137,38 +91,20 @@ export default function AboutPage() {
           <section className="w-full py-12 md:py-24">
             <div className="container px-4 md:px-6 max-w-screen-xl mx-auto">
               <div className="grid gap-6 md:grid-cols-2">
-                <Card className="border-emerald-200">
-                  <CardHeader>
-                    <div className="p-2 w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mb-2">
-                      <Player ref={targetPlayerRef} size={100} icon={TARGET_ICON} onComplete={handleLoopWithDelay} />
-                    </div>
-                    <CardTitle className="text-2xl">Our Mission</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">
-                      We are committed to empowering e-commerce brands by
-                      providing seamless Shopify support, exceptional customer
-                      service, and strategic digital solutions that drive
-                      growth, efficiency, and profitability.
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card className="border-emerald-200">
-                  <CardHeader>
-                    <div className="p-2 w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mb-2">
-                      <Player ref={goalPlayerRef} size={100} icon={GOAL_ICON} onComplete={handleLoopWithDelay} />
-                    </div>
-                    <CardTitle className="text-2xl">Our Vision</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">
-                      To become the leading Shopify support agency, setting new
-                      standards in e-commerce assistance and helping businesses
-                      scale effortlessly in the competitive digital space.
-                    </p>
-                  </CardContent>
-                </Card>
+                <MissionVision 
+                  playerRef={registerPlayer(0)}
+                  icon={TARGET} 
+                  title="Our Mission" 
+                  content="We are committed to empowering e-commerce brands by providing seamless Shopify support, exceptional customer service, and strategic digital solutions that drive growth, efficiency, and profitability." 
+                  handleLoopWithDelay={handleLoopWithDelay} 
+                />
+                <MissionVision 
+                  playerRef={registerPlayer(1)}
+                  icon={GOAL} 
+                  title="Our Vision" 
+                  content="To become the leading Shopify support agency, setting new standards in e-commerce assistance and helping businesses scale effortlessly in the competitive digital space." 
+                  handleLoopWithDelay={handleLoopWithDelay} 
+                />
               </div>
             </div>
           </section>
@@ -188,38 +124,27 @@ export default function AboutPage() {
               </div>
 
               <div className="grid gap-8 md:grid-cols-3 mt-8">
-                <div className="flex flex-col items-center text-center space-y-3">
-                  <div className="w-24 h-24 rounded-full bg-emerald-100 flex items-center justify-center">
-                    <Player ref={shopifySpecialistPlayerRef} size={70} icon={SHOPIFY_SPECIALIST_ICON} onComplete={handleLoopWithDelay} />
-                  </div>
-                  <h3 className="text-xl font-bold">Shopify Specialists</h3>
-                  <p className="text-muted-foreground">
-                    Expert developers and designers who specialize in Shopify
-                    store optimization and customization.
-                  </p>
-                </div>
-
-                <div className="flex flex-col items-center text-center space-y-3">
-                  <div className="w-24 h-24 rounded-full bg-emerald-100 flex items-center justify-center">
-                    <Player ref={chatPlayerRef} size={70} icon={CHAT_ICON} onComplete={handleLoopWithDelay} />
-                  </div>
-                  <h3 className="text-xl font-bold">Customer Support Pros</h3>
-                  <p className="text-muted-foreground">
-                    Dedicated support specialists who provide exceptional
-                    service through email, chat, and virtual assistance.
-                  </p>
-                </div>
-
-                <div className="flex flex-col items-center text-center space-y-3">
-                  <div className="w-24 h-24 rounded-full bg-emerald-100 flex items-center justify-center">
-                    <Player ref={marketingPlayerRef} size={70} icon={MARKETING_ICON} onComplete={handleLoopWithDelay} />
-                  </div>
-                  <h3 className="text-xl font-bold">Marketing Strategists</h3>
-                  <p className="text-muted-foreground">
-                    Growth-focused marketers who develop and implement
-                    strategies to boost your e-commerce performance.
-                  </p>
-                </div>
+                <TeamSkills 
+                  playerRef={registerPlayer(2)}
+                  icon={SHOPIFY_SPECIALIST} 
+                  title="Shopify Specialists" 
+                  content="Expert developers and designers who specialize in Shopify store optimization and customization." 
+                  handleLoopWithDelay={handleLoopWithDelay} 
+                />
+                <TeamSkills 
+                  playerRef={registerPlayer(3)}
+                  icon={CHAT} 
+                  title="Customer Support Pros" 
+                  content="Dedicated support specialists who provide exceptional service through email, chat, and virtual assistance." 
+                  handleLoopWithDelay={handleLoopWithDelay} 
+                />
+                <TeamSkills 
+                  playerRef={registerPlayer(4)}
+                  icon={MARKETING} 
+                  title="Marketing Strategists" 
+                  content="Growth-focused marketers who develop and implement strategies to boost your e-commerce performance." 
+                  handleLoopWithDelay={handleLoopWithDelay} 
+                />
               </div>
             </div>
           </section>
@@ -237,107 +162,38 @@ export default function AboutPage() {
               </div>
 
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2 mt-8">
-                <div className="flex flex-col p-6 bg-white rounded-lg border shadow-sm">
-                  <div className="p-2 w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mb-4">
-                    <Player ref={bagPlayerRef} size={100} icon={BAG_ICON} onComplete={handleLoopWithDelay} />
-                  </div>
-                  <h3 className="text-xl font-bold mb-2"> Proven Shopify Expertise </h3>
-                  <p className="text-muted-foreground mb-4">
-                    We specialize in Shopify support, store optimization, and
-                    custom solutions tailored to your needs.
-                  </p>
-                  <ul className="space-y-2 mt-auto">
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-emerald-600 mt-0.5" />
-                      <span>Store setup and optimization</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-emerald-600 mt-0.5" />
-                      <span>Theme customization</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-emerald-600 mt-0.5" />
-                      <span>Technical troubleshooting</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="flex flex-col p-6 bg-white rounded-lg border shadow-sm">
-                  <div className="p-2 w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mb-4">
-                    <Player ref={reliablePlayerRef} size={100} icon={RELIABLE_ICON} onComplete={handleLoopWithDelay} />
-                  </div>
-                  <h3 className="text-xl font-bold mb-2"> Reliable Customer Support </h3>
-                  <p className="text-muted-foreground mb-4">
-                    Our highly skilled team provides outstanding email, chat,
-                    and virtual assistance to enhance your customer experience.
-                  </p>
-                  <ul className="space-y-2 mt-auto">
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-emerald-600 mt-0.5" />
-                      <span>Professional communication</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-emerald-600 mt-0.5" />
-                      <span>Quick response times</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-emerald-600 mt-0.5" />
-                      <span>Customer satisfaction focus</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="flex flex-col p-6 bg-white rounded-lg border shadow-sm">
-                  <div className="p-2 w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mb-4">
-                    <Player ref={topRatedPlayerRef} size={100} icon={TOP_RATED_ICON} onComplete={handleLoopWithDelay} />
-                  </div>
-                  <h3 className="text-xl font-bold mb-2"> Top-Rated Upwork Agency </h3>
-                  <p className="text-muted-foreground mb-4">
-                    Our track record of excellence has earned us a Top-Rated
-                    Plus status, showcasing our reliability and expertise.
-                  </p>
-                  <ul className="space-y-2 mt-auto">
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-emerald-600 mt-0.5" />
-                      <span>Consistent 5-star reviews</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-emerald-600 mt-0.5" />
-                      <span>Long-term client relationships</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-emerald-600 mt-0.5" />
-                      <span>Proven project success</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="flex flex-col p-6 bg-white rounded-lg border shadow-sm">
-                  <div className="p-2 w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mb-4">
-                    <Player ref={businessNetworkPlayerRef} size={100} icon={BUSINESS_NETWORK_ICON} onComplete={handleLoopWithDelay} />
-                  </div>
-                  <h3 className="text-xl font-bold mb-2">
-                    Comprehensive E-Commerce Solutions
-                  </h3>
-                  <p className="text-muted-foreground mb-4">
-                    From store management to marketing, we provide full-scale
-                    e-commerce support.
-                  </p>
-                  <ul className="space-y-2 mt-auto">
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-emerald-600 mt-0.5" />
-                      <span>End-to-end store management</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-emerald-600 mt-0.5" />
-                      <span>Marketing and growth strategies</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle2 className="h-5 w-5 text-emerald-600 mt-0.5" />
-                      <span>Content creation and design</span>
-                    </li>
-                  </ul>
-                </div>
+                <TrackRecord 
+                  playerRef={registerPlayer(5)}
+                  icon={BAG} 
+                  title="Proven Shopify Expertise" 
+                  content="We specialize in Shopify support, store optimization, and custom solutions tailored to your needs." 
+                  list={["Store setup and optimization", "Theme customization", "Technical troubleshooting"]} 
+                  handleLoopWithDelay={handleLoopWithDelay} 
+                />
+                <TrackRecord 
+                  playerRef={registerPlayer(6)}
+                  icon={RELIABLE} 
+                  title="Reliable Customer Support" 
+                  content="Our highly skilled team provides outstanding email, chat, and virtual assistance to enhance your customer experience." 
+                  list={["Professional communication", "Quick response times", "Customer satisfaction focus"]} 
+                  handleLoopWithDelay={handleLoopWithDelay} 
+                />
+                <TrackRecord 
+                  playerRef={registerPlayer(7)}
+                  icon={TOP_RATED} 
+                  title="Top-Rated Upwork Agency" 
+                  content="Our track record of excellence has earned us a Top-Rated Plus status, showcasing our reliability and expertise." 
+                  list={["Consistent 5-star reviews", "Long-term client relationships", "Proven project success"]} 
+                  handleLoopWithDelay={handleLoopWithDelay} 
+                />
+                <TrackRecord 
+                  playerRef={registerPlayer(8)}
+                  icon={BUSINESS_NETWORK} 
+                  title="Comprehensive E-Commerce Solutions" 
+                  content="From store management to marketing, we provide full-scale e-commerce support." 
+                  list={["End-to-end store management", "Marketing and growth strategies", "Content creation and design"]} 
+                  handleLoopWithDelay={handleLoopWithDelay} 
+                />
               </div>
             </div>
           </section>
@@ -363,14 +219,10 @@ export default function AboutPage() {
                     icon={
                       service.icon ? (
                         <Player
-                          ref={(el) => {
-                            if (playerRefs.current) {
-                              playerRefs.current[idx] = el;
-                            }
-                          }}
+                          ref={registerPlayer(9 + idx)}
                           icon={service.icon}
                           size={48}
-                          onComplete={() => animationHandler.current?.handleLoop()}
+                          onComplete={() => replay()}
                         />
                       ) : (
                         // fallback to Lucide or other icon
@@ -403,4 +255,63 @@ export default function AboutPage() {
       </div>
     </>
   );
+}
+
+interface PlayerRefProps {
+  playerRef: (node: LordiconPlayer | null) => void,
+  icon: Record<string, unknown>,
+  title: string,
+  content: string,
+  list?: string[],
+  handleLoopWithDelay: () => void
+}
+
+function MissionVision({playerRef, icon, title, content, handleLoopWithDelay}: PlayerRefProps) {
+  return (
+    <Card className="border-emerald-200">
+      <CardHeader>
+        <div className="p-2 w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mb-2">
+          <Player ref={playerRef} size={100} icon={icon} onComplete={handleLoopWithDelay} />
+        </div>
+        <CardTitle className="text-2xl">{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p className="text-muted-foreground">{content}</p>
+      </CardContent>
+    </Card>
+  )
+}
+
+function TeamSkills({playerRef, icon, title, content, handleLoopWithDelay}: PlayerRefProps) {
+  return (
+    <div className="flex flex-col items-center text-center space-y-3">
+      <div className="w-24 h-24 rounded-full bg-emerald-100 flex items-center justify-center">
+        <Player ref={playerRef} size={70} icon={icon} onComplete={handleLoopWithDelay} />
+      </div>
+      <h3 className="text-xl font-bold">{title}</h3>
+      <p className="text-muted-foreground">{content}</p>
+    </div>
+  )
+}
+
+function TrackRecord({playerRef, icon, title, content, list, handleLoopWithDelay}: PlayerRefProps) {
+  return (
+    <div className="flex flex-col p-6 bg-white rounded-lg border shadow-sm">
+      <div className="p-2 w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mb-4">
+        <Player ref={playerRef} size={100} icon={icon} onComplete={handleLoopWithDelay} />
+      </div>
+      <h3 className="text-xl font-bold mb-2">{title}</h3>
+      <p className="text-muted-foreground mb-4">{content}</p>
+      <ul className="space-y-2 mt-auto">
+        {list?.map(i => {
+          return (
+            <li key={i} className="flex items-start gap-2">
+              <CheckCircle2 className="h-5 w-5 text-emerald-600 mt-0.5" />
+              <span>{i}</span>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  )
 }

@@ -10,7 +10,7 @@ import type { Player as LordiconPlayer } from "@lordicon/react";
 import APPPOINTMENT_ICON from "@/assets/lordicon/appointment.json";
 import PLAN_ICON from "@/assets/lordicon/plan.json";
 import IMPLEMENTATION_ICON from "@/assets/lordicon/launch.json";
-import { AnimationHandler } from "@/app/utils/animationHandler";
+import { AnimationHandler } from "@/utils/animationHandler";
 
 export const HowItWorks = () => {
   const appointmentPlayerRef = useRef<LordiconPlayer>(null);
@@ -46,8 +46,7 @@ export const HowItWorks = () => {
             const stepContent = [
               {
                 title: "Consultation",
-                description:
-                  "We start with a free consultation to understand your Shopify store's specific needs and challenges.",
+                description: "We start with a free consultation to understand your Shopify store's specific needs and challenges.",
                 icon: (
                   <Player
                     ref={appointmentPlayerRef}
@@ -59,8 +58,7 @@ export const HowItWorks = () => {
               },
               {
                 title: "Custom Plan",
-                description:
-                  "We create a tailored support plan based on your specific requirements and budget.",
+                description: "We create a tailored support plan based on your specific requirements and budget.",
                 icon: (
                   <Player
                     ref={planPlayerRef}
@@ -72,8 +70,7 @@ export const HowItWorks = () => {
               },
               {
                 title: "Implementation",
-                description:
-                  "Our team seamlessly integrates with your business and begins providing support right away.",
+                description: "Our team seamlessly integrates with your business and begins providing support right away.",
                 icon: (
                   <Player
                     ref={implementationPlayerRef}

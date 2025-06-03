@@ -2,34 +2,11 @@
 
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
-import {
-  // Phone,
-
-  ArrowRight,
-  // MessageSquare,
-  Linkedin,
-  Facebook,
-  Instagram,
-  Twitter,
-  Loader2,
-  X,
-} from "lucide-react";
-
+import { ArrowRight, Linkedin, Facebook, Instagram, Twitter, Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { NavHeaderMenus, FooterMenus } from "@/components/layout";
 import { CalCom } from "@/components/common";
 import { useContactForm, ContactFormFields } from "../../hooks/contactHandler";
@@ -37,16 +14,13 @@ import { useContactForm, ContactFormFields } from "../../hooks/contactHandler";
 import { Player } from "@lordicon/react";
 import type { Player as LordiconPlayer } from "@lordicon/react";
 
-import LOCATION_ICON from "@/assets/lordicon/location.json";
-import CLOCK_ICON from "@/assets/lordicon/clock.json";
-import EMAIL_ICON from "@/assets/lordicon/email.json";
-import APPOINTMENT_ICON from "@/assets/lordicon/appointment.json";
+import { LOCATION, CLOCK, EMAIL, APPOINTMENT } from "@/assets/lordicon";
+import { AnimationHandler } from "@/utils/animationHandler";
 
 export default function ContactPage() {
-  const locationPlayerRef = useRef<LordiconPlayer>(null);
-  const clockPlayerRef = useRef<LordiconPlayer>(null);
-  const emailPlayerRef = useRef<LordiconPlayer>(null);
-  const appointmentPlayerRef = useRef<LordiconPlayer>(null);
+  // Single ref array for all Lordicon players [Email, Appointment, Location, Clock]
+  const playerRefs = useRef<(LordiconPlayer | null)[]>([]);
+  const animationHandler = useRef<AnimationHandler | null>(null);
 
   const [form, setForm] = useState<ContactFormFields>({
     firstName: "",
@@ -101,10 +75,11 @@ export default function ContactPage() {
   };
 
   useEffect(() => {
-    locationPlayerRef.current?.playFromBeginning();
-    clockPlayerRef.current?.playFromBeginning();
-    emailPlayerRef.current?.playFromBeginning();
-    appointmentPlayerRef.current?.playFromBeginning();
+    // Format refs for AnimationHandler and initialize
+    const refs = playerRefs.current.map(player => ({
+      current: player
+    }));
+    animationHandler.current = AnimationHandler.createFromRefs(refs);
   }, []);
 
   useEffect(() => {
@@ -249,10 +224,10 @@ export default function ContactPage() {
                       >
                         <option value="">Select a subject</option>
                         <option value="PhilPort App Support">
-                          PhilPort App Support
+                          Shopify App Support
                         </option>
                         <option value="Admin & PhilPort Customer Support">
-                          Admin & PhilPort Customer Support
+                          Admin & Customer Support
                         </option>
                         <option value="Virtual Assistance">
                           Virtual Assistance
@@ -330,12 +305,11 @@ export default function ContactPage() {
                   <Card>
                     <CardHeader className="flex flex-row items-center gap-4 pb-2">
                       <Player
-                        ref={emailPlayerRef}
+                        ref={(node) => {
+                          playerRefs.current[0] = node;
+                        }}
                         size={30}
-                        icon={EMAIL_ICON}
-                        onComplete={() =>
-                          emailPlayerRef.current?.playFromBeginning()
-                        }
+                        icon={EMAIL}
                       />
                       <CardTitle>Email Us</CardTitle>
                     </CardHeader>
@@ -354,53 +328,14 @@ export default function ContactPage() {
                     </CardContent>
                   </Card>
 
-                  {/* <Card>
-                    <CardHeader className="flex flex-row items-center gap-4 pb-2">
-                      <Phone className="h-6 w-6 text-emerald-600" />
-                      <CardTitle>Call Us</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <CardDescription className="text-base">
-                        <a
-                          href="tel:+15551234567"
-                          className="hover:text-emerald-600"
-                        >
-                          +1 (555) 123-4567
-                        </a>
-                      </CardDescription>
-                      <CardDescription>
-                        Monday to Friday, 9am - 5pm EST
-                      </CardDescription>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader className="flex flex-row items-center gap-4 pb-2">
-                      <MessageSquare className="h-6 w-6 text-emerald-600" />
-                      <CardTitle>Live Chat</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <CardDescription className="text-base">
-                        Available on our website
-                      </CardDescription>
-                      <CardDescription>
-                        Get immediate assistance during business hours
-                      </CardDescription>
-                      <Button variant="outline" className="mt-2">
-                        Start Chat
-                      </Button>
-                    </CardContent>
-                  </Card> */}
-
                   <Card>
                     <CardHeader className="flex flex-row items-center gap-4 pb-2">
                       <Player
-                        ref={appointmentPlayerRef}
+                        ref={(node) => {
+                          playerRefs.current[1] = node;
+                        }}
                         size={30}
-                        icon={APPOINTMENT_ICON}
-                        onComplete={() =>
-                          appointmentPlayerRef.current?.playFromBeginning()
-                        }
+                        icon={APPOINTMENT}
                       />
                       <CardTitle>Schedule a Call</CardTitle>
                     </CardHeader>
@@ -467,12 +402,11 @@ export default function ContactPage() {
                 <div className="bg-white p-6 rounded-lg border shadow-sm">
                   <div className="flex items-start gap-4 mb-4">
                     <Player
-                      ref={locationPlayerRef}
+                      ref={(node) => {
+                        playerRefs.current[2] = node;
+                      }}
                       size={25}
-                      icon={LOCATION_ICON}
-                      onComplete={() =>
-                        locationPlayerRef.current?.playFromBeginning()
-                      }
+                      icon={LOCATION}
                     />
                     <div>
                       <h3 className="font-semibold text-lg">Main Office</h3>
@@ -487,12 +421,11 @@ export default function ContactPage() {
                   </div>
                   <div className="flex items-start gap-4">
                     <Player
-                      ref={clockPlayerRef}
+                      ref={(node) => {
+                        playerRefs.current[3] = node;
+                      }}
                       size={25}
-                      icon={CLOCK_ICON}
-                      onComplete={() =>
-                        clockPlayerRef.current?.playFromBeginning()
-                      }
+                      icon={CLOCK}
                     />
                     <div>
                       <h3 className="font-semibold text-lg">Business Hours</h3>

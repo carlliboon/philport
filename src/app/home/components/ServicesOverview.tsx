@@ -7,7 +7,7 @@ import { services } from "@/data/services";
 import { useEffect, useRef } from "react";
 import { Player } from "@lordicon/react";
 import type { Player as LordiconPlayer } from "@lordicon/react";
-import { AnimationHandler } from "@/app/utils/animationHandler";
+import { AnimationHandler } from "@/utils/animationHandler";
 
 export const ServicesOverview = () => {
   const playerRefs = useRef<(LordiconPlayer | null)[]>([]);

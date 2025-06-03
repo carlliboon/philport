@@ -16,7 +16,7 @@ import TIME_ICON from "@/assets/lordicon/time.json";
 import STRESS_ICON from "@/assets/lordicon/stress.json";
 import GROWTH_ICON from "@/assets/lordicon/growth.json";
 
-import { AnimationHandler } from "@/app/utils/animationHandler";
+import { AnimationHandler } from "@/utils/animationHandler";
 
 export const HowWeHelp = () => {
   const timePlayerRef = useRef<LordiconPlayer>(null);

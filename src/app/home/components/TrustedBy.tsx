@@ -4,6 +4,7 @@ import haroldhome from "@/assets/images/portfolio/haroldhome.png";
 import cloudlift from "@/assets/images/portfolio/cloudlift.png";
 import tagsmate from "@/assets/images/portfolio/tagsmate.png";
 import Image from "next/image";
+import { StaticImageData } from "next/image";
 
 export const TrustedBy = () => {
   return (
@@ -14,79 +15,32 @@ export const TrustedBy = () => {
             Trusted by Shopify merchants worldwide
           </p>
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12 opacity-70">
-            <div className="h-8 w-auto">
-              <div className="h-full w-full bg-muted/30 rounded flex items-center justify-center px-6">
-                <Image
-                  src={westandwillow}
-                  alt="West and Willow Brand"
-                  className="object-cover rounded-xl"
-                  width={100}
-                  height={32}
-                  loading="lazy"
-                  quality={75}
-                  sizes="(max-width: 768px) 100px, 100px"
-                />
-              </div>
-            </div>
-            <div className="h-8 w-auto">
-              <div className="h-full w-full bg-muted/30 rounded flex items-center justify-center px-6">
-                <Image
-                  src={thewhisperingpages}
-                  alt="The Whispering Pages Brand"
-                  className="object-cover rounded-xl"
-                  width={100}
-                  height={32}
-                  loading="lazy"
-                  quality={75}
-                  sizes="(max-width: 768px) 100px, 100px"
-                />
-              </div>
-            </div>
-            <div className="h-8 w-auto">
-              <div className="h-full w-full bg-muted/30 rounded flex items-center justify-center px-6">
-                <Image
-                  src={haroldhome}
-                  alt="Harold Home Brand"
-                  className="object-cover rounded-xl"
-                  width={100}
-                  height={25}
-                  loading="lazy"
-                  quality={75}
-                  sizes="(max-width: 768px) 100px, 100px"
-                />
-              </div>
-            </div>
-            <div className="h-8 w-auto">
-              <div className="h-full w-full bg-muted/30 rounded flex items-center justify-center px-6">
-                <Image
-                  src={cloudlift}
-                  alt="Cloudlift App Brand"
-                  className="object-cover rounded-xl"
-                  width={100}
-                  height={32}
-                  loading="lazy"
-                  quality={75}
-                  sizes="(max-width: 768px) 100px, 100px"
-                />
-              </div>
-            </div>
-            <div className="h-8 w-auto">
-              <div className="h-full w-full bg-muted/30 rounded flex items-center justify-center px-6">
-                <Image
-                  src={tagsmate}
-                  alt="Tagsmate Brand"
-                  className="object-cover rounded-xl"
-                  width={100}
-                  height={32}
-                  loading="lazy"
-                  quality={75}
-                  sizes="(max-width: 768px) 100px, 100px"
-                />
-              </div>
-            </div>
+            <BrandImage src={westandwillow} alt="West and Willow Brand" />
+            <BrandImage src={thewhisperingpages} alt="The Whispering Pages Brand" />
+            <BrandImage src={haroldhome} alt="Harold Home Brand" />
+            <BrandImage src={cloudlift} alt="Cloudlift Brand" />
+            <BrandImage src={tagsmate} alt="Tagsmate Brand" />
           </div>
         </div>
       </div>
     </section>
   );
 };
+
+function BrandImage({src, alt} : {src: string | StaticImageData, alt: string}) {
+  return (
+    <div className="h-8 w-auto">
+      <div className="h-full w-full bg-muted/30 rounded flex items-center justify-center px-6">
+        <Image 
+          src={src} 
+          alt={alt} 
+          className="object-cover rounded-xl" 
+          width={100} 
+          height={32} 
+          loading="lazy" 
+          quality={75} 
+          sizes="(max-width: 768px) 100px, 100px" />
+      </div>
+    </div>
+  );
+}
