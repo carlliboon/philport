@@ -23,12 +23,11 @@ export const HeroSection = () => {
               eCommerce Support Specialists
             </Badge>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tighter">
-              Your Dedicated <span className="text-emerald-600">eCommerce</span>{" "}
+              PhilPort: Your Dedicated <span className="text-emerald-600">Shopify &amp; eCommerce</span>{" "}
               Support Team
             </h1>
             <p className="text-muted-foreground text-lg md:text-xl max-w-[600px]">
-              We help Shopify store owners save time, reduce stress, and grow
-              their business with our specialized support services.
+              From store setup and theme customization to ongoing virtual assistance, PhilPort delivers end-to-end <strong>Shopify support</strong> that frees you to focus on sales and marketing while we handle the technical heavy lifting.
             </p>
             <div className="flex flex-wrap justify-center sm:justify-start gap-2 pt-4">
               <Button

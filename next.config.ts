@@ -10,6 +10,22 @@ const nextConfig: NextConfig = {
   images: {
     domains: ['nydmrvnsirdvaxmzfbyx.supabase.co'],
   },
+  async redirects() {
+    return [
+      // Redirect bare domain (philport.com) to canonical https://www.philport.com
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'philport.com',
+          },
+        ],
+        destination: 'https://www.philport.com/:path*',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

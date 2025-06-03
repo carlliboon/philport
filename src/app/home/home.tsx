@@ -20,7 +20,7 @@ import { reviews } from "@/data/reviews";
 export const metadata = {
   title: "PhilPort - Your Trusted Partner for E-commerce Store Success",
   description:
-    "PhilPort offers expert assistance for your e-commerce store, ensuring smooth operations and enhanced performance.",
+    "PhilPort provides specialized Shopify and e-commerce support services—covering store setup, theme customization, app integrations, and virtual assistance—to help merchants scale faster and boost conversions.",
 };
 
 export default function HomePage() {
