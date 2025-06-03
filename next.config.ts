@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
     // there are ESLint errors (e.g., unused vars in client-only files)
     ignoreDuringBuilds: true,
   },
+  images: {
+    domains: ['nydmrvnsirdvaxmzfbyx.supabase.co'],
+  },
 };
 
 export default nextConfig;

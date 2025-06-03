@@ -1,8 +1,3 @@
-import westandwillow from "@/assets/images/portfolio/westandwillow.png";
-import thewhisperingpages from "@/assets/images/portfolio/whispering.png";
-import haroldhome from "@/assets/images/portfolio/haroldhome.png";
-import cloudlift from "@/assets/images/portfolio/cloudlift.png";
-import tagsmate from "@/assets/images/portfolio/tagsmate.png";
 import Image from "next/image";
 import { StaticImageData } from "next/image";
 
@@ -15,11 +10,11 @@ export const TrustedBy = () => {
             Trusted by Shopify merchants worldwide
           </p>
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12 opacity-70">
-            <BrandImage src={westandwillow} alt="West and Willow Brand" />
-            <BrandImage src={thewhisperingpages} alt="The Whispering Pages Brand" />
-            <BrandImage src={haroldhome} alt="Harold Home Brand" />
-            <BrandImage src={cloudlift} alt="Cloudlift Brand" />
-            <BrandImage src={tagsmate} alt="Tagsmate Brand" />
+            <BrandImage src="https://nydmrvnsirdvaxmzfbyx.supabase.co/storage/v1/object/public/images//westandwillow.webp" alt="West and Willow Brand" />
+            <BrandImage src="https://nydmrvnsirdvaxmzfbyx.supabase.co/storage/v1/object/public/images//whispering.webp" alt="The Whispering Pages Brand" />
+            <BrandImage src="https://nydmrvnsirdvaxmzfbyx.supabase.co/storage/v1/object/public/images//haroldhome.webp" alt="Harold Home Brand" />
+            <BrandImage src="https://nydmrvnsirdvaxmzfbyx.supabase.co/storage/v1/object/public/images//cloudlift.webp" alt="Cloudlift Brand" />
+            <BrandImage src="https://nydmrvnsirdvaxmzfbyx.supabase.co/storage/v1/object/public/images//tagsmate.webp" alt="Tagsmate Brand" />
           </div>
         </div>
       </div>

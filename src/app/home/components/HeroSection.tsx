@@ -5,12 +5,6 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { StaticImageData } from "next/image";
-
-import teamMeeting from "@/assets/images/general/team-meeting.jpg";
-import clients from "@/assets/images/clients/clients.png";
-import ben from "@/assets/images/team/ben.jpg";
-import nolan from "@/assets/images/team/nolan.jpeg";
-import michael from "@/assets/images/team/michael.png";
 import { CalCom } from "@/components/common";
 
 export const HeroSection = () => {
@@ -56,14 +50,14 @@ export const HeroSection = () => {
 
             <div className="flex items-center pt-4 space-x-4">
               <div className="flex -space-x-2">
-                <ClientImage src={michael} alt="Michael Haessig" />
-                <ClientImage src={nolan} alt="Nolan Kahal" />
-                <ClientImage src={ben} alt="Ben Lebowitz" />
+                <ClientImage src="https://nydmrvnsirdvaxmzfbyx.supabase.co/storage/v1/object/public/images//michael.webp" alt="Michael Haessig" />
+                <ClientImage src="https://nydmrvnsirdvaxmzfbyx.supabase.co/storage/v1/object/public/images//nolan.webp" alt="Nolan Kahal" />
+                <ClientImage src="https://nydmrvnsirdvaxmzfbyx.supabase.co/storage/v1/object/public/images//ben.webp" alt="Ben Lebowitz" />
                 <div className="relative w-8 h-8 rounded-full overflow-hidden">
                   <div
                     className="absolute inset-0 bg-center bg-cover scale-130 blur-md"
                     style={{
-                      backgroundImage: `url(${clients.src})`,
+                      backgroundImage: `url(https://nydmrvnsirdvaxmzfbyx.supabase.co/storage/v1/object/public/images//clients.webp)`,
                       filter: "blur(2px)",
                     }}
                   />
@@ -81,14 +75,13 @@ export const HeroSection = () => {
           <div className="relative">
             <div className="relative h-[400px] w-full overflow-hidden rounded-xl">
               <Image
-                src={teamMeeting}
+                src="https://nydmrvnsirdvaxmzfbyx.supabase.co/storage/v1/object/public/images//team-meeting.avif"
                 alt="Team Meeting"
                 fill
                 priority
                 quality={85}
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-cover rounded-xl"
-                placeholder="blur"
                 loading="eager"
               />
             </div>

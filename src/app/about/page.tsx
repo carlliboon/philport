@@ -10,7 +10,6 @@ import { ServiceCard, GetStarted, Title, CalCom } from "@/components/common";
 import { NavHeaderMenus, FooterMenus } from "@/components/layout";
 import { services } from "@/data/services";
 import Image from "next/image";
-import teamMeeting from "@/assets/images/general/team-meeting.jpg";
 
 import { TARGET, GOAL, SHOPIFY_SPECIALIST, CHAT, MARKETING, BAG, TOP_RATED, BUSINESS_NETWORK, RELIABLE } from "@/assets/lordicon";
 
@@ -74,7 +73,7 @@ export default function AboutPage() {
                 </div>
                 <div className="relative">
                   <div className="relative h-[400px] w-full overflow-hidden rounded-xl">
-                    <Image src={teamMeeting} alt="Team Meeting" className="object-cover rounded-xl"/>
+                    <Image src="https://nydmrvnsirdvaxmzfbyx.supabase.co/storage/v1/object/public/images//team-meeting.avif" width={1000} height={1000} alt="Team Meeting" className="object-cover rounded-xl"/>
                   </div>
                   <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-lg shadow-lg">
                     <div className="flex items-center gap-2">

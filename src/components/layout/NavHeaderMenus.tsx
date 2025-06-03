@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { LoginModal } from "@/components/forms";
 import { CalCom } from "@/components/common";
 import Image from "next/image";
-import ppLogo from "@/assets/images/general/philport-logo.png";
 
 export const NavHeaderMenus = () => {
   const pathname = usePathname();
@@ -32,7 +31,7 @@ export const NavHeaderMenus = () => {
             
             <span className="text-2xl font-bold flex items-center text-emerald-700"><Image
             className="-mr-2.5"
-              src={ppLogo}
+              src="https://nydmrvnsirdvaxmzfbyx.supabase.co/storage/v1/object/public/images//philport-logo.webp"
               alt="Philport Logo"
               width={50}
               height={50}

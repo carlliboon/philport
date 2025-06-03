@@ -10,8 +10,6 @@ import { ServiceCard, GetStarted, Title, CalCom } from "@/components/common";
 import { NavHeaderMenus, FooterMenus } from "@/components/layout";
 import { services } from "@/data/services";
 
-import businessOwner from "@/assets/images/general/business-owner-working.jpg";
-
 import { useEffect, useRef } from "react";
 import { Player } from "@lordicon/react";
 import type { Player as LordiconPlayer } from "@lordicon/react";
@@ -176,7 +174,7 @@ export default function Services() {
                 <div className="flex justify-center">
                   <div className="relative h-[450px] w-full max-w-[600px] sm:h-[500px] overflow-hidden rounded-xl">
                     <Image
-                      src={businessOwner}
+                      src="https://nydmrvnsirdvaxmzfbyx.supabase.co/storage/v1/object/public/images//business-owner-working-on-online-store.avif"
                       alt="Business Owner Working on his Shopify Store"
                       fill
                       className="object-cover rounded-xl"
