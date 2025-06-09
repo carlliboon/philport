@@ -92,6 +92,8 @@ export async function POST(req: Request) {
       resumeUrl: publicUrlData.publicUrl,
     });
   } catch (err: unknown) {
+    console.error('Signup API error:', err);
+    console.error('Request body:', body);
     return NextResponse.json(
       {
         message: "Failed to process request.",
