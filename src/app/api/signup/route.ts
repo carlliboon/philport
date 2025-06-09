@@ -34,7 +34,10 @@ export async function POST(req: Request) {
       await connection.end();
 
       // Return the ID of the newly inserted user
-      return NextResponse.json({ success: true, id: insertId }, { status: 200 });
+      return NextResponse.json(
+        { success: true, message: "Application received.", id: insertId },
+        { status: 200 }
+      );
     }
 
     // Fallback multipart resume upload (original behaviour)
