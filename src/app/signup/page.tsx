@@ -106,12 +106,18 @@ export default function CareerApplicationPage() {
         setResumeFileName("");
         setPrimaryIdUrl("");
         setPrimaryFileName("");
-      } 
-      // else {
-      //   const err = await res.json();
-      //   alert(err.message || "Submission failed.");
-      // }
-    } catch {
+      } else {
+        let errMsg = "Submission failed.";
+        try {
+          const err = await res.json();
+          errMsg = err.message || errMsg;
+        } catch {
+          // If response is not JSON, keep default message
+        }
+        alert(errMsg);
+      }
+    } catch (err) {
+      console.error(err);
       alert("Submission failed.");
     }
   };
