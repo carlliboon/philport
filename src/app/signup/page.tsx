@@ -16,7 +16,7 @@ import intlTelInput from "intl-tel-input";
 import { handleFileUpload } from "@/hooks/uploadHandler";
 import { Progress } from "@/components/ui/progress";
 import { skills } from "@/lib/constants";
-import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export default function CareerApplicationPage() {
   const resumeInputRef = useRef<HTMLInputElement>(null);
@@ -28,6 +28,7 @@ export default function CareerApplicationPage() {
   const [selectedSkill, setSelectedSkill] = useState<string[]>([]);
   const phoneInputRef = useRef(null);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const primaryIdInputRef = useRef<HTMLInputElement>(null);
   const [primaryIdUrl, setPrimaryIdUrl] = useState("");
@@ -67,6 +68,11 @@ export default function CareerApplicationPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
+    
+    // Store form reference before async operations
+    const formElement = e.currentTarget;
+    
     if (!resumeUrl) {
       alert("Please upload your resume (PDF, max 2MB).");
       return;
@@ -98,27 +104,77 @@ export default function CareerApplicationPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
+      console.log('Signup response status:', res.status, 'ok:', res.ok);
       if (res.ok) {
-        setDialogOpen(true);
-        e.currentTarget.reset();
-        setSelectedSkill([]);
+        console.log('Starting form reset...');
+        if (formElement) {
+          formElement.reset();
+        }
+        
+        // Reset all state variables
+        console.log('Clearing state variables...');
         setResumeUrl("");
         setResumeFileName("");
+        setUploadProgress(0);
+        setUploading(false);
         setPrimaryIdUrl("");
         setPrimaryFileName("");
+        setPrimaryUploadProgress(0);
+        setPrimaryUploading(false);
+        setGender("");
+        setSelectedSkill([]);
+        setUploadError("");
+        setPrimaryUploadError("");
+        
+        // Clear file inputs and phone input
+        console.log('Clearing manual inputs...');
+        if (resumeInputRef.current) resumeInputRef.current.value = "";
+        if (primaryIdInputRef.current) primaryIdInputRef.current.value = "";
+        if (phoneInputRef.current) {
+          (phoneInputRef.current as HTMLInputElement).value = "";
+        }
+        
+        // Explicitly clear all input and textarea values inside the form to handle browser autofill that might bypass form.reset()
+        console.log('Force clearing all inputs...');
+        if (formElement) {
+          Array.from(formElement.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("input, textarea")).forEach((el) => {
+            if (el.type !== "hidden") {
+              el.value = "";
+              el.removeAttribute('value');
+              // Force re-render for React controlled components
+              el.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+          });
+        }
+        
+        // Also clear any select elements
+        if (formElement) {
+          Array.from(formElement.querySelectorAll<HTMLSelectElement>("select")).forEach((el) => {
+            el.selectedIndex = 0;
+          });
+        }
+        
+        // Use setTimeout to ensure all state updates complete before showing dialog
+        setTimeout(() => {
+          console.log('Opening success dialog...');
+          setDialogOpen(true);
+        }, 100);
+        return;
       } else {
         let errMsg = "Submission failed.";
         try {
           const err = await res.json();
+          console.error('Signup error response:', err);
           errMsg = err.message || errMsg;
-        } catch {
-          // If response is not JSON, keep default message
+        } catch (jsonErr) {
+          console.error('Error parsing JSON:', jsonErr);
         }
         alert(errMsg);
       }
     } catch (err) {
-      console.error(err);
-      alert("Submission failed.");
+      console.error('HandleSubmit catch error:', err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -335,9 +391,9 @@ export default function CareerApplicationPage() {
                               ? "border-emerald-500 bg-emerald-50 border-dashed"
                               : primaryUploading
                                 ? "border-emerald-500 bg-emerald-50 border-dashed"
-                                : primaryIdUrl
-                                  ? "border-emerald-700 border-solid"
-                                  : "border-emerald-200 bg-transparent border-dashed"
+                              : primaryIdUrl
+                                ? "border-emerald-700 border-solid"
+                                : "border-emerald-200 bg-transparent border-dashed"
                           }`}
                           >
                             {primaryIdUrl && (
@@ -365,7 +421,7 @@ export default function CareerApplicationPage() {
                                 handleFileUpload({ e, bucket: "primary-id", prefix: "primary-id", setFileName: setPrimaryFileName, setUploading: setPrimaryUploading, setUploadError: setPrimaryUploadError, setFileUrl: setPrimaryIdUrl, setUploadProgress: setPrimaryUploadProgress });
                               }}
                             />
-                            {showPrimaryProgress && <div className="flex pt-3 w-full align-baseline items-center gap-2">
+                            {(primaryUploadProgress > 0 || primaryUploading || showPrimaryProgress) && <div className="flex pt-3 w-full align-baseline items-center gap-2">
                               <Progress className="text-emerald-600" value={primaryUploadProgress} />
                               { primaryUploading && <Loader2 className="h-5 w-5 text-emerald-600 animate-spin"/> }
                               { primaryUploadError && <span className="text-red-600 text-xs">{primaryUploadError}</span> }
@@ -427,7 +483,7 @@ export default function CareerApplicationPage() {
                       </div>
                     </CardContent>
                     <CardFooter className="flex flex-col space-y-4 mt-5">
-                      <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700"> Submit Application </Button>
+                      <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-700"> Submit Application {isLoading && <Loader2 className="h-4 w-4 animate-spin" />} </Button>
                     </CardFooter>
                   </form>
                 </Card>
@@ -450,16 +506,16 @@ export default function CareerApplicationPage() {
         </div>
       </footer>
       { /* Success dialog */ }
-      <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Application Received</AlertDialogTitle>
-            <AlertDialogDescription>
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Application Received</DialogTitle>
+            <DialogDescription>
               We have received your application. We will send you an email once it is approved or if we need more information.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-        </AlertDialogContent>
-      </AlertDialog>
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
