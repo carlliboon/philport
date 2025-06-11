@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingBag, CheckCircle2, Upload, X, Loader2 } from "lucide-react";
+import { CheckCircle2, Upload, X, Loader2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { NavHeaderMenus } from "@/components/layout";
 import React, { useEffect, useRef, useState } from "react";
 import intlTelInput from "intl-tel-input";
+import { FooterMenus } from "@/components/layout/FooterMenus";
 import { handleFileUpload } from "@/hooks/uploadHandler";
 import { Progress } from "@/components/ui/progress";
 import { skills } from "@/lib/constants";
@@ -492,19 +493,7 @@ export default function CareerApplicationPage() {
           </div>
         </div>
       </main>
-      <footer className="w-full border-t py-6 md:py-0">
-        <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row max-w-screen-xl mx-auto px-4">
-          <div className="flex items-center gap-2">
-            <ShoppingBag className="h-5 w-5 text-emerald-600" />
-            <p className="text-sm text-muted-foreground"> © {new Date().getFullYear()} PhilPort. All rights reserved. </p>
-          </div>
-          <div className="flex gap-4">
-            <Link href="#" className="text-sm font-medium text-muted-foreground hover:text-emerald-600"> Terms </Link>
-            <Link href="#" className="text-sm font-medium text-muted-foreground hover:text-emerald-600"> Privacy </Link>
-            <Link href="#" className="text-sm font-medium text-muted-foreground hover:text-emerald-600"> Help </Link>
-          </div>
-        </div>
-      </footer>
+      <FooterMenus careers={false} />
       { /* Success dialog */ }
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent>

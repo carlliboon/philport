@@ -1,13 +1,19 @@
-import { ShoppingBag } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
-export const FooterMenus = () => {
+export const FooterMenus = ({careers = true}: {careers?: boolean}) => {
   return (
     <footer className="w-full border-t py-6 md:py-0">
       <div className="container flex flex-col-reverse md:flex-row items-center justify-between gap-4 md:h-24 max-w-screen-xl mx-auto px-4">
         {/* Copyright Text */}
-        <div className="flex items-center gap-2">
-          <ShoppingBag className="h-5 w-5 text-emerald-700" />
+        <div className="flex items-center">
+          <Image
+            src="https://nydmrvnsirdvaxmzfbyx.supabase.co/storage/v1/object/public/images//philport-logo.webp"
+            alt="Philport Logo"
+            width={40}
+            height={40}
+            className="rounded-lg mr-3"
+          />
           <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} PhilPort. All rights
             reserved.
@@ -17,13 +23,13 @@ export const FooterMenus = () => {
         {/* Footer Links */}
         <div className="flex gap-4">
           <Link
-            href="#"
+            href="/terms"
             className="text-sm font-medium text-muted-foreground hover:text-emerald-600"
           >
             Terms
           </Link>
           <Link
-            href="#"
+            href="/privacy"
             className="text-sm font-medium text-muted-foreground hover:text-emerald-600"
           >
             Privacy
@@ -34,12 +40,12 @@ export const FooterMenus = () => {
           >
             Blog
           </Link>
-          <Link
-            href="#"
+          {careers && <Link
+            href="/signup"
             className="text-sm font-medium text-muted-foreground hover:text-emerald-600"
           >
             Careers
-          </Link>
+          </Link>}
         </div>
       </div>
     </footer>

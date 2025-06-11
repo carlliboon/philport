@@ -59,7 +59,7 @@ export const GetStarted: React.FC<GetStartedProps> = ({
       {hasEmailUs && (
         <p className="text-xs text-muted-foreground">
           Or email us at{" "}
-          <span className="font-medium">support@shopifysupport.com</span>
+          <span className="font-medium">contact@philport.com</span>
         </p>
       )}
     </div>

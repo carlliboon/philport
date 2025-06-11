@@ -319,7 +319,7 @@ export default function ContactPage() {
                           href="mailto:support@remotestaff.com"
                           className="hover:text-emerald-600"
                         >
-                          support@shopifysupportpro.com
+                          contact@philport.com
                         </a>
                       </CardDescription>
                       <CardDescription>
