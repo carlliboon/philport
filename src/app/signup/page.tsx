@@ -473,12 +473,12 @@ export default function CareerApplicationPage() {
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <Checkbox id="terms" />
+                        <Checkbox id="terms" required />
                         <label htmlFor="terms" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                           I agree to the{" "}
-                          <Link href="#" className="text-emerald-600 hover:text-emerald-700"> terms of service </Link>{" "}
+                          <Link href="/terms-of-service" className="text-emerald-600 hover:text-emerald-700"> terms of service </Link>{" "}
                           and{" "}
-                          <Link href="#" className="text-emerald-600 hover:text-emerald-700"> privacy policy </Link>
+                          <Link href="/privacy-policy" className="text-emerald-600 hover:text-emerald-700"> privacy policy </Link>
                         </label>
                       </div>
                     </CardContent>
