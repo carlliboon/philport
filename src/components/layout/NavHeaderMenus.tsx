@@ -18,6 +18,7 @@ export const NavHeaderMenus = () => {
   const navItems = [
     { label: "Home", href: "/" },
     { label: "Services", href: "/services" },
+    { label: "Portfolio", href: "/portfolio" },
     { label: "About", href: "/about" },
     { label: "Career", href: "/signup" },
     { label: "Contact", href: "/contact" },
