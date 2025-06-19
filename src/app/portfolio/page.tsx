@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import {
-  ArrowRight,
   ExternalLink,
   User,
   Linkedin,
@@ -19,7 +18,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react"
-
+import { CalCom } from "@/components/common"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -206,6 +205,29 @@ const ImageGrid = ({ images, title, onImageClick }: ImageGridProps) => {
     );
   }
 
+  // If there are exactly 2 images, show them side by side
+  if (validImages.length === 2) {
+    return (
+      <div className="grid grid-cols-2 h-full gap-1">
+        <div className="h-full">
+          <ProjectImage
+            src={validImages[0]}
+            alt={title}
+            onClick={() => onImageClick(0)}
+            priority
+          />
+        </div>
+        <div className="h-full">
+          <ProjectImage
+            src={validImages[1]}
+            alt={`${title} - Image 2`}
+            onClick={() => onImageClick(1)}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-3 h-full gap-1">
       {/* Main image */}
@@ -243,7 +265,7 @@ const ImageGrid = ({ images, title, onImageClick }: ImageGridProps) => {
             {validImages.length > 3 && (
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <span className="text-black font-bold text-lg bg-opacity-60 px-3 py-1 rounded">
-                  +{validImages.length - 3} more
+                  +{validImages.length - 2} more
                 </span>
               </div>
             )}
@@ -479,24 +501,30 @@ const ImageModal = ({ isOpen, images, currentIndex, onClose, onNavigate }: Image
 
 interface HeroStatsProps {
   projectCount: number;
+  data: PortfolioProject[];
 }
 
-const HeroStats = ({ projectCount }: HeroStatsProps) => (
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 w-full max-w-2xl">
-    <div className="text-center space-y-2">
-      <div className="text-3xl font-bold text-teal-600">{projectCount}+</div>
-      <div className="text-sm font-medium text-slate-600">Projects Delivered</div>
+const HeroStats = ({ projectCount, data }: HeroStatsProps) => {
+  // Calculate unique categories
+  const uniqueCategories = new Set(data.map(project => project.category)).size;
+  
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 w-full max-w-2xl">
+      <div className="text-center space-y-2">
+        <div className="text-3xl font-bold text-teal-600">{projectCount}+</div>
+        <div className="text-sm font-medium text-slate-600">Projects Delivered</div>
+      </div>
+      <div className="text-center space-y-2">
+        <div className="text-3xl font-bold text-teal-600">{uniqueCategories}+</div>
+        <div className="text-sm font-medium text-slate-600">Service Areas</div>
+      </div>
+      <div className="text-center space-y-2">
+        <div className="text-3xl font-bold text-teal-600">100%</div>
+        <div className="text-sm font-medium text-slate-600">Client Satisfaction</div>
+      </div>
     </div>
-    <div className="text-center space-y-2">
-      <div className="text-3xl font-bold text-teal-600">5</div>
-      <div className="text-sm font-medium text-slate-600">Service Areas</div>
-    </div>
-    <div className="text-center space-y-2">
-      <div className="text-3xl font-bold text-teal-600">100%</div>
-      <div className="text-sm font-medium text-slate-600">Client Satisfaction</div>
-    </div>
-  </div>
-);
+  );
+};
 
 // Main Component
 export default function PortfolioPage() {
@@ -595,7 +623,7 @@ export default function PortfolioPage() {
                 Discover how we&apos;ve transformed businesses through strategic e-commerce solutions, 
                 exceptional customer support, and innovative digital experiences.
               </p>
-              <HeroStats projectCount={data.length} />
+              <HeroStats projectCount={data.length} data={data}/>
             </div>
           </div>
         </section>
@@ -658,16 +686,14 @@ export default function PortfolioPage() {
                 deliver exceptional results for your e-commerce business.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                <Button asChild size="lg" className="bg-white text-teal-600 hover:bg-slate-50 font-semibold">
-                  <Link href="#contact">
-                    Start Your Project <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
+                <div className="bg-white text-teal-600 hover:text-teal-600 hover:bg-teal-50 font-semibold items-center justify-center pt-2 px-3 rounded-md cursor-pointer">
+                  <CalCom btnTitle="Book a Call" />
+                </div>
                 <Button
                   asChild
                   variant="outline"
                   size="lg"
-                  className="border-white text-white hover:bg-white hover:text-teal-600"
+                  className="border-white text-md text-teal-600 hover:bg-teal-50 hover:text-teal-600"
                 >
                   <Link href="/services">Explore Services</Link>
                 </Button>
