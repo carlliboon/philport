@@ -21,7 +21,7 @@ export async function GET() {
       FROM portfolio p
       LEFT JOIN portfolio_images pi ON p.id = pi.portfolio_id
       GROUP BY p.id
-      ORDER BY p.created_at DESC
+      ORDER BY p.created_at ASC
     `);
 
     await connection.end();
