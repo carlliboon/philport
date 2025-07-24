@@ -2,7 +2,7 @@
 "use client";
 
 import type React from "react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { NavHeaderMenus } from "@/components/layout";
 import { FooterMenus } from "@/components/layout";
 import { HeroSection } from "./components/HeroSection";
@@ -25,17 +25,12 @@ export const metadata = {
 
 export default function HomePage() {
   const [visibleCount, setVisibleCount] = useState(3);
-  const [clientReviews, setReviews] = useState<[]>([]);
-  const [loading, setLoading] = useState(false);
+  const loading = false;
 
   const handleLoadMore = () => {
     setVisibleCount((prevCount) => prevCount + 3);
   };
 
-  // Memoize the sliced reviews
-  const visibleReviews = useMemo(() => {
-    return clientReviews.slice(0, visibleCount);
-  }, [clientReviews, visibleCount]);
 
   const StatsCounter = dynamic(
     () =>
@@ -66,7 +61,7 @@ export default function HomePage() {
             loading={loading}
             handleLoadMore={handleLoadMore}
             visibleCount={visibleCount}
-            totalCount={clientReviews.length}
+            totalCount={reviews.length}
           />
           <StatsCounter stats={stats} />
           <HowItWorks />
